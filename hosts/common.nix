@@ -147,8 +147,9 @@ in {
           host ghaf-net
                user ghaf
                IdentityFile ~/.ssh/builder-key
-               #hostname 192.168.10.108
-               hostname 192.168.10.45
+               hostname 192.168.10.108
+               #hostname 192.168.10.45
+               #hostname 192.168.10.102
           host ghaf-host
                user ghaf
                IdentityFile ~/.ssh/builder-key
