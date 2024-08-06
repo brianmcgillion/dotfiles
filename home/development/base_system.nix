@@ -15,5 +15,6 @@
     nixos-generators
     clang-tools
     bear
+    nixpkgs-review
   ];
 }

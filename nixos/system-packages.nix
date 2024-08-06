@@ -20,7 +20,7 @@
     linux-manual
     man-pages
     man-pages-posix
-    nix-doc
+    #    nix-doc
     nix-tree
     globalprotect-openconnect
   ];
