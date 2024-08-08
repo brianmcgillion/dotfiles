@@ -55,6 +55,13 @@
       inputs.nixpkgs-stable.follows = "nixpkgs";
     };
 
+    # Used for deploying remote systems
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-compat.follows = "flake-compat";
+    };
+
     #TODO add the following for more managable configs
     #https://github.com/ehllie/ez-configs/tree/main
     # Part of flake-parts modules

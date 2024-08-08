@@ -7,14 +7,15 @@
   }: {
     devShells.default = pkgs.mkShell {
       treefmt = config.treefmt.build.wrapper;
-      packages = with pkgs; [
-        git
-        nix
-        nixos-rebuild
+      packages = [
+        pkgs.git
+        pkgs.nix
+        pkgs.nixos-rebuild
         #TODO Reenable
         #sops-nix
-        sops
-        ssh-to-age
+        pkgs.sops
+        pkgs.ssh-to-age
+        pkgs.deploy-rs
       ];
     };
   };

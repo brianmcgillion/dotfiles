@@ -1,11 +1,9 @@
 {
   config,
-  lib,
   pkgs,
   inputs,
   ...
-}:
-with lib; {
+}: {
   services.emacs.enable = false;
   services.emacs.package = with pkgs; ((emacsPackagesFor emacs29-pgtk).emacsWithPackages
     (epkgs:
