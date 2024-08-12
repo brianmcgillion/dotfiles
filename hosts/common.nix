@@ -66,6 +66,7 @@ in {
 
         # Avoid copying unecessary stuff over SSH
         builders-use-substitutes = true;
+        build-users-group = "nixbld";
         trusted-users = ["root" "brian"];
         auto-optimise-store = true; # Optimise syslinks
         keep-outputs = true; # Keep outputs of derivations
