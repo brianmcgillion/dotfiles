@@ -1,1 +1,15 @@
-{"eval":{"depth":10,"installable":"nixosConfigurations.arcadia","target":{"args":["-f","default.nix"]}},"formatting":{"command":"alejandra"},"options":{"enable":true,"target":{"args":[],"installable":".#nixosConfigurations.arcadia.options"}}}
+{
+	"eval": {
+		"depth": 10,
+		"installable": "nixosConfigurations.arcadia",
+		"target": { "args": ["-f", "default.nix"] }
+	},
+	"formatting": { "command": "nixfmt" },
+	"options": {
+		"enable": true,
+		"target": {
+			"args": [],
+			"installable": ".#nixosConfigurations.arcadia.options"
+		}
+	}
+}

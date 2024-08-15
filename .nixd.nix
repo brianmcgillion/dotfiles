@@ -6,7 +6,7 @@
     installable = "nixosConfigurations.arcadia";
     depth = 10;
   };
-  formatting.command = "alejandra";
+  formatting.command = "nixfmt";
   options = {
     enable = true;
     target = {
