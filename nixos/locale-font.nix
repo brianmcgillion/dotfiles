@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   i18n.defaultLocale = "en_US.utf8";
 
   i18n.extraLocaleSettings = {
@@ -27,7 +28,10 @@
     # TODO replace nerdFonts (see emacs config)
     (nerdfonts.override {
       # Nerdfont Icons override
-      fonts = ["FiraCode" "FiraMono"];
+      fonts = [
+        "FiraCode"
+        "FiraMono"
+      ];
     })
   ];
 }

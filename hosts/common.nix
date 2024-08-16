@@ -6,11 +6,14 @@
   config,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.setup.device;
-in {
+in
+{
   imports = lib.flatten [
-    (with self.nixosModules;
+    (
+      with self.nixosModules;
       [
         hardening
         system-packages
@@ -20,18 +23,21 @@ in {
         scripts
         nebula
       ]
-      ++ [inputs.nix-index-database.nixosModules.nix-index])
+      ++ [ inputs.nix-index-database.nixosModules.nix-index ]
+    )
     [
       inputs.home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.extraSpecialArgs = {inherit inputs;};
+        home-manager.extraSpecialArgs = {
+          inherit inputs;
+        };
         home-manager.users.brian = {
           imports =
-            lib.optionals cfg.isClient [(import ../home/home-client.nix)]
-            ++ lib.optionals cfg.isServer [(import ../home/home-server.nix)]
-            ++ [inputs.nix-index-database.hmModules.nix-index];
+            lib.optionals cfg.isClient [ (import ../home/home-client.nix) ]
+            ++ lib.optionals cfg.isServer [ (import ../home/home-server.nix) ]
+            ++ [ inputs.nix-index-database.hmModules.nix-index ];
         };
       }
     ]
@@ -54,7 +60,7 @@ in {
     nix = {
       # This will add each flake input as a registry
       # To make nix3 commands consistent with your flake
-      registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
+      registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
       # This will additionally add your inputs to the system's legacy channels
       # Making legacy nix commands consistent as well
       nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
@@ -62,12 +68,20 @@ in {
       settings = {
         # Enable flakes and new 'nix' command
         experimental-features = "nix-command flakes";
-        system-features = ["nixos-test" "benchmark" "big-parallel" "kvm"];
+        system-features = [
+          "nixos-test"
+          "benchmark"
+          "big-parallel"
+          "kvm"
+        ];
 
         # Avoid copying unecessary stuff over SSH
         builders-use-substitutes = true;
         build-users-group = "nixbld";
-        trusted-users = ["root" "brian"];
+        trusted-users = [
+          "root"
+          "brian"
+        ];
         auto-optimise-store = true; # Optimise syslinks
         keep-outputs = true; # Keep outputs of derivations
         keep-derivations = true; # Keep derivations
@@ -92,8 +106,13 @@ in {
           system = "aarch64-linux";
           maxJobs = 8;
           speedFactor = 1;
-          supportedFeatures = ["nixos-test" "benchmark" "big-parallel" "kvm"];
-          mandatoryFeatures = [];
+          supportedFeatures = [
+            "nixos-test"
+            "benchmark"
+            "big-parallel"
+            "kvm"
+          ];
+          mandatoryFeatures = [ ];
           #TODO Fix this
           sshUser = "bmg";
           sshKey = "/home/brian/.ssh/builder-key";
@@ -103,8 +122,13 @@ in {
           system = "x86_64-linux";
           maxJobs = 8;
           speedFactor = 1;
-          supportedFeatures = ["nixos-test" "benchmark" "big-parallel" "kvm"];
-          mandatoryFeatures = [];
+          supportedFeatures = [
+            "nixos-test"
+            "benchmark"
+            "big-parallel"
+            "kvm"
+          ];
+          mandatoryFeatures = [ ];
           #TODO Fix this
           sshUser = "bmg";
           sshKey = "/home/brian/.ssh/builder-key";
@@ -168,19 +192,19 @@ in {
         '';
         knownHosts = {
           hetzarm-ed25519 = {
-            hostNames = ["65.21.20.242"];
+            hostNames = [ "65.21.20.242" ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILx4zU4gIkTY/1oKEOkf9gTJChdx/jR3lDgZ7p/c7LEK";
           };
           vedenemo-builder = {
-            hostNames = ["builder.vedenemo.dev"];
+            hostNames = [ "builder.vedenemo.dev" ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHSI8s/wefXiD2h3I3mIRdK+d9yDGMn0qS5fpKDnSGqj";
           };
           nephele = {
-            hostNames = ["65.109.25.143"];
+            hostNames = [ "65.109.25.143" ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFwoWKmFa6B9SBci63YG0gaP2kxhXNn1vlMgbky6LjKr";
           };
           caelus = {
-            hostNames = ["95.217.167.39"];
+            hostNames = [ "95.217.167.39" ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHrlodsjLMgGSEM0+NP+0FN7MD6gkySxo7ydKWxP44w";
           };
         };

@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   # TODO add conf file and settings and secrets store
   #
 
@@ -16,7 +17,10 @@
       side-by-side = true;
       syntax-theme = "Dracula";
     };
-    ignores = ["*~" "*.swp"];
+    ignores = [
+      "*~"
+      "*.swp"
+    ];
     extraConfig = {
       core.editor = "emacs";
       color.ui = "auto";
@@ -38,6 +42,12 @@
 
   programs.gh = {
     enable = true;
-    extensions = with pkgs; [gh-poi gh-eco gh-dash gh-markdown-preview gh-copilot];
+    extensions = with pkgs; [
+      gh-poi
+      gh-eco
+      gh-dash
+      gh-markdown-preview
+      gh-copilot
+    ];
   };
 }

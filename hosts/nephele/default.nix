@@ -1,9 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0
+{ lib, self, ... }:
 {
-  lib,
-  self,
-  ...
-}: {
   imports = [
     self.nixosModules.common-server
     ./disk-config.nix
@@ -12,10 +9,14 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   boot = {
-    initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme"];
-    initrd.kernelModules = [];
-    kernelModules = ["kvm-amd"];
-    extraModulePackages = [];
+    initrd.availableKernelModules = [
+      "xhci_pci"
+      "ahci"
+      "nvme"
+    ];
+    initrd.kernelModules = [ ];
+    kernelModules = [ "kvm-amd" ];
+    extraModulePackages = [ ];
 
     loader.grub = {
       enable = true;
@@ -30,7 +31,7 @@
   # Disko will define all the file systems for us
   # So no need to call each out here
   #
-  swapDevices = [];
+  swapDevices = [ ];
 
   hardware.cpu.amd.updateMicrocode = true;
 

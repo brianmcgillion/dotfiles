@@ -1,5 +1,1 @@
-_: {
-  imports = [
-    ./google-chrome.nix
-  ];
-}
+_: { imports = [ ./google-chrome.nix ]; }

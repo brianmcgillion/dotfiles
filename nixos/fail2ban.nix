@@ -3,9 +3,7 @@ _: {
     enable = true;
     maxretry = 3; # Observe 3 violations before banning an IP
     ignoreIP = [
-      /*
-      Anything constant
-      */
+      # Anything constant
     ];
     bantime = "24h"; # Set bantime to one day
     bantime-increment = {

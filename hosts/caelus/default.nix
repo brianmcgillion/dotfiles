@@ -4,7 +4,8 @@
   self,
   modulesPath,
   ...
-}: {
+}:
+{
   imports = [
     #A cloud based Hetzner instance so running as a VM on shared host
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -15,10 +16,17 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   boot = {
-    initrd.availableKernelModules = ["ata_piix" "virtio_pci" "virtio_scsi" "xhci_pci" "sd_mod" "sr_mod"];
-    initrd.kernelModules = [];
-    kernelModules = [];
-    extraModulePackages = [];
+    initrd.availableKernelModules = [
+      "ata_piix"
+      "virtio_pci"
+      "virtio_scsi"
+      "xhci_pci"
+      "sd_mod"
+      "sr_mod"
+    ];
+    initrd.kernelModules = [ ];
+    kernelModules = [ ];
+    extraModulePackages = [ ];
 
     loader.grub = {
       enable = true;
@@ -33,7 +41,7 @@
   # Disko will define all the file systems for us
   # So no need to call each out here
   #
-  swapDevices = [];
+  swapDevices = [ ];
 
   hardware.cpu.intel.updateMicrocode = true;
 

@@ -4,17 +4,25 @@
   lib,
   self,
   ...
-}: {
+}:
+{
   #Set the baseline with common.nix
-  imports = [self.nixosModules.common-client];
+  imports = [ self.nixosModules.common-client ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   boot = {
-    initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod"];
-    initrd.kernelModules = [];
-    kernelModules = ["kvm-amd"];
-    extraModulePackages = [];
+    initrd.availableKernelModules = [
+      "xhci_pci"
+      "ahci"
+      "nvme"
+      "usbhid"
+      "usb_storage"
+      "sd_mod"
+    ];
+    initrd.kernelModules = [ ];
+    kernelModules = [ "kvm-amd" ];
+    extraModulePackages = [ ];
   };
 
   fileSystems."/" = {
@@ -25,10 +33,13 @@
   fileSystems."/boot/efi" = {
     device = "/dev/disk/by-uuid/7BAD-F70E";
     fsType = "vfat";
-    options = ["umask=0077" "defaults"];
+    options = [
+      "umask=0077"
+      "defaults"
+    ];
   };
 
-  swapDevices = [];
+  swapDevices = [ ];
 
   powerManagement = {
     enable = true;
@@ -46,15 +57,15 @@
 
   networking.wg-quick.interfaces = {
     wg0 = {
-      address = ["10.7.0.4/24"];
-      dns = ["172.26.0.2"];
+      address = [ "10.7.0.4/24" ];
+      dns = [ "172.26.0.2" ];
       privateKeyFile = "/root/wireguard-keys/privatekey";
 
       peers = [
         {
           publicKey = "3xZ1Ug4n8XrjZqlrrrveiIPQq3uyMtxuJXII3vCwyww=";
           presharedKeyFile = "/root/wireguard-keys/preshared_from_bmg-ls_key";
-          allowedIPs = ["0.0.0.0/0"];
+          allowedIPs = [ "0.0.0.0/0" ];
           endpoint = "35.178.208.8:51820";
           persistentKeepalive = 25;
         }
@@ -68,14 +79,14 @@
   };
 
   # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
     # Modesetting is required.
     modesetting.enable = true;
 
     # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-    powerManagement.enable = false; #was false
+    powerManagement.enable = false; # was false
     # Fine-grained power management. Turns off GPU when not in use.
     # Experimental and only works on modern Nvidia GPUs (Turing or newer).
     powerManagement.finegrained = false;
@@ -94,7 +105,7 @@
     nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.beta; #was stable
+    package = config.boot.kernelPackages.nvidiaPackages.beta; # was stable
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

@@ -69,33 +69,31 @@
     # https://github.com/ehllie/dotfiles/tree/main
   };
 
-  outputs = inputs @ {
-    flake-parts,
-    nixpkgs,
-    ...
-  }:
+  outputs =
+    inputs@{ flake-parts, nixpkgs, ... }:
     flake-parts.lib.mkFlake
-    {
-      inherit inputs;
-      specialArgs = {
-        inherit (nixpkgs) lib;
+      {
+        inherit inputs;
+        specialArgs = {
+          inherit (nixpkgs) lib;
+        };
+      }
+      {
+        systems = [
+          "x86_64-linux"
+          #"aarch64-linux"
+          #"aarch64-darwin"
+        ];
+
+        imports = [
+          ./home
+          ./hosts
+          ./nix
+          ./nixos
+          ./users
+          ./packages
+        ];
+
+        debug = true;
       };
-    } {
-      systems = [
-        "x86_64-linux"
-        #"aarch64-linux"
-        #"aarch64-darwin"
-      ];
-
-      imports = [
-        ./home
-        ./hosts
-        ./nix
-        ./nixos
-        ./users
-        ./packages
-      ];
-
-      debug = true;
-    };
 }

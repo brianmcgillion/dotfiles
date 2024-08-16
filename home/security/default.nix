@@ -2,6 +2,4 @@
 #
 #
 #
-_: {
-  imports = [./ssh_config.nix];
-}
+_: { imports = [ ./ssh_config.nix ]; }

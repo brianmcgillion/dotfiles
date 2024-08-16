@@ -1,6 +1,5 @@
 _: {
-  programs.ssh = {
-  };
+  programs.ssh = { };
 
   services = {
     ssh-agent.enable = true;

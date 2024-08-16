@@ -3,10 +3,9 @@
   config,
   lib,
   ...
-}: {
-  imports = [
-    self.nixosModules.fail2ban
-  ];
+}:
+{
+  imports = [ self.nixosModules.fail2ban ];
 
   config = {
     services.openssh = {
@@ -16,7 +15,7 @@
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
         ClientAliveInterval = lib.mkDefault 60;
-        LogLevel = "VERBOSE"; #needed for fail2ban
+        LogLevel = "VERBOSE"; # needed for fail2ban
       };
       hostKeys = [
         {

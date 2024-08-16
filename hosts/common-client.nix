@@ -5,7 +5,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   imports = lib.flatten [
     (with self.nixosModules; [
       audio
@@ -16,9 +17,7 @@
       locale-font
       yubikey
     ])
-    [
-      ./common.nix
-    ]
+    [ ./common.nix ]
   ];
 
   config = {
@@ -40,8 +39,8 @@
       networkmanager.enable = true;
       #Open ports in the firewall?
       firewall = {
-        allowedTCPPorts = [];
-        allowedUDPPorts = [];
+        allowedTCPPorts = [ ];
+        allowedUDPPorts = [ ];
       };
     };
 

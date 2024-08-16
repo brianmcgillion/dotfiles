@@ -5,7 +5,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     ./common.nix
     self.nixosModules.user-root
@@ -16,8 +17,6 @@
   config = {
     setup.device.isServer = true;
 
-    environment.systemPackages = [
-      pkgs.kitty.terminfo
-    ];
+    environment.systemPackages = [ pkgs.kitty.terminfo ];
   };
 }

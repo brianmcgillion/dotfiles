@@ -1,3 +1,4 @@
-{pkgs, ...}: {
-  environment.systemPackages = [pkgs.nebula];
+{ pkgs, ... }:
+{
+  environment.systemPackages = [ pkgs.nebula ];
 }

@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   update-host = pkgs.writeScriptBin "update-host" ''
     pushd $HOME/.dotfiles
     nix flake update
@@ -25,9 +26,10 @@
   rebuild-agx = pkgs.writeScriptBin "rebuild-agx" ''
     nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --fast boot $@
   '';
-  #https://discourse.nixos.org/t/install-shell-script-on-nixos/6849/10
-  #ownfile = pkgs.callPackage ./ownfile.nix {};
-in {
+in
+#https://discourse.nixos.org/t/install-shell-script-on-nixos/6849/10
+#ownfile = pkgs.callPackage ./ownfile.nix {};
+{
   environment.systemPackages = [
     rebuild-host
     rebuild-nephele

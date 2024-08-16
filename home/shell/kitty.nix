@@ -1,9 +1,6 @@
 # SPDX-License-Identifier: Apache-2.
+{ pkgs, config, ... }:
 {
-  pkgs,
-  config,
-  ...
-}: {
   programs = {
     kitty = {
       enable = true;

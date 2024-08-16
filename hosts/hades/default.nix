@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: MIT
-{...}: {
-  imports =
-    [(import ./hardware-configuration.nix)]
-    ++ [(import ./networking.nix)];
+{ ... }:
+{
+  imports = [ (import ./hardware-configuration.nix) ] ++ [ (import ./networking.nix) ];
 
   # Bootloader.
   boot = {

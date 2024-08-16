@@ -2,7 +2,10 @@
 # nix eval --json --file .nixd.nix > .nixd.json
 {
   eval = {
-    target.args = ["-f" "default.nix"];
+    target.args = [
+      "-f"
+      "default.nix"
+    ];
     installable = "nixosConfigurations.arcadia";
     depth = 10;
   };
@@ -10,7 +13,7 @@
   options = {
     enable = true;
     target = {
-      args = [];
+      args = [ ];
       # nixOs configuration
       installable = ".#nixosConfigurations.arcadia.options";
       # flake-parts

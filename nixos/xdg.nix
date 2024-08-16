@@ -13,7 +13,7 @@ _: {
       XDG_DATA_HOME = "$HOME/.local/share";
       #TODO Make sure that the bin dir is created.
       XDG_BIN_HOME = "$HOME/.local/bin";
-      PATH = ["\${XDG_BIN_HOME}"];
+      PATH = [ "\${XDG_BIN_HOME}" ];
     };
     variables = {
       # Conform more programs to XDG conventions. The rest are handled by their

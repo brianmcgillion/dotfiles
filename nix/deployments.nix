@@ -1,8 +1,5 @@
-{
-  self,
-  inputs,
-  ...
-}: let
+{ self, inputs, ... }:
+let
   inherit (inputs) deploy-rs;
 
   mkDeployment = arch: config: hostname: {
@@ -22,13 +19,14 @@
   aarch64-nodes = {
     #name = mkDeployment "aarch64-linux" "name" "ip";
   };
-in {
+in
+{
   flake = {
     deploy.nodes = x86-nodes // aarch64-nodes;
 
     checks = {
-      x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks {nodes = x86-nodes;};
-      aarch64-linux = deploy-rs.lib.aarch64-linux.deployChecks {nodes = aarch64-nodes;};
+      x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks { nodes = x86-nodes; };
+      aarch64-linux = deploy-rs.lib.aarch64-linux.deployChecks { nodes = aarch64-nodes; };
     };
   };
 }

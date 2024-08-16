@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   # A selection of packages that are used in most standard environments
   # Building plugins
   # providing plugins (nodejs)
