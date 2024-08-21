@@ -72,7 +72,6 @@
       # :lang markdown
       python3.pkgs.grip
 
-      tree-sitter
     ]
     ++ [ inputs.nixd.packages."${pkgs.system}".nixd ]; # :tools lsp mode for nix
 

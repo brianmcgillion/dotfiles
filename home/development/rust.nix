@@ -5,7 +5,7 @@
     rustc
     rustfmt
     cargo
-    cargo-clone
+    #    cargo-clone
     clippy
   ];
 }
