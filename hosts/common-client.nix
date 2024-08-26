@@ -49,6 +49,12 @@
     # enable the fwupdate daemon to install fw changes
     services.fwupd.enable = true;
 
+    # setup the global protect vpn
+    services.globalprotect = {
+      enable = true;
+      csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
+    };
+
     #
     # Setup the zsa keyboards
     #
