@@ -2,6 +2,11 @@
 {
   description = "First honest attempt to declare a system";
 
+  nixConfig = {
+    extra-substituters = [ "https://nix-community.cachix.org" ];
+    extra-trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
+  };
+
   inputs = {
     # Nix Packages, following unstable (rolling release)
     nixpkgs.url = "nixpkgs/nixos-unstable"; # primary nixpkgs
@@ -60,6 +65,11 @@
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-compat.follows = "flake-compat";
+    };
+
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     #TODO add the following for more managable configs

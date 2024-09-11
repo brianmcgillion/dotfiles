@@ -49,7 +49,11 @@ in
   };
 
   config = {
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs = {
+      config.allowUnfree = true;
+      overlays = [ inputs.emacs-overlay.overlay];
+    };
+
     # Enable developer documentation (man 3) pages
     documentation = {
       dev.enable = true;

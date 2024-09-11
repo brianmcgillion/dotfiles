@@ -4,18 +4,22 @@
   inputs,
   ...
 }:
-{
-  services.emacs.enable = false;
-  services.emacs.package =
+let
+  emacs =
     with pkgs;
-    ((emacsPackagesFor emacs29-pgtk).emacsWithPackages (
+    ((emacsPackagesFor emacs-unstable).emacsWithPackages (
       epkgs: with epkgs; [
+        treesit-grammars.with-all-grammars
         vterm
         pdf-tools
         org-pdftools
       ]
     ));
+in
 
+{
+  services.emacs.enable = false;
+  services.emacs.package = emacs;
   environment.sessionVariables = {
     EDITOR = "emacs";
     PATH = [ "\${XDG_CONFIG_HOME}/emacs/bin" ];
@@ -27,13 +31,7 @@
   environment.systemPackages =
     with pkgs;
     [
-      ((emacsPackagesFor emacs29-pgtk).emacsWithPackages (
-        epkgs: with epkgs; [
-          vterm
-          pdf-tools
-          org-pdftools
-        ]
-      ))
+      emacs
 
       #native-comp emacs needs 'as' binary from binutils
       binutils
