@@ -7,7 +7,7 @@
 let
   emacs =
     with pkgs;
-    ((emacsPackagesFor emacs-unstable).emacsWithPackages (
+    ((emacsPackagesFor emacs29-pgtk).emacsWithPackages (
       epkgs: with epkgs; [
         treesit-grammars.with-all-grammars
         vterm
