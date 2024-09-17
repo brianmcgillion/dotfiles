@@ -1,1 +1,1 @@
-_: { imports = [ ./chat.nix ]; }
+_: { imports = [ ./chat.nix ./documents.nix ]; }
