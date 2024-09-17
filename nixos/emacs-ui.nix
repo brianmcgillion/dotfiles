@@ -4,7 +4,7 @@
     imagemagick # for image-dired
 
     # :lang latex & :lang org (latex previews)
-    texlive.combined.scheme-full
+    texlive.combined.scheme-medium
 
     # TODO Use some secrets managment tool to lock sensitive conf files.
     gnutls # for TLS connectivity

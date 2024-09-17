@@ -51,7 +51,7 @@ in
   config = {
     nixpkgs = {
       config.allowUnfree = true;
-     # overlays = [ inputs.emacs-overlay.overlay];
+      overlays = [ inputs.emacs-overlay.overlays.default ];
     };
 
     # Enable developer documentation (man 3) pages
