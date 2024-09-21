@@ -61,6 +61,13 @@ in
       libxml2
       nodePackages.prettier
 
+      # :tools lsp
+      nodePackages.bash-language-server
+      nodePackages.dockerfile-language-server-nodejs
+      nodePackages.typescript-language-server
+      nodePackages.vscode-langservers-extracted
+      nodePackages.yaml-language-server
+
       # : treemacs
       python3
 

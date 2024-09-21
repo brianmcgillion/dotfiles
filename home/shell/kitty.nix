@@ -9,7 +9,7 @@
         name = "FiraCode";
       };
       shellIntegration.enableBashIntegration = true;
-      theme = "Dracula";
+      themeFile = "Dracula";
       settings = {
         enable_audio_bell = false;
         enabled_layouts = "grid,stack,horizontal,tall";
