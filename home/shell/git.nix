@@ -22,7 +22,7 @@
       "*.swp"
     ];
     extraConfig = {
-      core.editor = "emacs";
+      #core.editor = "emacs";
       color.ui = "auto";
       #credential.helper = "store --file ~/.git-credentials";
       format.signoff = true;

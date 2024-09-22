@@ -18,15 +18,20 @@ let
 in
 
 {
-  services.emacs.enable = false;
-  services.emacs.package = emacs;
-  environment.sessionVariables = {
-    EDITOR = "emacs";
-    PATH = [ "\${XDG_CONFIG_HOME}/emacs/bin" ];
+  services = {
+    emacs = {
+      enable = true;
+      package = emacs;
+      defaultEditor = true;
+    };
+    # :grammar support through language tool
+    languagetool.enable = true;
   };
 
-  # :grammar support through language tool
-  services.languagetool.enable = true;
+  environment.sessionVariables = {
+    #EDITOR = "emacs";
+    PATH = [ "\${XDG_CONFIG_HOME}/emacs/bin" ];
+  };
 
   environment.systemPackages =
     with pkgs;
