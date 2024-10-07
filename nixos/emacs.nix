@@ -7,7 +7,7 @@
 let
   emacs =
     with pkgs;
-    ((emacsPackagesFor emacs-unstable-pgtk).emacsWithPackages (
+    ((emacsPackagesFor emacs-unstable).emacsWithPackages (
       epkgs: with epkgs; [
         treesit-grammars.with-all-grammars
         vterm
@@ -20,7 +20,7 @@ in
 {
   services = {
     emacs = {
-      enable = true;
+      enable = false;
       package = emacs;
       defaultEditor = true;
     };

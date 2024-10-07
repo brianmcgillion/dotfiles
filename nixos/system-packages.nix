@@ -9,8 +9,6 @@
     htop
     nix-info
     wireguard-tools
-    gpauth
-    gpclient
     tree
     file
     binutils
@@ -25,5 +23,6 @@
     man-pages-posix
     #    nix-doc
     nix-tree
+    zellij
   ];
 }
