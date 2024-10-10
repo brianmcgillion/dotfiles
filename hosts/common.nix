@@ -28,24 +28,28 @@ in
     [
       inputs.home-manager.nixosModules.home-manager
       {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.extraSpecialArgs = {
-          inherit inputs;
-        };
-        home-manager.users.brian = {
-          imports =
-            lib.optionals cfg.isClient [ (import ../home/home-client.nix) ]
-            ++ lib.optionals cfg.isServer [ (import ../home/home-server.nix) ]
-            ++ [ inputs.nix-index-database.hmModules.nix-index ];
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          extraSpecialArgs = {
+            inherit inputs;
+          };
+          users.brian = {
+            imports =
+              lib.optionals cfg.isClient [ (import ../home/home-client.nix) ]
+              ++ lib.optionals cfg.isServer [ (import ../home/home-server.nix) ]
+              ++ [ inputs.nix-index-database.hmModules.nix-index ];
+          };
         };
       }
     ]
   ];
 
   options = {
-    setup.device.isClient = lib.mkEnableOption "System is a client device";
-    setup.device.isServer = lib.mkEnableOption "System is a server (headless device)";
+    setup.device = {
+      isClient = lib.mkEnableOption "System is a client device";
+      isServer = lib.mkEnableOption "System is a server (headless device)";
+    };
   };
 
   config = {
@@ -177,9 +181,9 @@ in
                user ghaf
                IdentityFile ~/.ssh/builder-key
                #hostname 192.168.137.101
-               hostname 192.168.10.108
+               hostname 192.168.10.108 # This is the main IP
                #hostname 192.168.10.45
-               #hostname 192.168.10.102
+               #hostname 192.168.10.112 #rodrigo
           host ghaf-host
                user ghaf
                IdentityFile ~/.ssh/builder-key
@@ -229,8 +233,10 @@ in
     # Ref: https://search.nixos.org/options?channel=unstable&show=users.mutableUsers
     users.mutableUsers = false;
 
-    hardware.enableRedistributableFirmware = true;
-    hardware.enableAllFirmware = true;
+    hardware = {
+      enableRedistributableFirmware = true;
+      enableAllFirmware = true;
+    };
 
     boot = {
       # use the bleeding edge kernel

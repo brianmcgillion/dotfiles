@@ -4,28 +4,60 @@
 
   nixConfig = {
     extra-substituters = [ "https://nix-community.cachix.org" ];
-    extra-trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
+    extra-trusted-public-keys = [
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
   };
 
   inputs = {
-    # Nix Packages, following unstable (rolling release)
-    nixpkgs.url = "nixpkgs/nixos-unstable"; # primary nixpkgs
+    # Our source of packages
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # Make the system more modular
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    # Allows us to structure the flake with the NixOS module system
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
+    # Get to the bottom of it
     flake-root.url = "github:srid/flake-root";
 
-    # Formatting
+    # Format all the things
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # For preserving compatibility with non-Flake systems
-    # Useful for the first bootstrap from a clean nixos install
+    # For preserving compatibility with non-Flake users
     flake-compat = {
-      url = "github:inclyc/flake-compat";
+      url = "github:nix-community/flake-compat";
       flake = false;
+    };
+
+    # To ensure that checks are run locally to enforce cleanliness
+    git-hooks-nix = {
+      url = "github:cachix/git-hooks.nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+      };
+    };
+
+    # Make it quick
+    nix-fast-build = {
+      url = "github:Mic92/nix-fast-build";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+        treefmt-nix.follows = "treefmt-nix";
+      };
+    };
+
+    # Increased productivity for ephemeral environments
+    devshell = {
+      url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # dotfiles style package management
@@ -72,11 +104,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #TODO add the following for more managable configs
-    #https://github.com/ehllie/ez-configs/tree/main
-    # Part of flake-parts modules
-    # See example usage
-    # https://github.com/ehllie/dotfiles/tree/main
   };
 
   outputs =

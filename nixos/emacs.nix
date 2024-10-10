@@ -29,7 +29,7 @@ in
   };
 
   environment.sessionVariables = {
-    #EDITOR = "emacs";
+    EDITOR = "emacs";
     PATH = [ "\${XDG_CONFIG_HOME}/emacs/bin" ];
   };
 

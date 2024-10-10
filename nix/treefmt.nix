@@ -1,15 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
-{ inputs, ... }:
+{ inputs, lib, ... }:
 {
-  imports = with inputs; [
-    flake-root.flakeModule
-    treefmt-nix.flakeModule
+  imports = [
+    inputs.flake-root.flakeModule
+    inputs.treefmt-nix.flakeModule
   ];
   perSystem =
     { config, pkgs, ... }:
     {
       treefmt.config = {
-        package = pkgs.treefmt;
         inherit (config.flake-root) projectRootFile;
 
         programs = {
@@ -20,6 +19,17 @@
           statix.enable = true; # prevents use of nix anti-patterns https://github.com/nerdypepper/statix
           shellcheck.enable = true; # lints shell scripts https://github.com/koalaman/shellcheck
           shfmt.enable = true; # Shell formatting best practices
+        };
+
+        settings.formatter.statix-check = {
+          # statix doesn't support multiple file targets
+          command = pkgs.writeShellScriptBin "statix-check" ''
+            for file in "''$@"; do
+              ${lib.getExe pkgs.statix} check "$file"
+            done
+          '';
+          options = [ ];
+          includes = [ "*.nix" ];
         };
       };
 
