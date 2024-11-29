@@ -201,6 +201,7 @@ in
           host vedenemo-builder
                user bmg
                hostname builder.vedenemo.dev
+               IdentityFile ~/.ssh/builder-key
           host caelus
                hostname 95.217.167.39
         '';
