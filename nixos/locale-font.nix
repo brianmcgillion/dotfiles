@@ -26,12 +26,7 @@
     fira-code-symbols
     font-awesome # Icons
     # TODO replace nerdFonts (see emacs config)
-    (nerdfonts.override {
-      # Nerdfont Icons override
-      fonts = [
-        "FiraCode"
-        "FiraMono"
-      ];
-    })
+    nerd-fonts.fira-code
+    nerd-fonts.fira-mono
   ];
 }
