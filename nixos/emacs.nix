@@ -10,6 +10,7 @@ let
     ((emacsPackagesFor emacs-unstable).emacsWithPackages (
       epkgs: with epkgs; [
         treesit-grammars.with-all-grammars
+        tree-sitter-langs
         vterm
         pdf-tools
         org-pdftools
