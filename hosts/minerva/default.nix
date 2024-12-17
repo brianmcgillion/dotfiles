@@ -31,7 +31,8 @@
     initrd.secrets = {
       "/crypto_keyfile.bin" = null;
     };
-    initrd.luks.devices."luks-beb21201-376c-48a7-bd8f-d1fe91210548".device = "/dev/disk/by-uuid/beb21201-376c-48a7-bd8f-d1fe91210548";
+    initrd.luks.devices."luks-beb21201-376c-48a7-bd8f-d1fe91210548".device =
+      "/dev/disk/by-uuid/beb21201-376c-48a7-bd8f-d1fe91210548";
   };
 
   fileSystems."/" = {

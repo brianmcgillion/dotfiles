@@ -2,6 +2,7 @@
 {
   self,
   lib,
+  inputs,
   pkgs,
   ...
 }:
@@ -16,7 +17,10 @@
       locale-font
       yubikey
     ])
-    [ ./common.nix ]
+    [
+      ./common.nix
+      inputs.srvos.nixosModules.desktop
+    ]
   ];
 
   config = {

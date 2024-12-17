@@ -1,8 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0
-{ lib, self, ... }:
+{
+  lib,
+  self,
+  inputs,
+  ...
+}:
 {
   imports = [
     self.nixosModules.common-server
+    inputs.srvos.nixosModules.hardware-hetzner-online-amd
     ./disk-config.nix
   ];
 
@@ -35,16 +41,10 @@
 
   hardware.cpu.amd.updateMicrocode = true;
 
-  # The global useDHCP flag is deprecated, therefore explicitly set to false
-  # here. Per-interface useDHCP will be mandatory in the future, so this
-  # generated config replicates the default behaviour.
   networking = {
-    interfaces.enp41s0.useDHCP = lib.mkDefault true;
-    hostName = "nephele";
+    hostName = lib.mkDefault "nephele";
   };
 
-  # It is not moving so lock it down
-  time.timeZone = "Europe/Helsinki";
-
+  systemd.network.networks."10-uplink".networkConfig.Address = "65.109.25.143";
   system.stateVersion = "24.05"; # Did you read the comment?
 }

@@ -2,14 +2,13 @@
 {
   lib,
   self,
-  modulesPath,
+  inputs,
   ...
 }:
 {
   imports = [
-    #A cloud based Hetzner instance so running as a VM on shared host
-    (modulesPath + "/profiles/qemu-guest.nix")
     self.nixosModules.common-server
+    inputs.srvos.nixosModules.hardware-hetzner-cloud
     ./disk-config.nix
   ];
 
@@ -50,11 +49,8 @@
   # generated config replicates the default behaviour.
   networking = {
     interfaces.ens3.useDHCP = lib.mkDefault true;
-    hostName = "caelus";
+    hostName = lib.mkDefault "caelus";
   };
-
-  # It is not moving so lock it down
-  time.timeZone = "Europe/Helsinki";
 
   system.stateVersion = "24.05"; # Did you read the comment?
 }

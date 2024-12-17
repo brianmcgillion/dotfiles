@@ -2,7 +2,6 @@
 {
   self,
   inputs,
-  config,
   pkgs,
   ...
 }:
@@ -12,6 +11,8 @@
     self.nixosModules.user-root
     self.nixosModules.sshd
     inputs.disko.nixosModules.disko
+    inputs.srvos.nixosModules.server
+    inputs.srvos.nixosModules.mixins-terminfo
   ];
 
   config = {

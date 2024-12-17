@@ -13,7 +13,7 @@
 
     # host modules
     host-arcadia = import ./arcadia;
-    host-minerva = import ./minerva { inherit self inputs lib; };
+    host-minerva = import ./minerva;
     host-nephele = import ./nephele;
     host-caelus = import ./caelus;
   };

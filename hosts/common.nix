@@ -23,7 +23,11 @@ in
         scripts
         nebula
       ]
-      ++ [ inputs.nix-index-database.nixosModules.nix-index ]
+      ++ [
+        inputs.nix-index-database.nixosModules.nix-index
+        inputs.srvos.nixosModules.mixins-nix-experimental
+        inputs.srvos.nixosModules.mixins-trusted-nix-caches
+      ]
     )
     [
       inputs.home-manager.nixosModules.home-manager
@@ -74,8 +78,6 @@ in
       nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
       settings = {
-        # Enable flakes and new 'nix' command
-        experimental-features = "nix-command flakes";
         system-features = [
           "nixos-test"
           "benchmark"
