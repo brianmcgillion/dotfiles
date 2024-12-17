@@ -15,7 +15,8 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   boot = {
-    initrd.availableKernelModules = [
+    initrd = {
+      availableKernelModules = [
       "ata_piix"
       "virtio_pci"
       "virtio_scsi"
@@ -23,7 +24,8 @@
       "sd_mod"
       "sr_mod"
     ];
-    initrd.kernelModules = [ ];
+    kernelModules = [ ];
+    };
     kernelModules = [ ];
     extraModulePackages = [ ];
 

@@ -127,7 +127,6 @@
         ];
 
         imports = [
-          ./home
           ./hosts
           ./nix
           ./nixos
