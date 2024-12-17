@@ -62,13 +62,6 @@ in
       overlays = [ inputs.emacs-overlay.overlays.default ];
     };
 
-    # Enable developer documentation (man 3) pages
-    documentation = {
-      dev.enable = true;
-      # This is slow for the first build
-      # man.generateCaches = true;
-    };
-
     nix = {
       # This will add each flake input as a registry
       # To make nix3 commands consistent with your flake
@@ -101,8 +94,8 @@ in
       optimise.automatic = true;
       gc = {
         automatic = true;
-        dates = "weekly";
-        options = pkgs.lib.mkDefault "--delete-older-than 7d";
+        dates = lib.mkDefault "weekly";
+        options = lib.mkDefault "--delete-older-than 7d";
       };
 
       # extraOptions = ''

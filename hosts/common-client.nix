@@ -50,9 +50,11 @@
     };
 
     #By default the client devices to not provide inbound ssh
-    services.openssh.startWhenNeeded = false;
-    # enable the fwupdate daemon to install fw changes
-    services.fwupd.enable = true;
+    services = {
+      openssh.startWhenNeeded = false;
+      # enable the fwupdate daemon to install fw changes
+      fwupd.enable = true;
+    };
 
     #
     # Setup the zsa keyboards
@@ -63,6 +65,13 @@
     ];
 
     hardware.keyboard.zsa.enable = true;
+
+    # Enable developer documentation (man 3) pages
+    documentation = {
+      dev.enable = true;
+      # This is slow for the first build
+      # man.generateCaches = true;
+    };
 
     # nix.buildMachines = [
     #   {

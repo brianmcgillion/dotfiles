@@ -13,6 +13,13 @@
     inputs.disko.nixosModules.disko
     inputs.srvos.nixosModules.server
     inputs.srvos.nixosModules.mixins-terminfo
+    inputs.srvos.nixosModules.roles-nix-remote-builder
+    {
+      #TODO: set the key programatically
+      roles.nix-remote-builder.schedulerPublicKeys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILu6O3swRVWAjP7J8iYGT6st7NAa+o/XaemokmtKdpGa builder key"
+      ];
+    }
   ];
 
   config = {
