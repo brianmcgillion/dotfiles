@@ -16,56 +16,58 @@ _: {
           use_system_font = false;
         };
 
-        layouts.default.root = {
-          position = 0;
-          type = "Window";
-          order = 0;
-          parent = "";
-          maximised = true;
-          fullscreen = false;
-          #       size = 1920, 1016
-        };
-        layouts.default.grand = {
-          position = 536;
-          type = "HPaned";
-          order = 0;
-          parent = "root";
-        };
-        layouts.default.left = {
-          position = 536;
-          type = "VPaned";
-          order = 0;
-          parent = "grand";
-        };
-        layouts.default.right = {
-          position = 536;
-          type = "VPaned";
-          order = 1;
-          parent = "grand";
-        };
-        layouts.default.terminal1 = {
-          profile = "default";
-          type = "Terminal";
-          order = 0;
-          parent = "left";
-        };
-        layouts.default.terminal2 = {
-          profile = "default";
-          type = "Terminal";
-          order = 1;
-          parent = "left";
-        };
-        layouts.default.terminal3 = {
-          profile = "default";
-          type = "Terminal";
-          order = 1;
-          parent = "right";
-        };
-        layouts.default.terminal4 = {
-          profile = "default";
-          type = "Terminal";
-          order = 0;
-          parent = "right";
+        layouts.default = {
+          root = {
+            position = 0;
+            type = "Window";
+            order = 0;
+            parent = "";
+            maximised = true;
+            fullscreen = false;
+            #       size = 1920, 1016
+          };
+          grand = {
+            position = 536;
+            type = "HPaned";
+            order = 0;
+            parent = "root";
+          };
+          left = {
+            position = 536;
+            type = "VPaned";
+            order = 0;
+            parent = "grand";
+          };
+          right = {
+            position = 536;
+            type = "VPaned";
+            order = 1;
+            parent = "grand";
+          };
+          terminal1 = {
+            profile = "default";
+            type = "Terminal";
+            order = 0;
+            parent = "left";
+          };
+          terminal2 = {
+            profile = "default";
+            type = "Terminal";
+            order = 1;
+            parent = "left";
+          };
+          terminal3 = {
+            profile = "default";
+            type = "Terminal";
+            order = 1;
+            parent = "right";
+          };
+          terminal4 = {
+            profile = "default";
+            type = "Terminal";
+            order = 0;
+            parent = "right";
+          };
         };
       };
     };

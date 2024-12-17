@@ -28,10 +28,12 @@
 
     # Bootloader, seems server is MBR in most cases.
     boot = {
-      loader.systemd-boot.enable = true;
-      loader.systemd-boot.configurationLimit = 5;
-      loader.efi.canTouchEfiVariables = true;
-      loader.efi.efiSysMountPoint = "/boot/efi";
+      loader = {
+        systemd-boot.enable = true;
+        systemd-boot.configurationLimit = 5;
+        efi.canTouchEfiVariables = true;
+        efi.efiSysMountPoint = "/boot/efi";
+      };
     };
 
     # Common network configuration
