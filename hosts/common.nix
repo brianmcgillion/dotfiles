@@ -229,6 +229,8 @@ in
     # Ref: https://search.nixos.org/options?channel=unstable&show=users.mutableUsers
     users.mutableUsers = false;
 
+    services.userborn.enable = true;
+
     hardware = {
       enableRedistributableFirmware = true;
       enableAllFirmware = true;

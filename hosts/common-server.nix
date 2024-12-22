@@ -13,6 +13,7 @@
     inputs.disko.nixosModules.disko
     inputs.srvos.nixosModules.server
     inputs.srvos.nixosModules.mixins-terminfo
+    inputs.srvos.nixosModules.mixins-mdns
     inputs.srvos.nixosModules.roles-nix-remote-builder
     {
       #TODO: set the key programatically
@@ -26,5 +27,6 @@
     setup.device.isServer = true;
 
     environment.systemPackages = [ pkgs.kitty.terminfo ];
+    services.avahi.enable = false;
   };
 }
