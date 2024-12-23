@@ -2,18 +2,17 @@
 let
   inherit (inputs) deploy-rs;
 
-  mkDeployment = arch: config: hostname: {
+  mkDeployment = arch: hostname: {
     inherit hostname;
     profiles.system = {
-      user = "brian";
-      sshUser = "root";
-      path = deploy-rs.lib.${arch}.activate.nixos self.nixosConfigurations.${config};
+      user = "root";
+      path = deploy-rs.lib.${arch}.activate.nixos self.nixosConfigurations.${hostname};
     };
   };
 
   x86-nodes = {
-    nephele = mkDeployment "x86_64-linux" "nephele" "nephele";
-    caelus = mkDeployment "x86_64-linux" "caelus" "caelus";
+    nephele = mkDeployment "x86_64-linux" "nephele";
+    caelus = mkDeployment "x86_64-linux" "caelus";
   };
 
   aarch64-nodes = {

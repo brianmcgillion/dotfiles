@@ -1,10 +1,6 @@
 { pkgs, ... }:
 {
-  # TODO add conf file and settings and secrets store
-  #
-
-  #TODO change this to use the keys from github .keys by default
-  home.file.".ssh/allowed_signers".text = "* ${builtins.readFile ../../keys/ssh-keys.txt}";
+  home.file.".ssh/allowed_signers".text = "${builtins.readFile ../../keys/ssh-keys.txt}";
 
   programs.git = {
     package = pkgs.gitAndTools.gitFull;
