@@ -3,6 +3,7 @@
   self,
   lib,
   inputs,
+  config,
   ...
 }:
 {
@@ -12,6 +13,12 @@
     self.nixosModules.sshd
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
   ];
+
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    secrets.wg-privateKeyFile.owner = "root";
+    secrets.wg-presharedKeyFile.owner = "root";
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
@@ -76,12 +83,12 @@
       wg0 = {
         address = [ "10.7.0.7/24" ];
         dns = [ "172.26.0.2" ];
-        privateKeyFile = "/root/wireguard-keys/privatekey";
+        privateKeyFile = config.sops.secrets.wg-privateKeyFile.path;
 
         peers = [
           {
             publicKey = "3xZ1Ug4n8XrjZqlrrrveiIPQq3uyMtxuJXII3vCwyww=";
-            presharedKeyFile = "/root/wireguard-keys/preshared_from_bmg-ls_key";
+            presharedKeyFile = config.sops.secrets.wg-presharedKeyFile.path;
             allowedIPs = [ "0.0.0.0/0" ];
             endpoint = "35.178.208.8:51820";
             persistentKeepalive = 25;

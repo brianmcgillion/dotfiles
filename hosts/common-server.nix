@@ -25,7 +25,6 @@
 
   config = {
     setup.device.isServer = true;
-
     environment.systemPackages = [ pkgs.kitty.terminfo ];
     services.avahi.enable = false;
   };

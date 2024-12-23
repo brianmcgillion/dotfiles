@@ -17,14 +17,14 @@
   boot = {
     initrd = {
       availableKernelModules = [
-      "ata_piix"
-      "virtio_pci"
-      "virtio_scsi"
-      "xhci_pci"
-      "sd_mod"
-      "sr_mod"
-    ];
-    kernelModules = [ ];
+        "ata_piix"
+        "virtio_pci"
+        "virtio_scsi"
+        "xhci_pci"
+        "sd_mod"
+        "sr_mod"
+      ];
+      kernelModules = [ ];
     };
     kernelModules = [ ];
     extraModulePackages = [ ];

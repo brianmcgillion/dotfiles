@@ -15,6 +15,7 @@
         enabled_layouts = "grid,stack,horizontal,tall";
         startup_session = "${config.xdg.configHome}/kitty/startup_session.conf";
         wayland_titlebar_color = "black";
+        copy_on_select = "yes";
       };
       keybindings = {
         "ctrl+alt+g" = "goto_layout grid";

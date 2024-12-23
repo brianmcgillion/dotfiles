@@ -1,29 +1,35 @@
 keys:
-  - &mini1-yk age1yubikey1qtnxagsj9cfp5x79kqx8hsu58pc89w34xfrx0ykyzs7elvg2f8qucf3lgq3
-  - &mini2-yk age1yubikey1q026af8ppajk7a9rc6srp6wdytdfyfydsdv33lemut8h20aq35ezshapaae
-  - &key1-yk age1yubikey1qttm8ts9w5cyqwmpld45yftng8hsmfdt9k42pzz2leq8a7svvya3qlu9n8r
-  - &key2-yk age1yubikey1qt0fu7u6uretapny90pzqll47hxc2edz8lduhy6ztlmgu9ffdjja2l63au9
-  - &key3-yk age1yubikey1qvlquhc759rh69usa4dptw0rkcn0m6cghrz3j2f8064nfgag7anmqlfcsf2
-  - &key4-yk age1yubikey1qwvfvqhvauv2tksrkh9yzhskeeznvk9hdtdvqmf6shlfj6k4phlqyhavea9
-  - &key5-yk age1yubikey1qthmsja6lax0khr4mjcmpk3wuck88lemx9yjjm6v89ppa6vwv44tghu0fxz
-  - &arcadia age1tvd5txsy62uywunnnyrhncdydnmgmg6prjczktw8f68wqun9kqysvuf94h
-  - &admin-minerva age1aezas4hrz6ajvcesyd27e92kg2l7rmemh2h460y5fr9xee990pmszzzn33
-  - &minerva age1q8rtws7wsgrq5p7f5kxm6fhgtpfwtv5643geskn4euwfgeqkdeaqpd7mst
-  - &nephele age1q3elddt6q7mecq49nwhgvhjh9ay34aznhurz8vr8eg3q9ag5p32sh5lmxx
-  - &caelus age17hk8tccd9a8sg875mqe6llw3euthjf8wlcmhlhk7lxlhmggvp92sfdstm5
+  - &admin_brian age1fn6c3gvsmjxpqk9hf9ye863d4rtcwqvq57wax2m7tg3t4ls84vaqtyv759
+  - &host_nephele age1q3elddt6q7mecq49nwhgvhjh9ay34aznhurz8vr8eg3q9ag5p32sh5lmxx
+  - &host_caelus age17hk8tccd9a8sg875mqe6llw3euthjf8wlcmhlhk7lxlhmggvp92sfdstm5
+  - &host_arcadia age1tvd5txsy62uywunnnyrhncdydnmgmg6prjczktw8f68wqun9kqysvuf94h
+  - &host_minerva age1q8rtws7wsgrq5p7f5kxm6fhgtpfwtv5643geskn4euwfgeqkdeaqpd7mst
 creation_rules:
-  - path_regex: hosts/secrets/[^/]+\.yaml$
+  - path_regex: ^secrets.yaml$
     key_groups:
       - age:
-          - *mini1-yk
-          - *mini2-yk
-          - *key1-yk
-          - *key2-yk
-          - *key3-yk
-          - *key4-yk
-          - *key5-yk
-          - *arcadia
-          - *admin-minerva
-          - *minerva
-          - *nephele
-          - *caelus
+          - *admin_brian
+          - *host_nephele
+          - *host_caelus
+          - *host_arcadia
+          - *host_minerva
+  - path_regex: ^hosts/arcadia/secrets.yaml$
+    key_groups:
+      - age:
+          - *admin_brian
+          - *host_arcadia
+  - path_regex: ^hosts/caelus/secrets.yaml$
+    key_groups:
+      - age:
+          - *admin_brian
+          - *host_caelus
+  - path_regex: ^hosts/minerva/secrets.yaml$
+    key_groups:
+      - age:
+          - *admin_brian
+          - *host_minerva
+  - path_regex: ^hosts/nephele/secrets.yaml$
+    key_groups:
+      - age:
+          - *admin_brian
+          - *host_nephele

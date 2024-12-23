@@ -20,8 +20,6 @@
                 git
                 nix
                 nixos-rebuild
-                #TODO Reenable
-                #sops-nix
                 sops
                 ssh-to-age
                 deploy-rs
@@ -35,6 +33,9 @@
         };
 
         commands = [
+          #TODO update the sops keys for all hosts
+          #sops updatekeys secrets/example.yaml
+
           # {
           #   help = "Check golang vulnerabilities";
           #   name = "go-checksec";

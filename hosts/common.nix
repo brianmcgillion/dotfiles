@@ -27,6 +27,7 @@ in
         inputs.nix-index-database.nixosModules.nix-index
         inputs.srvos.nixosModules.mixins-nix-experimental
         inputs.srvos.nixosModules.mixins-trusted-nix-caches
+        inputs.sops-nix.nixosModules.sops
       ]
     )
     [
@@ -38,6 +39,7 @@ in
           extraSpecialArgs = {
             inherit inputs self;
           };
+          #TODO export this from a toplevel login-users module
           users.brian = {
             imports =
               lib.optionals cfg.isClient [ (import ../home/home-client.nix) ]
@@ -174,6 +176,7 @@ in
                Port 22
           host ghaf-net
                user ghaf
+
                IdentityFile ~/.ssh/builder-key
                #hostname 192.168.137.101
                hostname 192.168.10.108 # This is the main IP
@@ -229,6 +232,7 @@ in
     # Ref: https://search.nixos.org/options?channel=unstable&show=users.mutableUsers
     users.mutableUsers = false;
 
+    # Enable userborn to take care of managing the default users and groups
     services.userborn.enable = true;
 
     hardware = {
@@ -245,7 +249,7 @@ in
         "aarch64-linux"
       ];
     };
+
+    sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
-  #TODO Enable and/or move
-  #sops.defaultSopsFile = ./secrets/common.yaml;
 }
