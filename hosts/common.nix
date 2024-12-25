@@ -21,7 +21,7 @@ in
         user-groups
         xdg
         scripts
-        nebula
+        my-nebula
       ]
       ++ [
         inputs.nix-index-database.nixosModules.nix-index
@@ -249,6 +249,7 @@ in
       ];
     };
 
+    # Tie the sops module to the systems ssh keys
     sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
 }

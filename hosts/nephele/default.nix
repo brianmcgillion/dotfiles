@@ -3,6 +3,7 @@
   lib,
   self,
   inputs,
+  config,
   ...
 }:
 {
@@ -11,6 +12,13 @@
     inputs.srvos.nixosModules.hardware-hetzner-online-amd
     ./disk-config.nix
   ];
+
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    secrets.nebula-ca.owner = config.my-nebula-network.configOwner;
+    secrets.nebula-key.owner = config.my-nebula-network.configOwner;
+    secrets.nebula-cert.owner = config.my-nebula-network.configOwner;
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
@@ -45,6 +53,15 @@
 
   networking = {
     hostName = lib.mkDefault "nephele";
+    timeServers = [  "ntp1.hetzner.de" "ntp2.hetzner.com" "ntp3.hetzner.de" ];
+  };
+
+  my-nebula-network = {
+    enable = true;
+    isLightHouse = false;
+    ca = config.sops.secrets.nebula-ca.path;
+    key = config.sops.secrets.nebula-key.path;
+    cert = config.sops.secrets.nebula-cert.path;
   };
 
   systemd.network.networks."10-uplink".networkConfig.Address = "65.109.25.143";
