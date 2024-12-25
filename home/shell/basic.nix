@@ -3,7 +3,7 @@
   home.packages = with pkgs; [
     #Modern Linux tools
     cheat
-    delta # TODO configure in .gitconfig https://dandavison.github.io/delta/configuration.html   (DELTA_PAGER)
+    delta
     dog
     #df replacement duf
     duf
@@ -28,8 +28,6 @@
   ];
 
   programs = {
-    pandoc.enable = true;
-
     bat = {
       enable = true; # BAT_PAGER
       config = {

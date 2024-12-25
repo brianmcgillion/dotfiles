@@ -18,16 +18,16 @@
             builtins.attrValues {
               inherit (pkgs)
                 git
-                nix
                 nixos-rebuild
                 sops
                 ssh-to-age
-                deploy-rs
                 ;
             }
             ++ [
               inputs'.nix-fast-build.packages.default
               config.treefmt.build.wrapper
+              inputs'.deploy-rs.packages.default
+              pkgs.nixVersions.latest
             ]
             ++ lib.attrValues config.treefmt.build.programs;
         };
