@@ -1,5 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0
-_: {
+{ config, ... }:
+{
+
+  sops.secrets.login-password = {
+    neededForUsers = true;
+    sopsFile = ./bmg-secrets.yaml;
+  };
+
   users.users = {
     brian = {
       isNormalUser = true;
@@ -17,9 +24,21 @@ _: {
       ];
       shell = "/run/current-system/sw/bin/bash";
       uid = 1000;
-      #Set an initial dummy "Password" for the first boot
-      # sudo -i ; passwd <username>
-      hashedPassword = "$6$F0XwJUE0WhvpDo89$RTU5XkHAa50JcxzGClbzmIZjAP80v/TrqGq.WbkxGbXaotf9.er8mbMO/w2lIvwmCHNeCLJznG7TGhziPDtyf/";
+      hashedPasswordFile = config.sops.secrets.login-password.path;
     };
   };
+
+  # sops.secrets.netrc-file = {
+  #   owner = "brian";
+  #   mode = "0600";
+  #   sopsFile = ./bmg-secrets.yaml;
+  #   path = "/home/brian/.netrc";
+  # };
+
+  # sops.secrets.builder-key = {
+  #   owner = "brian";
+  #   mode = "0600";
+  #   sopsFile = ./bmg-secrets.yaml;
+  #   path = "/home/brian/.ssh/builder-key.test";
+  # };
 }

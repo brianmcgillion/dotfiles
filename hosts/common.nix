@@ -176,7 +176,6 @@ in
                Port 22
           host ghaf-net
                user ghaf
-
                IdentityFile ~/.ssh/builder-key
                #hostname 192.168.137.101
                hostname 192.168.10.108 # This is the main IP

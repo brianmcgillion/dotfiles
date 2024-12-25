@@ -12,19 +12,19 @@ let
   '';
   rebuild-nephele = pkgs.writeScriptBin "rebuild-nephele" ''
     pushd $HOME/.dotfiles
-    nixos-rebuild switch --flake .#nephele --target-host "root@nephele" $@
+    nixos-rebuild switch --flake .#nephele --target-host "root@nephele" "$@"
     popd
   '';
   rebuild-caelus = pkgs.writeScriptBin "rebuild-caelus" ''
     pushd $HOME/.dotfiles
-    nixos-rebuild switch --flake .#caelus --target-host "root@caelus" $@
+    nixos-rebuild switch --flake .#caelus --target-host "root@caelus" "$@"
     popd
   '';
   rebuild-x1 = pkgs.writeScriptBin "rebuild-x1" ''
-    nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host "root@ghaf-host" --fast boot $@
+    nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host "root@ghaf-host" --fast boot "$@"
   '';
   rebuild-agx = pkgs.writeScriptBin "rebuild-agx" ''
-    nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --fast boot $@
+    nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --fast boot "$@"
   '';
 in
 #https://discourse.nixos.org/t/install-shell-script-on-nixos/6849/10

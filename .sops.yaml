@@ -13,6 +13,14 @@ creation_rules:
           - *host_caelus
           - *host_arcadia
           - *host_minerva
+  - path_regex: ^users/[^/]+\.yaml$
+    key_groups:
+      - age:
+          - *admin_brian
+          - *host_nephele
+          - *host_caelus
+          - *host_arcadia
+          - *host_minerva
   - path_regex: ^hosts/arcadia/secrets.yaml$
     key_groups:
       - age:
