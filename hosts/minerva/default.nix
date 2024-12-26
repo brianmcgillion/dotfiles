@@ -14,18 +14,10 @@
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
   ];
 
-  sops = {
-    defaultSopsFile = ./secrets.yaml;
-    secrets.wg-privateKeyFile.owner = "root";
-    secrets.wg-presharedKeyFile.owner = "root";
-    secrets.nebula-ca.owner = config.my-nebula-network.configOwner;
-    secrets.nebula-key.owner = config.my-nebula-network.configOwner;
-    secrets.nebula-cert.owner = config.my-nebula-network.configOwner;
-  };
+  sops.defaultSopsFile = ./secrets.yaml;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  # Origionally in hardware-configuration.nix
   boot = {
     initrd = {
       availableKernelModules = [
@@ -101,21 +93,9 @@
     };
   };
 
-    my-nebula-network = {
-    enable = true;
-    isLightHouse = false;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
-  };
-
   # Configure keymap in X11
   services.xserver.xkb = {
     options = "ctrl:swapcaps";
-    #gsettings set org.gnome.desktop.input-sources xkb-options "['ctrl:swapcaps']"
-    #gsettings reset org.gnome.desktop.input-sources xkb-options
-    #gsettings reset org.gnome.desktop.input-sources sources
-    #localectl
   };
 
   console.useXkbConfig = true;

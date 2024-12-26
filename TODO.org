@@ -1,26 +1,16 @@
-#+title: Todo
+#+title: TODO
 
 * Priority
-[ ] Secret managment
 [ ] Complete the TODOs in code
-[ ] Document the reading list for this setup
-[ ] Refactor the hosts to Hosts/nixos hosts/nix hosts/vm
 [ ] VM creation for testing
-[ ] Wayland setup
 [ ] Nix setup for non-NixOS systems
+[ ] Nix installer with nixos-anywhere for laptops
+   - maybe based on srvos documentation
 
-* Graphics
-GPU
-Propritary Nvidea graphics driver
 
-* Networking
-enable networking.networkmanager and networking.wireless to co-exist
+
 
 * Document the following
-
-nix-shell -p git nixFlakes emacs
-
-nix --extra-experimental-features "nix-command flakes" flake init -t templates#simpleContainer
 
 https://github.com/nix-community/nix-environments
 

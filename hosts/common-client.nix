@@ -4,6 +4,7 @@
   lib,
   inputs,
   pkgs,
+  config,
   ...
 }:
 {
@@ -26,8 +27,19 @@
   config = {
     setup.device.isClient = true;
 
+    # define the secrets stored in sops and the relative owners for them.
+    sops = {
+      #defaultSopsFile is specific to a client so in their config module
+      secrets.wg-privateKeyFile.owner = "root";
+      secrets.wg-presharedKeyFile.owner = "root";
+      secrets.nebula-ca.owner = config.my-nebula-network.configOwner;
+      secrets.nebula-key.owner = config.my-nebula-network.configOwner;
+      secrets.nebula-cert.owner = config.my-nebula-network.configOwner;
+    };
+
     # Bootloader, seems server is MBR in most cases.
     boot = {
+      #boot.initrd.systemd.emable is true from srvos
       loader = {
         systemd-boot.enable = true;
         systemd-boot.configurationLimit = 5;
@@ -47,6 +59,14 @@
         allowedTCPPorts = [ ];
         allowedUDPPorts = [ ];
       };
+    };
+
+    my-nebula-network = {
+      enable = true;
+      isLightHouse = false;
+      ca = config.sops.secrets.nebula-ca.path;
+      key = config.sops.secrets.nebula-key.path;
+      cert = config.sops.secrets.nebula-cert.path;
     };
 
     #By default the client devices to not provide inbound ssh

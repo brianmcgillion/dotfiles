@@ -9,16 +9,9 @@
   #Set the baseline with common.nix
   imports = [ self.nixosModules.common-client ];
 
-  sops = {
-    defaultSopsFile = ./secrets.yaml;
-    secrets.wg-privateKeyFile.owner = "root";
-    secrets.wg-presharedKeyFile.owner = "root";
-    secrets.nebula-ca.owner = config.my-nebula-network.configOwner;
-    secrets.nebula-key.owner = config.my-nebula-network.configOwner;
-    secrets.nebula-cert.owner = config.my-nebula-network.configOwner;
-  };
-
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+   sops.defaultSopsFile =  ./secrets.yaml;
 
   boot = {
     initrd = {
@@ -82,14 +75,6 @@
         ];
       };
     };
-  };
-
-  my-nebula-network = {
-    enable = true;
-    isLightHouse = false;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
   };
 
   hardware = {
