@@ -53,7 +53,6 @@
 
   networking = {
     hostName = lib.mkDefault "nephele";
-    timeServers = [  "ntp1.hetzner.de" "ntp2.hetzner.com" "ntp3.hetzner.de" ];
   };
 
   my-nebula-network = {
