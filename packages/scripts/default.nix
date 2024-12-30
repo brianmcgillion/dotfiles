@@ -7,7 +7,7 @@ let
   '';
   rebuild-host = pkgs.writeScriptBin "rebuild-host" ''
     pushd $HOME/.dotfiles
-    sudo nixos-rebuild switch --flake .#$HOSTNAME $@
+    sudo nixos-rebuild switch --flake .#$HOSTNAME "$@"
     popd
   '';
   rebuild-nephele = pkgs.writeScriptBin "rebuild-nephele" ''
