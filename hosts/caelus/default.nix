@@ -58,7 +58,6 @@
   # here. Per-interface useDHCP will be mandatory in the future, so this
   # generated config replicates the default behaviour.
   networking = {
-    interfaces.ens3.useDHCP = lib.mkDefault true;
     hostName = lib.mkDefault "caelus";
   };
 

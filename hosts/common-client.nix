@@ -11,10 +11,10 @@
   imports = lib.flatten [
     (with self.nixosModules; [
       audio
+      client-system-packages
       desktop-manager
       emacs-ui
       emacs
-      libreoffice
       locale-font
       yubikey
     ])

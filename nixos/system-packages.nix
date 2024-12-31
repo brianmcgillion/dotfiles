@@ -15,14 +15,8 @@
     lsof
     dnsutils
     netcat
-    usbutils
-    pciutils
-    #Documentation
-    linux-manual
-    man-pages
-    man-pages-posix
-    #    nix-doc
     nix-tree
     zellij
+    ghostty.terminfo
   ];
 }
