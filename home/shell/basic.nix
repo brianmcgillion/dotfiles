@@ -45,11 +45,18 @@
       nix-direnv.enable = true;
     };
 
-    eza.enable = true;
+    eza = {
+      enable = true;
+      colors = "always";
+      icons = "always";
+    };
 
     bash = {
       enable = true;
-      initExtra = builtins.readFile ./bashrc;
+      # The order is important here, because we can override functions in the bashrc
+      initExtra =
+        "\n\n[ -f ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh ] && source ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh\n\n"
+        + builtins.readFile ./bashrc;
     };
 
     # improved cd

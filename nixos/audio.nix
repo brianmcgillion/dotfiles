@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 _: {
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
   services.pipewire = {
