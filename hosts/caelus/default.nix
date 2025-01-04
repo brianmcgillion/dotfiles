@@ -62,12 +62,12 @@
   };
 
   my-nebula-network = {
-        enable = true;
-        isLightHouse = true;
-        ca = config.sops.secrets.nebula-ca.path;
-        key = config.sops.secrets.nebula-key.path;
-        cert = config.sops.secrets.nebula-cert.path;
-      };
+    enable = true;
+    isLightHouse = true;
+    ca = config.sops.secrets.nebula-ca.path;
+    key = config.sops.secrets.nebula-key.path;
+    cert = config.sops.secrets.nebula-cert.path;
+  };
 
   system.stateVersion = "24.05"; # Did you read the comment?
 }

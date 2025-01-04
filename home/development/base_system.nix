@@ -19,7 +19,6 @@
     nixpkgs-review
   ];
 
-
   programs = {
     pandoc.enable = true;
   };

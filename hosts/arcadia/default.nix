@@ -11,7 +11,7 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-   sops.defaultSopsFile =  ./secrets.yaml;
+  sops.defaultSopsFile = ./secrets.yaml;
 
   boot = {
     initrd = {

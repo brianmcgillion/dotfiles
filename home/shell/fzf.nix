@@ -6,7 +6,7 @@
     fzf = {
       enable = true;
       defaultCommand = "fd --hidden --follow --exclude .git";
-      defaultOptions = ["--layout reverse"];
+      defaultOptions = [ "--layout reverse" ];
       colors = {
         #
         fg = "-1";

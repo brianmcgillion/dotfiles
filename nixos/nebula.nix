@@ -57,9 +57,9 @@ in
         "${networkName}" = {
           enable = true;
           isLighthouse = cfg.isLightHouse;
-          cert = cfg.cert;
-          key = cfg.key;
-          ca = cfg.ca;
+          inherit (cfg) cert;
+          inherit (cfg) key;
+          inherit (cfg) ca;
 
           inherit lighthouses;
 
