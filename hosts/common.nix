@@ -109,7 +109,7 @@ in
         {
           hostName = "hetzarm";
           system = "aarch64-linux";
-          maxJobs = 8;
+          maxJobs = 16;
           speedFactor = 1;
           supportedFeatures = [
             "nixos-test"
@@ -125,7 +125,7 @@ in
         {
           hostName = "vedenemo-builder";
           system = "x86_64-linux";
-          maxJobs = 8;
+          maxJobs = 16;
           speedFactor = 1;
           supportedFeatures = [
             "nixos-test"
