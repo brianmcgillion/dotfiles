@@ -59,10 +59,10 @@ in
   };
 
   config = {
-    nixpkgs = {
-      config.allowUnfree = true;
-      overlays = [ inputs.emacs-overlay.overlays.default ];
-    };
+    # nixpkgs = {
+    #   config.allowUnfree = true;
+    #   overlays = [ inputs.emacs-overlay.overlays.default ];
+    # };
 
     nix = {
       # This will add each flake input as a registry
