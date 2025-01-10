@@ -56,7 +56,6 @@
 
   swapDevices = [ ];
 
-  #  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   powerManagement = {
     enable = true;
     cpuFreqGovernor = lib.mkDefault "conservative";
