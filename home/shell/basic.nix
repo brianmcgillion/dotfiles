@@ -48,7 +48,7 @@
     eza = {
       enable = true;
       colors = "always";
-      icons = "always";
+      #icons = "always";
     };
 
     bash = {

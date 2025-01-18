@@ -44,6 +44,7 @@
       gh-dash
       gh-markdown-preview
       gh-copilot
+      gh-f
     ];
   };
 }

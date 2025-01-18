@@ -8,6 +8,5 @@
     man-pages
     man-pages-posix
     #    nix-doc
-    ghostty
   ];
 }
