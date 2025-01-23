@@ -6,5 +6,6 @@ _: {
     ./terminator.nix
     ./kitty.nix
     ./ghostty.nix
+    ./tmux.nix
   ];
 }
