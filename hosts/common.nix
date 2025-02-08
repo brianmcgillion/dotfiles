@@ -242,9 +242,8 @@ in
     boot = {
       # use the bleeding edge kernel
       # should this be changed for the nvidia issues
-      # TODO: Check when the 6.13 is fixed
-      #kernelPackages = pkgs.linuxPackages_latest;
-      kernelPackages = pkgs.linuxPackages_6_12;
+      kernelPackages = pkgs.linuxPackages_latest;
+
       binfmt.emulatedSystems = [
         "riscv64-linux"
         "aarch64-linux"
