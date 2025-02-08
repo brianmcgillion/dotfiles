@@ -21,12 +21,8 @@
     vegur # NixOS
     liberation_ttf
     overpass
-    fira
-    fira-code
-    fira-code-symbols
     font-awesome # Icons
     # TODO replace nerdFonts (see emacs config)
     nerd-fonts.fira-code
-    nerd-fonts.fira-mono
   ];
 }

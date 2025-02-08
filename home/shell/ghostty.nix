@@ -9,7 +9,7 @@
         font-size = 10;
         shell-integration-features = "no-cursor,sudo,no-title";
         theme = "Dracula";
-        font-family = "\"Fira Code\"";
+        font-family = "\"FiraCode Nerd Font\"";
         fullscreen = true;
         window-save-state = "always";
         window-decoration = false;
