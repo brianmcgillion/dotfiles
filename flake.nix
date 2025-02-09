@@ -43,16 +43,6 @@
       };
     };
 
-    # Make it quick
-    nix-fast-build = {
-      url = "github:Mic92/nix-fast-build";
-      inputs = {
-        flake-parts.follows = "flake-parts";
-        nixpkgs.follows = "nixpkgs";
-        treefmt-nix.follows = "treefmt-nix";
-      };
-    };
-
     # Increased productivity for ephemeral environments
     devshell = {
       url = "github:numtide/devshell";

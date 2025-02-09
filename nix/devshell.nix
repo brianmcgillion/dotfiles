@@ -14,22 +14,18 @@
         devshell = {
           name = "Systems devshell";
           meta.description = "Systems development environment";
-          packages =
-            builtins.attrValues {
-              inherit (pkgs)
-                git
-                nixos-rebuild
-                sops
-                ssh-to-age
-                ;
-            }
-            ++ [
-              inputs'.nix-fast-build.packages.default
-              config.treefmt.build.wrapper
-              inputs'.deploy-rs.packages.default
-              pkgs.nixVersions.latest
-            ]
-            ++ lib.attrValues config.treefmt.build.programs;
+          packages = [
+            pkgs.cachix
+            pkgs.nix-eval-jobs
+            pkgs.nix-fast-build
+            pkgs.nix-output-monitor
+            pkgs.nix-tree
+            pkgs.nixVersions.latest
+            pkgs.sops
+            pkgs.ssh-to-age
+            config.treefmt.build.wrapper
+            inputs'.deploy-rs.packages.default
+          ] ++ lib.attrValues config.treefmt.build.programs;
         };
 
         commands = [
