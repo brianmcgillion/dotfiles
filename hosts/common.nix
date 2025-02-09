@@ -184,12 +184,12 @@ in
           host ghaf-host
                user ghaf
                IdentityFile ~/.ssh/builder-key
-               hostname 192.168.101.2
+               hostname 192.168.100.2
                proxyjump ghaf-net
           host ghaf-ui
                user ghaf
                IdentityFile ~/.ssh/builder-key
-               hostname 192.168.101.3
+               hostname 192.168.100.3
                proxyjump ghaf-net
           host agx-host
                user ghaf
