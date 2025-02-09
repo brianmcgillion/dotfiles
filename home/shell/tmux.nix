@@ -10,7 +10,13 @@
         tmuxPlugins.dracula
         tmuxPlugins.tmux-fzf
         tmuxPlugins.sensible
+        tmuxPlugins.tmux-which-key
+        #tmuxPlugins.tmux-thumbs
+        #tmuxPlugins.sysstat
+        tmuxPlugins.better-mouse-mode
+        #tmuxPlugins.tmux-powerline
       ];
+      terminal = "tmux-256color";
     };
   };
 }
