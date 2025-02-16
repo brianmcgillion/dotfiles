@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   home.file.".ssh/allowed_signers".text = "${builtins.readFile ../../keys/ssh-keys.txt}";
 
@@ -17,6 +17,10 @@
       "*~"
       "*.swp"
     ];
+    signing = {
+      format = "ssh";
+      signByDefault = true;
+    };
     extraConfig = {
       #core.editor = "emacs";
       color.ui = "auto";
@@ -24,7 +28,7 @@
       format.signoff = true;
       commit.gpgsign = true;
       tag.gpgSign = true;
-      gpg.format = "ssh";
+      gpg.format = lib.mkDefault "ssh";
       user.signingkey = "~/.ssh/id_ed25519_sk.pub";
       gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
       init.defaultBranch = "main";
