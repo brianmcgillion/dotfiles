@@ -17,6 +17,9 @@
     clang-tools
     bear
     nixpkgs-review
+    optinix
+    nix-update
+    nix-fast-build
   ];
 
   programs = {
