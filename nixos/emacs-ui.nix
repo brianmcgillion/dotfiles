@@ -6,7 +6,7 @@
     # :lang latex & :lang org (latex previews)
     texlive.combined.scheme-medium
 
-    # TODO Use some secrets managment tool to lock sensitive conf files.
+    # TODO Use some secrets management tool to lock sensitive conf files.
     gnutls # for TLS connectivity
 
     # :lang org & :org-roam2

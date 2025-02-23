@@ -62,7 +62,7 @@ in
       # :tools lookup & :lang org +roam
       sqlite
 
-      # :formating
+      # :formatting
       dockfmt
       libxml2
       nodePackages.prettier

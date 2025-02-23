@@ -16,7 +16,7 @@
     inputs.srvos.nixosModules.mixins-mdns
     inputs.srvos.nixosModules.roles-nix-remote-builder
     {
-      #TODO: set the key programatically
+      #TODO: set the key programmatically
       roles.nix-remote-builder.schedulerPublicKeys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILu6O3swRVWAjP7J8iYGT6st7NAa+o/XaemokmtKdpGa builder key"
       ];

@@ -39,7 +39,7 @@
 
     # Bootloader, seems server is MBR in most cases.
     boot = {
-      #boot.initrd.systemd.emable is true from srvos
+      #boot.initrd.systemd.enable is true from srvos
       loader = {
         systemd-boot.enable = true;
         systemd-boot.configurationLimit = 5;

@@ -80,7 +80,7 @@ in
           "kvm"
         ];
 
-        # Avoid copying unecessary stuff over SSH
+        # Avoid copying unnecessary stuff over SSH
         builders-use-substitutes = true;
         build-users-group = "nixbld";
         trusted-users = [
