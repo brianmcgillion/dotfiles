@@ -14,6 +14,6 @@
     gnuplot
     # :lang org +dragndrop
     wl-clipboard
-    maim
+    #maim
   ];
 }

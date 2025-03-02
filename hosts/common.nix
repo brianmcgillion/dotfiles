@@ -181,6 +181,7 @@ in
                hostname 192.168.10.108 # This is the main IP
                #hostname 192.168.10.45
                #hostname 192.168.10.112 #rodrigo
+               #hostname 192.168.10.133 #alien
           host ghaf-host
                user ghaf
                IdentityFile ~/.ssh/builder-key

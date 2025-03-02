@@ -23,6 +23,9 @@ let
   rebuild-x1 = pkgs.writeScriptBin "rebuild-x1" ''
     nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host "root@ghaf-host" --fast boot "$@"
   '';
+  rebuild-alien = pkgs.writeScriptBin "rebuild-alien" ''
+    nixos-rebuild --flake .#alienware-m18-debug --target-host "root@ghaf-host" --fast boot "$@"
+  '';
   rebuild-agx = pkgs.writeScriptBin "rebuild-agx" ''
     nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --fast boot "$@"
   '';
@@ -37,6 +40,7 @@ in
     rebuild-x1
     rebuild-agx
     update-host
+    rebuild-alien
     #ownfile
   ];
 }
