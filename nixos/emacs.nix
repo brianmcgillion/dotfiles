@@ -73,7 +73,7 @@ in
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
       nodePackages.yaml-language-server
-      copilot-language-server
+      #copilot-language-server
 
       # : treemacs
       python3
