@@ -3,7 +3,7 @@
 # Set up and enforce XDG compliance. Other modules will take care of their own,
 # but this takes care of the general cases.
 _: {
-  environment = rec {
+  environment = {
     sessionVariables = {
       # These are the defaults, and xdg.enable does set them, but due to load
       # order, they're not set before environment.variables are set, which could

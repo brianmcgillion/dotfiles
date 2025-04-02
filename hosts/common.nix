@@ -28,6 +28,7 @@ in
         inputs.srvos.nixosModules.mixins-nix-experimental
         inputs.srvos.nixosModules.mixins-trusted-nix-caches
         inputs.sops-nix.nixosModules.sops
+        inputs.disko.nixosModules.disko
       ]
     )
     [

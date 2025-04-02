@@ -1,4 +1,4 @@
-* Installing to a remote server
+* Installing to a new machine
 
 For a new server start by determining the correct Hardware configuration for the box.
 
@@ -23,6 +23,25 @@ ls -al /mnt/etc/nixos/
 #+end_src
 
 use [[https://github.com/nix-community/disko][disko]] to define the disk partitioning scheme that you with to apply and add the server to the list of hosts.
+
+Add the sops components that are needed to the relevant secrets.yaml files.
+Start by adding the new devices key to the .sops.yaml file. run one of the following commands to add the ssh-key as a reference.
+
+#+begin_src sh
+ssh-keyscan SERVER | ssh-to-age
+cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age
+#+end_src
+
+#+begin_src sh
+sops hosts/SERVER/secrets.yaml
+#+end_src
+
+Then ensure to update all common secret files. Any time that a new key is added to sops this is required to be run.
+
+#+begin_src sh
+sops updatekeys secrets.yaml
+sops updatekeys users/bmg-secrets.yaml
+#+end_src
 
 Finally deploy the configuration to the new server
 #+begin_src sh
