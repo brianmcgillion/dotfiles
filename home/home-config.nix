@@ -40,9 +40,20 @@ in {
       embedded = mkEnableOption "Embedded development tools";
     };
 
-    # Define other modules (browsers, security, etc)
-    browsers = mkEnableOption "Web browsers";
-    security = mkEnableOption "Security tools";
+    # Browser modules
+    browsers = {
+      enable = mkEnableOption "Web browsers";
+      firefox = mkEnableOption "Firefox browser";
+      chrome = mkEnableOption "Chrome browser";
+      chromium = mkEnableOption "Chromium browser";
+    };
+
+    # Security modules
+    security = {
+      enable = mkEnableOption "Security tools";
+      ssh = mkEnableOption "SSH configuration";
+      gpg = mkEnableOption "GPG configuration";
+    };
   };
 
   config = {};

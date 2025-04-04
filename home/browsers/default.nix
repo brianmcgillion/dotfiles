@@ -6,9 +6,17 @@ let
 in {
   imports = [
     # Import browser configuration files
+    ./firefox.nix
+    ./chrome.nix
+    ./chromium.nix
   ];
 
-  config = mkIf cfg {
-    # Browser-specific configuration
+  config = mkIf cfg.enable {
+    # Enable specific browser modules based on their respective flags
+    modules.home.browsers = {
+      firefox = lib.mkDefault cfg.firefox;
+      chrome = lib.mkDefault cfg.chrome;
+      chromium = lib.mkDefault cfg.chromium;
+    };
   };
 }

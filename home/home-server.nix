@@ -26,7 +26,15 @@
       graphical = false;
       embedded = false;
     };
-    browsers = false;
-    security = true;
+    
+    browsers = {
+      enable = false;  # Disable all browsers on server
+    };
+    
+    security = {
+      enable = true;
+      ssh = true;
+      gpg = false;  # Disable GPG by default
+    };
   };
 }

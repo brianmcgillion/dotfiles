@@ -31,7 +31,17 @@
       embedded = true;
     };
     
-    browsers = true;
-    security = true;
+    browsers = {
+      enable = true;
+      firefox = false;
+      chrome = true;  # Enable Chrome as the default browser
+      chromium = false;
+    };
+    
+    security = {
+      enable = true;
+      ssh = true;
+      gpg = false;  # Disable GPG by default
+    };
   };
 }
