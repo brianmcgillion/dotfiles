@@ -2,9 +2,13 @@
   config,
   pkgs,
   inputs,
+  lib,
   ...
 }:
 let
+  inherit (lib) mkIf mkEnableOption;
+  cfg = config.modules.emacs;
+
   emacs =
     with pkgs;
     ((emacsPackagesFor emacs-unstable-pgtk).emacsWithPackages (
@@ -17,83 +21,88 @@ let
       ]
     ));
 in
-
 {
-  services = {
-    emacs = {
-      enable = false;
-      package = emacs;
-      defaultEditor = true;
+  options.modules.emacs = {
+    enable = mkEnableOption "Emacs configuration";
+  };
+
+  config = mkIf cfg.enable {
+    services = {
+      emacs = {
+        enable = false;
+        package = emacs;
+        defaultEditor = true;
+      };
+      # :grammar support through language tool
+      languagetool.enable = true;
     };
-    # :grammar support through language tool
-    languagetool.enable = true;
-  };
 
-  environment.sessionVariables = {
-    EDITOR = "emacs";
-    PATH = [ "\${XDG_CONFIG_HOME}/emacs/bin" ];
-  };
+    environment.sessionVariables = {
+      EDITOR = "emacs";
+      PATH = [ "\${XDG_CONFIG_HOME}/emacs/bin" ];
+    };
 
-  environment.systemPackages =
-    with pkgs;
-    [
-      emacs
+    environment.systemPackages =
+      with pkgs;
+      [
+        emacs
 
-      #native-comp emacs needs 'as' binary from binutils
-      binutils
+        #native-comp emacs needs 'as' binary from binutils
+        binutils
 
-      zstd # for undo-fu-session/undo-tree compression
+        zstd # for undo-fu-session/undo-tree compression
 
-      ## Module dependencies
-      # :checkers spell
-      (aspellWithDicts (
-        ds: with ds; [
-          en
-          en-computers
-          en-science
-        ]
-      ))
-      # :lookup
-      wordnet
+        ## Module dependencies
+        # :checkers spell
+        (aspellWithDicts (
+          ds: with ds; [
+            en
+            en-computers
+            en-science
+          ]
+        ))
+        # :lookup
+        wordnet
 
-      # :tools editorconfig
-      editorconfig-core-c # per-project style config
+        # :tools editorconfig
+        editorconfig-core-c # per-project style config
 
-      # :tools lookup & :lang org +roam
-      sqlite
+        # :tools lookup & :lang org +roam
+        sqlite
 
-      # :formatting
-      dockfmt
-      libxml2
-      nodePackages.prettier
+        # :formatting
+        dockfmt
+        libxml2
+        nodePackages.prettier
 
-      # :tools lsp
-      nodePackages.bash-language-server
-      nodePackages.dockerfile-language-server-nodejs
-      nodePackages.typescript-language-server
-      nodePackages.vscode-langservers-extracted
-      nodePackages.yaml-language-server
-      #copilot-language-server
+        # :tools lsp
+        nodePackages.bash-language-server
+        nodePackages.dockerfile-language-server-nodejs
+        nodePackages.typescript-language-server
+        nodePackages.vscode-langservers-extracted
+        nodePackages.yaml-language-server
+        #copilot-language-server
 
-      # : treemacs
-      python3
+        # : treemacs
+        python3
 
-      # :copilot
-      nodejs
+        # :copilot
+        nodejs
 
-      # :lang markdown
-      python3.pkgs.grip
+        # :lang markdown
+        python3.pkgs.grip
 
-    ]
-    ++ [ inputs.nixd.packages."${pkgs.system}".nixd ]; # :tools lsp mode for nix
+      ]
+      ++ [ inputs.nixd.packages."${pkgs.system}".nixd ]; # :tools lsp mode for nix
 
-  system.userActivationScripts = {
-    installDoomEmacs = ''
-      source ${config.system.build.setEnvironment}
-      if [ ! -d "$XDG_CONFIG_HOME/emacs" ]; then
-        git clone https://github.com/doomemacs/doomemacs.git "$XDG_CONFIG_HOME/emacs"
-        git clone https://github.com/brianmcgillion/doomd.git "$XDG_CONFIG_HOME/doom"
-      fi
-    '';
+    system.userActivationScripts = {
+      installDoomEmacs = ''
+        source ${config.system.build.setEnvironment}
+        if [ ! -d "$XDG_CONFIG_HOME/emacs" ]; then
+          git clone https://github.com/doomemacs/doomemacs.git "$XDG_CONFIG_HOME/emacs"
+          git clone https://github.com/brianmcgillion/doomd.git "$XDG_CONFIG_HOME/doom"
+        fi
+      '';
+    };
   };
 }

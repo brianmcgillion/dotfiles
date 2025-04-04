@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: MIT
 {
-  self,
   lib,
   inputs,
   pkgs,
@@ -9,16 +8,8 @@
 }:
 {
   imports = lib.flatten [
-    (with self.nixosModules; [
-      audio
-      client-system-packages
-      desktop-manager
-      emacs-ui
-      emacs
-      locale-font
-      yubikey
-    ])
     [
+      # Keep any external imports
       ./common.nix
       inputs.srvos.nixosModules.desktop
     ]
@@ -26,6 +17,16 @@
 
   config = {
     setup.device.isClient = true;
+
+    # Enable modules through the setup interface
+    setup.modules = {
+      audio = true;
+      client = true;
+      emacs = true;
+      emacs-ui = true;
+      desktop = true;
+      yubikey = true;
+    };
 
     # define the secrets stored in sops and the relative owners for them.
     sops = {
