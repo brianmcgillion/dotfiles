@@ -12,26 +12,17 @@ let
 in
 {
   imports = lib.flatten [
-    (
-      with self.nixosModules;
-      [
-        hardening
-        system-packages
-        user-bmg
-        user-groups
-        xdg
-        scripts
-        my-nebula
-      ]
-      ++ [
-        inputs.nix-index-database.nixosModules.nix-index
-        inputs.srvos.nixosModules.mixins-nix-experimental
-        inputs.srvos.nixosModules.mixins-trusted-nix-caches
-        inputs.sops-nix.nixosModules.sops
-        inputs.disko.nixosModules.disko
-      ]
-    )
     [
+      # Import the users module separately
+      self.nixosModules.users
+      
+      inputs.nix-index-database.nixosModules.nix-index
+      inputs.srvos.nixosModules.mixins-nix-experimental
+      inputs.srvos.nixosModules.mixins-trusted-nix-caches
+      inputs.sops-nix.nixosModules.sops
+      inputs.disko.nixosModules.disko
+      
+      # Import home-manager
       inputs.home-manager.nixosModules.home-manager
       {
         home-manager = {
@@ -60,6 +51,25 @@ in
   };
 
   config = {
+    # Enable common modules for all systems
+    setup.modules = {
+      # These are essential modules that should be enabled for all systems
+      hardening = true;
+      xdg = true;
+    };
+    
+    # Configure user modules
+    setup.users = {
+      enable = true;
+      enableBmg = true;
+      enableGroups = true;
+      enableRoot = config.setup.device.isServer;
+    };
+
+    # Root user is only enabled for servers or can be explicitly enabled if needed
+    # Remove this line since it's now managed through setup.users
+    # setup.modules.user-root = config.setup.device.isServer;
+
     nixpkgs = {
       config.allowUnfree = true;
       overlays = [ inputs.emacs-overlay.overlays.default ];

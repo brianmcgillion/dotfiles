@@ -1,5 +1,9 @@
 _: {
   flake.nixosModules = {
+    # Single top-level module that manages all other modules
+    system-config = import ./system-config.nix;
+    
+    # Keep individual modules for direct import if needed
     audio = import ./audio.nix;
     client-system-packages = import ./client-system-packages.nix;
     desktop-manager = import ./desktop-manager.nix;

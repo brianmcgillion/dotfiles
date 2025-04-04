@@ -13,6 +13,7 @@
     ./disk-config.nix
   ];
 
+  # Nebula config is already enabled in my-nebula-network
   sops = {
     defaultSopsFile = ./secrets.yaml;
     secrets.nebula-ca.owner = config.my-nebula-network.configOwner;

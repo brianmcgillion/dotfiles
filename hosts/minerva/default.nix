@@ -10,9 +10,12 @@
   #Set the baseline with common.nix
   imports = [
     self.nixosModules.common-client
-    self.nixosModules.sshd
+    # Remove direct sshd import, it's now handled in system-config
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
   ];
+
+  # Enable sshd module explicitly if needed for this host
+  setup.modules.sshd = true;
 
   sops.defaultSopsFile = ./secrets.yaml;
 

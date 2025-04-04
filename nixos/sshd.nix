@@ -4,10 +4,18 @@
   lib,
   ...
 }:
+let
+  inherit (lib) mkIf mkEnableOption;
+  cfg = config.modules.sshd;
+in
 {
   imports = [ self.nixosModules.fail2ban ];
 
-  config = {
+  options.modules.sshd = {
+    enable = mkEnableOption "SSH daemon configuration";
+  };
+
+  config = mkIf cfg.enable {
     services.openssh = {
       enable = true;
       settings = {
