@@ -56,8 +56,8 @@
       networkmanager.enable = true;
       #Open ports in the firewall?
       firewall = {
-        allowedTCPPorts = [ ];
-        allowedUDPPorts = [ ];
+        allowedTCPPorts = [ 8080];
+        allowedUDPPorts = [8080 ];
       };
     };
 
