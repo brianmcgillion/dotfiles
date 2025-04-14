@@ -9,7 +9,7 @@
     cmake
     coreutils
     gnumake
-    nodePackages.npm
+    nodePackages_latest.nodejs
     bibtool
     llvm
     gcc
