@@ -1,13 +1,9 @@
 # SPDX-License-Identifier: Apache-2.
-{ pkgs, config, ... }:
+{ config, ... }:
 {
   programs = {
     kitty = {
       enable = true;
-      font = {
-        package = pkgs.nerd-fonts.fira-code;
-        name = "FiraCode Nerd Font";
-      };
       shellIntegration.enableBashIntegration = true;
       themeFile = "Dracula";
       settings = {

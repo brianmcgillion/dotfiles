@@ -17,6 +17,5 @@
     netcat
     nix-tree
     zellij
-    ghostty.terminfo
   ];
 }

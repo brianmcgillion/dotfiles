@@ -32,7 +32,7 @@
       extraConfig = {
         #core.editor = "emacs";
         color.ui = "auto";
-        checkout.defaultRemote="origin";
+        checkout.defaultRemote = "origin";
         #credential.helper = "store --file ~/.git-credentials";
         format.signoff = true;
         commit.gpgsign = true;

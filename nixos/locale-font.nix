@@ -15,14 +15,35 @@
     LC_TIME = "en_IE.utf8";
   };
 
-  fonts.packages = with pkgs; [
-    # Fonts
-    carlito # NixOS
-    vegur # NixOS
-    liberation_ttf
-    overpass
-    font-awesome # Icons
-    # TODO replace nerdFonts (see emacs config)
-    nerd-fonts.fira-code
-  ];
+  fonts = {
+    packages = with pkgs; [
+      # Fonts
+      carlito # NixOS
+      vegur # NixOS
+      liberation_ttf
+      font-awesome # Icons
+      # TODO replace nerdFonts (see emacs config)
+      nerd-fonts.fira-code
+      nerd-fonts.symbols-only
+      noto-fonts-color-emoji
+      source-serif
+      fira-go
+      symbola
+    ];
+
+    enableDefaultPackages = true;
+
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        sansSerif = [ "FiraGO" ];
+        serif = [ "Source Serif" ];
+        monospace = [ "FiraCode Nerd Font" ];
+        emoji = [
+          "Noto Color Emoji"
+          "Font Awesome"
+        ];
+      };
+    };
+  };
 }

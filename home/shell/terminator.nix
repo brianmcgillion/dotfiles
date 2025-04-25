@@ -9,7 +9,6 @@ _: {
           background_color = "#1c1d1f";
           background_darkness = 0.43;
           cursor_color = "#708284";
-          font = "Fira Code 12";
           foreground_color = "#eeeeec";
           scrollback_infinite = true;
           palette = "#56595c:#c94c22:#85981c:#b4881d:#2e8bce:#d13a82:#32a198:#c9c6bd:#45484b:#bd3613:#738a04:#a57705:#2176c7:#c61c6f:#259286:#c9c6bd";
