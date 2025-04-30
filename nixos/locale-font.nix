@@ -28,6 +28,7 @@
       noto-fonts-color-emoji
       source-serif
       fira-go
+      fira-sans
       symbola
     ];
 
@@ -37,7 +38,7 @@
       enable = true;
       defaultFonts = {
         sansSerif = [ "FiraGO" ];
-        serif = [ "Source Serif" ];
+        serif = [ "Source Serif 4" ];
         monospace = [ "FiraCode Nerd Font" ];
         emoji = [
           "Noto Color Emoji"
