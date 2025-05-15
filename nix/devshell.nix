@@ -24,7 +24,7 @@
             pkgs.sops
             pkgs.ssh-to-age
             config.treefmt.build.wrapper
-            inputs'.deploy-rs.packages.default
+            #inputs'.deploy-rs.packages.default
           ] ++ lib.attrValues config.treefmt.build.programs;
         };
 
