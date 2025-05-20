@@ -74,6 +74,8 @@ in
       nodePackages.vscode-langservers-extracted
       nodePackages.yaml-language-server
       copilot-language-server-fhs
+      github-mcp-server
+      inputs.mcp-nixos.packages."${pkgs.system}".default
 
       # : treemacs
       python3
