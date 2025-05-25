@@ -82,6 +82,9 @@
     environment.systemPackages = with pkgs; [
       wally-cli # ergodox configuration tool
       keymapp
+      aider-chat-full
+      # Just to get the token
+      #jetbrains.clion
     ];
 
     hardware.keyboard.zsa.enable = true;
