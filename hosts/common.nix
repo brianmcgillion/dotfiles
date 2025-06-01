@@ -230,6 +230,11 @@ in
       command-not-found = {
         enable = false;
       };
+
+      nix-ld = {
+        enable = true;
+        #libraries = options.programs.nix-ld.libraries.default;
+      };
     };
 
     # Contents of the user and group files will be replaced on system activation

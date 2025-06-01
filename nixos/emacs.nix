@@ -77,14 +77,11 @@ in
       github-mcp-server
       inputs.mcp-nixos.packages."${pkgs.system}".default
 
-      # : treemacs
-      python3
-
       # :copilot
       nodejs
 
       # :lang markdown
-      python3.pkgs.grip
+      python3Packages.grip
 
     ]
     ++ [ inputs.nixd.packages."${pkgs.system}".nixd ]; # :tools lsp mode for nix
