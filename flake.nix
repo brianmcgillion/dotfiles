@@ -12,6 +12,7 @@
   inputs = {
     # Our source of packages
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    #nixpkgs.url = "git+file:////home/brian/projects/code/github.com/NixOS/nixpkgs";
 
     # Allows us to structure the flake with the NixOS module system
     flake-parts = {
@@ -72,6 +73,13 @@
     # nixd lsp integration
     nixd = {
       url = "github:nix-community/nixd";
+    };
+
+    fast-flake-update = {
+      url = "github:Mic92/fast-flake-update";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     # for provisioning secrets that can be embedded in the configuration
