@@ -85,7 +85,14 @@
       aider-chat-full
       # Just to get the token
       #jetbrains.clion
+      inputs.fast-flake-update.packages."${pkgs.system}".default
+      #cfclient
     ];
+
+    # services.udev.packages = [
+    #   # Install udev rules for Crazyradio
+    #   pkgs.python3Packages.cflib
+    # ];
 
     hardware.keyboard.zsa.enable = true;
 
