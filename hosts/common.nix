@@ -62,7 +62,10 @@ in
   config = {
     nixpkgs = {
       config.allowUnfree = true;
-      overlays = [ inputs.emacs-overlay.overlays.default ];
+      overlays = [
+        inputs.emacs-overlay.overlays.default
+        self.overlays.own-pkgs-overlay
+      ];
     };
 
     nix = {

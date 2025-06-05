@@ -87,6 +87,7 @@
       #jetbrains.clion
       inputs.fast-flake-update.packages."${pkgs.system}".default
       #cfclient
+      rebiber
     ];
 
     # services.udev.packages = [
