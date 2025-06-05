@@ -7,7 +7,7 @@
 let
   emacs =
     with pkgs;
-    ((emacsPackagesFor emacs-unstable-pgtk).emacsWithPackages (
+    ((emacsPackagesFor emacs-unstable).emacsWithPackages (
       epkgs: with epkgs; [
         treesit-grammars.with-all-grammars
         tree-sitter-langs
@@ -21,7 +21,8 @@ in
 {
   services = {
     emacs = {
-      enable = false;
+      enable = true;
+      install = true;
       package = emacs;
       defaultEditor = true;
     };
