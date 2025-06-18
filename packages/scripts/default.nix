@@ -21,13 +21,13 @@ let
     popd
   '';
   rebuild-x1 = pkgs.writeScriptBin "rebuild-x1" ''
-    nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host "root@ghaf-host" --fast boot "$@"
+    nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
   '';
   rebuild-alien = pkgs.writeScriptBin "rebuild-alien" ''
-    nixos-rebuild --flake .#alienware-m18-debug --target-host "root@ghaf-host" --fast boot "$@"
+    nixos-rebuild --flake .#alienware-m18-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
   '';
   rebuild-agx = pkgs.writeScriptBin "rebuild-agx" ''
-    nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --fast boot "$@"
+    nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --no-reexec boot "$@"
   '';
 in
 #https://discourse.nixos.org/t/install-shell-script-on-nixos/6849/10
