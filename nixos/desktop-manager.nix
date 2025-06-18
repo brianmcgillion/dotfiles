@@ -7,6 +7,8 @@
 
     displayManager.gdm.enable = true;
     desktopManager.gnome.enable = true;
+    # disable gnome managing the ssh-agent
+    #gnome.gcr-ssh-agent.enable = false;
   };
 
   environment.gnome.excludePackages = with pkgs; [

@@ -173,7 +173,8 @@ in
     ## Local config
     programs = {
       ssh = {
-        startAgent = true;
+        # use the gcr-ssh-agent
+        #startAgent = true;
         extraConfig = ''
           Host hetzarm
                user bmg
