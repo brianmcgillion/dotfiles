@@ -74,6 +74,11 @@
       openssh.startWhenNeeded = false;
       # enable the fwupdate daemon to install fw changes
       fwupd.enable = true;
+
+      globalprotect = {
+        enable = true;
+        csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
+      };
     };
 
     #
@@ -88,6 +93,7 @@
       inputs.fast-flake-update.packages."${pkgs.system}".default
       #cfclient
       rebiber
+      globalprotect-openconnect
     ];
 
     # services.udev.packages = [

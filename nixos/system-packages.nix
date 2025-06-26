@@ -17,6 +17,6 @@
     netcat
     nix-tree
     zellij
-    devenv
+    #devenv
   ];
 }
