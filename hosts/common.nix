@@ -150,10 +150,15 @@ in
     # only available when dirty
     system.configurationRevision = if (self ? rev) then self.rev else self.dirtyShortRev;
 
-    # Sometimes it fails if a store path is still in use.
-    # This should fix intermediate issues.
-    systemd.services.nix-gc.serviceConfig = {
-      Restart = "on-failure";
+    systemd.services = {
+      # Sometimes it fails if a store path is still in use.
+      # This should fix intermediate issues.
+      nix-gc.serviceConfig = {
+        Restart = "on-failure";
+      };
+
+      # https://github.com/NixOS/nixpkgs/issues/180175
+      NetworkManager-wait-online.enable = false;
     };
 
     # Common network configuration
@@ -218,7 +223,7 @@ in
           };
           vedenemo-builder = {
             hostNames = [ "builder.vedenemo.dev" ];
-            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHSI8s/wefXiD2h3I3mIRdK+d9yDGMn0qS5fpKDnSGqj";
+            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG68NdmOw3mhiBZwDv81dXitePoc1w//p/LpsHHA8QRp";
           };
           nephele = {
             hostNames = [ "65.109.25.143" ];
@@ -245,8 +250,11 @@ in
     # Ref: https://search.nixos.org/options?channel=unstable&show=users.mutableUsers
     users.mutableUsers = false;
 
-    # Enable userborn to take care of managing the default users and groups
-    services.userborn.enable = true;
+    services = {
+      # Enable userborn to take care of managing the default users and groups
+      userborn.enable = true;
+      resolved.enable = false; # Disable systemd-resolved, use NetworkManager instead
+    };
 
     hardware = {
       enableRedistributableFirmware = true;
