@@ -253,7 +253,6 @@ in
     services = {
       # Enable userborn to take care of managing the default users and groups
       userborn.enable = true;
-      resolved.enable = false; # Disable systemd-resolved, use NetworkManager instead
     };
 
     hardware = {

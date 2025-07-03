@@ -79,6 +79,8 @@
         enable = true;
         csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
       };
+
+      resolved.enable = false; # Disable systemd-resolved, use NetworkManager instead
     };
 
     #
