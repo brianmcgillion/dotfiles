@@ -92,7 +92,7 @@
       aider-chat-full
       # Just to get the token
       #jetbrains.clion
-      inputs.fast-flake-update.packages."${pkgs.system}".default
+      #inputs.fast-flake-update.packages."${pkgs.system}".default
       #cfclient
       rebiber
       globalprotect-openconnect
