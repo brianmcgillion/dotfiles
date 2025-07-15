@@ -45,7 +45,7 @@ in
             imports =
               lib.optionals cfg.isClient [ (import ../home/home-client.nix) ]
               ++ lib.optionals cfg.isServer [ (import ../home/home-server.nix) ]
-              ++ [ inputs.nix-index-database.hmModules.nix-index ];
+              ++ [ inputs.nix-index-database.homeModules.nix-index ];
           };
         };
       }
