@@ -89,7 +89,7 @@
     environment.systemPackages = with pkgs; [
       wally-cli # ergodox configuration tool
       keymapp
-      aider-chat-full
+      #aider-chat-full
       # Just to get the token
       #jetbrains.clion
       #inputs.fast-flake-update.packages."${pkgs.system}".default
