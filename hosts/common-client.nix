@@ -53,7 +53,11 @@
     # here. Per-interface useDHCP will be mandatory in the future, so this
     # generated config replicates the default behaviour.
     networking = {
-      networkmanager.enable = true;
+      networkmanager = {
+        enable = true;
+        #dns = "systemd-resolved";
+      };
+
       #Open ports in the firewall?
       firewall = {
         allowedTCPPorts = [ 8080 ];
@@ -89,7 +93,7 @@
     environment.systemPackages = with pkgs; [
       wally-cli # ergodox configuration tool
       keymapp
-      #aider-chat-full
+      aider-chat-full
       # Just to get the token
       #jetbrains.clion
       #inputs.fast-flake-update.packages."${pkgs.system}".default

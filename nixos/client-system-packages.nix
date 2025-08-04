@@ -4,7 +4,7 @@
     usbutils
     pciutils
     #Documentation
-    linux-manual
+    #linux-manual
     man-pages
     man-pages-posix
     #    nix-doc
