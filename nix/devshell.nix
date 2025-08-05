@@ -6,7 +6,6 @@
     {
       config,
       pkgs,
-      inputs',
       ...
     }:
     {
@@ -25,7 +24,8 @@
             pkgs.ssh-to-age
             config.treefmt.build.wrapper
             #inputs'.deploy-rs.packages.default
-          ] ++ lib.attrValues config.treefmt.build.programs;
+          ]
+          ++ lib.attrValues config.treefmt.build.programs;
         };
 
         commands = [

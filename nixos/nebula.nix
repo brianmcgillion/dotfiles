@@ -88,26 +88,25 @@ in
                 proto = "any";
               }
             ];
-            inbound =
-              [
-                {
-                  host = "any";
-                  port = "any";
-                  proto = "icmp";
-                }
-                {
-                  host = "any";
-                  port = 22;
-                  proto = "tcp";
-                }
-              ]
-              ++ (lib.optionals cfg.isLightHouse [
-                {
-                  port = 53;
-                  proto = "udp";
-                  group = "any";
-                }
-              ]);
+            inbound = [
+              {
+                host = "any";
+                port = "any";
+                proto = "icmp";
+              }
+              {
+                host = "any";
+                port = 22;
+                proto = "tcp";
+              }
+            ]
+            ++ (lib.optionals cfg.isLightHouse [
+              {
+                port = 53;
+                proto = "udp";
+                group = "any";
+              }
+            ]);
           };
         };
       };
