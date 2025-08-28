@@ -61,7 +61,13 @@ in
 
   config = {
     nixpkgs = {
-      config.allowUnfree = true;
+      config = {
+        allowUnfree = true;
+        # needed for globalprotect-vpn
+        permittedInsecurePackages = [
+          "qtwebengine-5.15.19"
+        ];
+      };
       overlays = [
         inputs.emacs-overlay.overlays.default
         self.overlays.own-pkgs-overlay
@@ -215,6 +221,9 @@ in
                IdentityFile ~/.ssh/builder-key
           host caelus
                hostname 95.217.167.39
+          host uae-lab-node1
+               user bmg
+               hostname 10.161.5.196
         '';
         knownHosts = {
           hetzarm-ed25519 = {
