@@ -7,7 +7,7 @@
 let
   emacs =
     with pkgs;
-    ((emacsPackagesFor emacs-unstable).emacsWithPackages (
+    ((emacsPackagesFor emacs-git).emacsWithPackages (
       epkgs: with epkgs; [
         treesit-grammars.with-all-grammars
         tree-sitter-langs
@@ -74,7 +74,7 @@ in
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
       nodePackages.yaml-language-server
-      copilot-language-server-fhs
+      copilot-language-server
       github-mcp-server
       inputs.mcp-nixos.packages."${pkgs.system}".default
 

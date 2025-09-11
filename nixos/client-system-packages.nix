@@ -8,5 +8,6 @@
     man-pages
     man-pages-posix
     #    nix-doc
+    act
   ];
 }
