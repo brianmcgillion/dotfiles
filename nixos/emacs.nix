@@ -69,13 +69,13 @@ in
       nodePackages.prettier
 
       # :tools lsp
+      copilot-language-server
+      dockerfile-language-server
+      github-mcp-server
       nodePackages.bash-language-server
-      nodePackages.dockerfile-language-server-nodejs
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
       nodePackages.yaml-language-server
-      copilot-language-server
-      github-mcp-server
       inputs.mcp-nixos.packages."${pkgs.system}".default
 
       # :copilot
