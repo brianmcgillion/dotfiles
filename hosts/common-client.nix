@@ -55,7 +55,8 @@
     networking = {
       networkmanager = {
         enable = true;
-        #dns = "systemd-resolved";
+        # Enable the openconnect plugin for globalprotect
+        plugins = [ pkgs.networkmanager-openconnect ];
       };
 
       #Open ports in the firewall?

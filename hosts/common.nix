@@ -179,6 +179,7 @@ in
         enable = true;
       };
       nftables.enable = true;
+      useNetworkd = lib.mkForce false;
     };
 
     ## Local config
