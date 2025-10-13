@@ -10,5 +10,6 @@
     #    nix-doc
     act
     inputs.nix-ai.packages.${pkgs.system}.default
+    github-copilot-cli
   ];
 }

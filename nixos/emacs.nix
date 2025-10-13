@@ -72,6 +72,7 @@ in
       copilot-language-server
       dockerfile-language-server
       github-mcp-server
+      neocmakelsp
       nodePackages.bash-language-server
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
