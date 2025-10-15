@@ -4,7 +4,7 @@
     ghostty = {
       enable = true;
       enableBashIntegration = true;
-      #package = pkgs.ghostty;
+      package = pkgs.ghostty;
       settings = {
         font-size = 10;
         shell-integration-features = "no-cursor,sudo,no-title";

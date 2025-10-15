@@ -27,7 +27,7 @@
     setup.device.isServer = true;
     environment.systemPackages = [
       pkgs.kitty.terminfo
-      #pkgs.ghostty.terminfo
+      pkgs.ghostty.terminfo
     ];
     services.avahi.enable = false;
 

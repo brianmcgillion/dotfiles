@@ -7,7 +7,7 @@
 let
   emacs =
     with pkgs;
-    ((emacsPackagesFor emacs-git).emacsWithPackages (
+    ((emacsPackagesFor emacs-unstable).emacsWithPackages (
       epkgs: with epkgs; [
         treesit-grammars.with-all-grammars
         tree-sitter-langs

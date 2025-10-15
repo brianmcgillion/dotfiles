@@ -5,7 +5,7 @@ _: {
     ./git.nix
     ./terminator.nix
     ./kitty.nix
-    #./ghostty.nix
+    ./ghostty.nix
     ./tmux.nix
   ];
 }

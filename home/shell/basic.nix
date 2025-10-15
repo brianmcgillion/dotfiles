@@ -55,7 +55,8 @@
       enable = true;
       # The order is important here, because we can override functions in the bashrc
       initExtra =
-        "\n\n[ -f ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh ] && source ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh\n\n"
+        ''PROMPT_COMMAND="history -a"''
+        + "\n\n[ -f ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh ] && source ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh\n\n"
         + builtins.readFile ./bashrc;
     };
 
