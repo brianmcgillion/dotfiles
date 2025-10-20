@@ -6,30 +6,19 @@
     git = {
       package = pkgs.gitAndTools.gitFull;
       enable = true;
-      userName = "Brian McGillion";
-      userEmail = "bmg.avoin@gmail.com";
 
-      aliases = {
-        checkout-pr = "!pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr";
-        pick-pr = "!am() { git fetch origin pull/$1/head:pr-$1; git cherry-pick HEAD..pr-$1; }; am";
-        reset-pr = "reset --hard FETCH_HEAD";
-      };
-      delta.enable = true; # see diff in a new light
-      delta.options = {
-        line-numbers = true;
-        side-by-side = true;
-        syntax-theme = "Dracula";
-      };
-      ignores = [
-        "*~"
-        "*.swp"
-        ".worktrees/"
-      ];
-      signing = {
-        format = "ssh";
-        signByDefault = true;
-      };
-      extraConfig = {
+      settings = {
+        user = {
+          name = "Brian McGillion";
+          email = "bmg.avoin@gmail.com";
+        };
+
+        alias = {
+          checkout-pr = "!pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr";
+          pick-pr = "!am() { git fetch origin pull/$1/head:pr-$1; git cherry-pick HEAD..pr-$1; }; am";
+          reset-pr = "reset --hard FETCH_HEAD";
+        };
+
         #core.editor = "emacs";
         color.ui = "auto";
         checkout.defaultRemote = "origin";
@@ -46,6 +35,28 @@
         push.default = "current";
         github.user = "brianmcgillion";
         gitlab.user = "bmg";
+
+      };
+
+      ignores = [
+        "*~"
+        "*.swp"
+        ".worktrees/"
+      ];
+
+      signing = {
+        format = "ssh";
+        signByDefault = true;
+      };
+    };
+
+    delta = {
+      enable = true; # see diff in a new light
+      enableGitIntegration = true;
+      options = {
+        line-numbers = true;
+        side-by-side = true;
+        syntax-theme = "Dracula";
       };
     };
 
