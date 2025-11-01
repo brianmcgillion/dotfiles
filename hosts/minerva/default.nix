@@ -7,14 +7,31 @@
   ...
 }:
 {
-  #Set the baseline with common.nix
   imports = [
-    self.nixosModules.common-client
-    self.nixosModules.sshd
+    self.nixosModules.profile-client
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
   ];
 
-  sops.defaultSopsFile = ./secrets.yaml;
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    secrets.wg-privateKeyFile.owner = "root";
+    secrets.wg-presharedKeyFile.owner = "root";
+    secrets.nebula-ca.owner = config.features.networking.nebula.configOwner;
+    secrets.nebula-key.owner = config.features.networking.nebula.configOwner;
+    secrets.nebula-cert.owner = config.features.networking.nebula.configOwner;
+  };
+
+  # Enable Nebula network
+  features.networking.nebula = {
+    enable = true;
+    isLightHouse = false;
+    ca = config.sops.secrets.nebula-ca.path;
+    key = config.sops.secrets.nebula-key.path;
+    cert = config.sops.secrets.nebula-cert.path;
+  };
+
+  # Enable SSH server for this laptop
+  features.security.sshd.enable = true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
