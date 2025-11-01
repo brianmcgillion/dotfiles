@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 {
   lib,
   self,
@@ -8,16 +8,24 @@
 }:
 {
   imports = [
-    self.nixosModules.common-server
+    self.nixosModules.profile-server
     inputs.srvos.nixosModules.hardware-hetzner-cloud
     ./disk-config.nix
   ];
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
-    secrets.nebula-ca.owner = config.my-nebula-network.configOwner;
-    secrets.nebula-key.owner = config.my-nebula-network.configOwner;
-    secrets.nebula-cert.owner = config.my-nebula-network.configOwner;
+    secrets.nebula-ca.owner = config.features.networking.nebula.configOwner;
+    secrets.nebula-key.owner = config.features.networking.nebula.configOwner;
+    secrets.nebula-cert.owner = config.features.networking.nebula.configOwner;
+  };
+
+  features.networking.nebula = {
+    enable = true;
+    isLightHouse = true;
+    ca = config.sops.secrets.nebula-ca.path;
+    key = config.sops.secrets.nebula-key.path;
+    cert = config.sops.secrets.nebula-cert.path;
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
@@ -61,13 +69,5 @@
     hostName = lib.mkDefault "caelus";
   };
 
-  my-nebula-network = {
-    enable = true;
-    isLightHouse = true;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
-  };
-
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.05";
 }
