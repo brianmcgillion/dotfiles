@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Root user SSH configuration
 #
 # Configures SSH access for the root user using YubiKey hardware keys.

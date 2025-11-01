@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # User groups configuration
 #
 # Defines custom user groups for hardware and device access.

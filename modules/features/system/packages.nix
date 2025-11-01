@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # System-wide utility packages
 #
 # Installs essential command-line tools and utilities available system-wide.
@@ -42,7 +43,7 @@ in
 
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      nixfmt-rfc-style
+      nixfmt
       cachix
       wget
       curl

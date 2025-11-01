@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Server (headless) profile
 #
 # This profile configures systems for headless server operation.

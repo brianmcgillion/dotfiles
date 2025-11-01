@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 { pkgs, lib, ... }:
 {
   home.file.".ssh/allowed_signers".text = "${builtins.readFile ../../keys/ssh-keys.txt}";

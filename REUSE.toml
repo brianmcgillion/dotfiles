@@ -1,0 +1,28 @@
+version = 1
+SPDX-PackageName = "dotfiles"
+SPDX-PackageSupplier = "Brian McGillion"
+SPDX-PackageDownloadLocation = "https://github.com/brianmcgillion/dotfiles"
+
+[[annotations]]
+path = [".envrc", ".gitignore", ".sops.yaml", "flake.lock"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["README.md", "ARCHITECTURE.md", "FEATURES_MATRIX.md", "TODO.org", "hosts/README-server.org"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["secrets.yaml", "users/bmg-secrets.yaml", "hosts/**/secrets.yaml", "keys/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "home/shell/bashrc"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"

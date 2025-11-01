@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Fail2ban intrusion prevention
 #
 # Configures fail2ban to protect services from brute-force attacks by monitoring

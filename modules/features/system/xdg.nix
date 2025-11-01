@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # XDG Base Directory specification compliance
 #
 # Enforces XDG Base Directory specification to keep $HOME clean and organized.

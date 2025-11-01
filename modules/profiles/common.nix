@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Common base configuration for all systems
 #
 # This profile provides the foundation for all NixOS systems in this configuration.

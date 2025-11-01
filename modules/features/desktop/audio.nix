@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Audio support with PipeWire
 #
 # Configures PipeWire as the system audio server, replacing PulseAudio.

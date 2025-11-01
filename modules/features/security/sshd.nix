@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # SSH server with hardened configuration
 #
 # Configures OpenSSH server with security-focused settings.

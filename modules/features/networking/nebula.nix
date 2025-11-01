@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Nebula overlay network
 #
 # Configures Nebula - a scalable overlay networking tool with a focus on performance,

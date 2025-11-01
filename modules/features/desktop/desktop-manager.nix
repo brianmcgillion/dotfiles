@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # GNOME desktop environment
 #
 # Configures GNOME as the desktop environment with GDM display manager.

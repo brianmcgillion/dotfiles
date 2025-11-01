@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Emacs with Doom configuration
 #
 # Configures Emacs with Doom Emacs framework and comprehensive development tools.

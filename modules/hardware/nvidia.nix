@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # NVIDIA GPU configuration
 #
 # Configures NVIDIA proprietary drivers for desktop systems with NVIDIA GPUs.

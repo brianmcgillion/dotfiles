@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2020-2023 Eelco Dolstra and the flake-compat contributors
 #
 # SPDX-License-Identifier: MIT

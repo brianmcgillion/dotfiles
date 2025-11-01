@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
+# SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Main module entry point - exports all modules
-_:
-{
+_: {
   flake.nixosModules = {
     # Profiles
     profile-common = import ./profiles/common.nix;
