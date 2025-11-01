@@ -134,10 +134,9 @@
         ];
 
         imports = [
+          ./modules
           ./hosts
           ./nix
-          ./nixos
-          ./users
           ./packages
         ];
 

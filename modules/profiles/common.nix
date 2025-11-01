@@ -1,4 +1,27 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
+# Common base configuration for all systems
+#
+# This profile provides the foundation for all NixOS systems in this configuration.
+# It includes:
+# - Nix daemon configuration with flakes and experimental features
+# - Distributed build machines setup
+# - Garbage collection and store optimization
+# - SSH client configuration with known hosts
+# - SOPS secrets management
+# - Disko disk management support
+# - Basic security hardening
+# - System-wide packages
+# - XDG compliance
+# - nix-index database integration
+#
+# Usage:
+#   This profile is automatically imported by both client and server profiles.
+#   It should not typically be imported directly by host configurations.
+#
+# Enabled features by default:
+#   - features.security.hardening
+#   - features.system.packages
+#   - features.system.xdg
 {
   self,
   inputs,
@@ -7,65 +30,34 @@
   pkgs,
   ...
 }:
-let
-  cfg = config.setup.device;
-in
 {
-  imports = lib.flatten [
-    (
-      with self.nixosModules;
-      [
-        hardening
-        system-packages
-        user-bmg
-        user-groups
-        xdg
-        scripts
-        my-nebula
-      ]
-      ++ [
-        inputs.nix-index-database.nixosModules.nix-index
-        inputs.srvos.nixosModules.mixins-nix-experimental
-        inputs.srvos.nixosModules.mixins-trusted-nix-caches
-        inputs.sops-nix.nixosModules.sops
-        inputs.disko.nixosModules.disko
-      ]
-    )
-    [
-      inputs.home-manager.nixosModules.home-manager
-      {
-        home-manager = {
-          useGlobalPkgs = true;
-          useUserPackages = true;
-          extraSpecialArgs = {
-            inherit inputs self;
-          };
-          #TODO export this from a toplevel login-users module
-          users.brian = {
-            imports =
-              lib.optionals cfg.isClient [ (import ../home/home-client.nix) ]
-              ++ lib.optionals cfg.isServer [ (import ../home/home-server.nix) ]
-              ++ [ inputs.nix-index-database.homeModules.nix-index ];
-          };
-        };
-      }
-    ]
+  imports = [
+    self.nixosModules.feature-hardening
+    self.nixosModules.feature-system-packages
+    self.nixosModules.feature-xdg
+    self.nixosModules.feature-nebula
+    self.nixosModules.user-brian
+    self.nixosModules.user-groups
+    inputs.nix-index-database.nixosModules.nix-index
+    inputs.srvos.nixosModules.mixins-nix-experimental
+    inputs.srvos.nixosModules.mixins-trusted-nix-caches
+    inputs.sops-nix.nixosModules.sops
+    inputs.disko.nixosModules.disko
   ];
 
-  options = {
-    setup.device = {
-      isClient = lib.mkEnableOption "System is a client device";
-      isServer = lib.mkEnableOption "System is a server (headless device)";
-    };
-  };
-
   config = {
+    # Enable hardening and system packages by default
+    features = {
+      security.hardening.enable = lib.mkDefault true;
+      system.packages.enable = lib.mkDefault true;
+      system.xdg.enable = lib.mkDefault true;
+    };
+
     nixpkgs = {
       config = {
         allowUnfree = true;
-        # needed for globalprotect-vpn
         permittedInsecurePackages = [
-          "qtwebengine-5.15.19"
+          "qtwebengine-5.15.19" # needed for globalprotect-vpn
         ];
       };
       overlays = [
@@ -110,11 +102,7 @@ in
         options = lib.mkDefault "--delete-older-than 7d";
       };
 
-      # extraOptions = ''
-      #   plugin-files = ${pkgs.nix-doc}/lib/libnix_doc_plugin.so
-      # '';
-
-      #https://nixos.wiki/wiki/Distributed_build#NixOS
+      # https://nixos.wiki/wiki/Distributed_build#NixOS
       buildMachines = [
         {
           hostName = "hetzarm";
@@ -127,8 +115,7 @@ in
             "big-parallel"
             "kvm"
           ];
-          mandatoryFeatures = [ ];
-          #TODO Fix this
+          # TODO: Fix this
           sshUser = "bmg";
           sshKey = "/home/brian/.ssh/builder-key";
         }
@@ -143,8 +130,7 @@ in
             "big-parallel"
             "kvm"
           ];
-          mandatoryFeatures = [ ];
-          #TODO Fix this
+          # TODO: Fix this
           sshUser = "bmg";
           sshKey = "/home/brian/.ssh/builder-key";
         }
@@ -153,15 +139,13 @@ in
       distributedBuilds = true;
     };
 
-    # only available when dirty
+    # Only available when dirty
     system.configurationRevision = if (self ? rev) then self.rev else self.dirtyShortRev;
 
     systemd.services = {
       # Sometimes it fails if a store path is still in use.
       # This should fix intermediate issues.
-      nix-gc.serviceConfig = {
-        Restart = "on-failure";
-      };
+      nix-gc.serviceConfig.Restart = "on-failure";
 
       # https://github.com/NixOS/nixpkgs/issues/180175
       NetworkManager-wait-online.enable = false;
@@ -174,19 +158,14 @@ in
     networking = {
       useDHCP = false;
       enableIPv6 = false;
-      #Open ports in the firewall?
-      firewall = {
-        enable = true;
-      };
+      # Open ports in the firewall?
+      firewall.enable = true;
       nftables.enable = true;
       useNetworkd = lib.mkForce false;
     };
 
-    ## Local config
     programs = {
       ssh = {
-        # use the gcr-ssh-agent
-        #startAgent = true;
         extraConfig = ''
           Host hetzarm
                user bmg
@@ -197,11 +176,7 @@ in
           host ghaf-net
                user ghaf
                IdentityFile ~/.ssh/builder-key
-               #hostname 192.168.137.101
-               hostname 192.168.10.108 # This is the main IP
-               #hostname 192.168.10.45
-               #hostname 192.168.10.112 #rodrigo
-               #hostname 192.168.10.133 #alien
+               hostname 192.168.10.108
           host ghaf-host
                user ghaf
                IdentityFile ~/.ssh/builder-key
@@ -245,43 +220,39 @@ in
           };
         };
       };
-      # Disable in favor of nix-index-database
-      command-not-found = {
-        enable = false;
-      };
-
-      nix-ld = {
-        enable = true;
-        #libraries = options.programs.nix-ld.libraries.default;
-      };
+      command-not-found.enable = false;
     };
 
+    programs = {
+      nix-index-database.comma.enable = true;
+      nix-ld.enable = true;
+    };
+
+    # User management
     # Contents of the user and group files will be replaced on system activation
     # Ref: https://search.nixos.org/options?channel=unstable&show=users.mutableUsers
     users.mutableUsers = false;
 
-    services = {
-      # Enable userborn to take care of managing the default users and groups
-      userborn.enable = true;
-    };
+    # Enable userborn to take care of managing the default users and groups
+    services.userborn.enable = true;
 
+    # Hardware
     hardware = {
       enableRedistributableFirmware = true;
       enableAllFirmware = true;
     };
 
+    # Boot configuration
     boot = {
-      # use the bleeding edge kernel
-      # should this be changed for the nvidia issues
+      # Use the bleeding edge kernel
       kernelPackages = pkgs.linuxPackages_latest;
-
       binfmt.emulatedSystems = [
         "riscv64-linux"
         "aarch64-linux"
       ];
     };
 
-    # Tie the sops module to the systems ssh keys
+    # Tie the sops module to the system's ssh keys
     sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
 }
