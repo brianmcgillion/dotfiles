@@ -55,11 +55,28 @@
 
     bash = {
       enable = true;
+      historySize = 10000;
+      historyFileSize = 20000;
+      historyControl = [
+        "ignoreboth"
+        "erasedups"
+      ];
+      shellOptions = [
+        "histappend"
+      ];
       # The order is important here, because we can override functions in the bashrc
-      initExtra =
-        ''PROMPT_COMMAND="history -a"''
-        + "\n\n[ -f ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh ] && source ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh\n\n"
-        + builtins.readFile ./bashrc;
+      initExtra = ''
+        # Ensure bash state directory exists
+        mkdir -p "''${XDG_STATE_HOME:-$HOME/.local/state}/bash"
+
+        # Write history immediately after each command
+        PROMPT_COMMAND="history -a"
+
+        # Add timestamps to history
+        HISTTIMEFORMAT='%F %T '
+      ''
+      + "\n\n[ -f ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh ] && source ${pkgs.fzf-git-sh}/share/fzf-git-sh/fzf-git.sh\n\n"
+      + builtins.readFile ./bashrc;
     };
 
     # improved cd

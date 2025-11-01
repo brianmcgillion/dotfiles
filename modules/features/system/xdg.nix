@@ -8,8 +8,9 @@
 # XDG directories:
 # - XDG_CONFIG_HOME: ~/.config (application configuration)
 # - XDG_DATA_HOME: ~/.local/share (application data)
+# - XDG_STATE_HOME: ~/.local/state (application state: logs, history)
 # - XDG_CACHE_HOME: ~/.cache (application caches)
-# - XDG_BIN_HOME: ~/.local/bin (user executables)
+# - XDG_BIN_HOME: ~/.local/bin (user executables, non-standard but useful)
 #
 # Configured applications:
 # - aspell: Configuration and dictionaries
@@ -50,6 +51,7 @@ in
         XDG_CACHE_HOME = "$HOME/.cache";
         XDG_CONFIG_HOME = "$HOME/.config";
         XDG_DATA_HOME = "$HOME/.local/share";
+        XDG_STATE_HOME = "$HOME/.local/state";
         XDG_BIN_HOME = "$HOME/.local/bin";
         PATH = [ "\${XDG_BIN_HOME}" ];
       };
@@ -59,11 +61,18 @@ in
           personal $XDG_CONFIG_HOME/aspell/aspell.en.pws;
           repl $XDG_CONFIG_HOME/aspell/en.prepl;
         '';
-        LESSHISTFILE = "\${XDG_CACHE_HOME}/lesshst";
+        LESSHISTFILE = "\${XDG_STATE_HOME}/less/history";
         WGETRC = "\${XDG_CONFIG_HOME}/wgetrc";
-        HISTFILE = "\${XDG_CACHE_HOME}/history";
+        HISTFILE = "\${XDG_STATE_HOME}/bash/history";
         INPUTRC = "\${XDG_CONFIG_HOME}/inputrc";
       };
     };
+
+    # Ensure XDG state directories exist for applications that need them
+    systemd.tmpfiles.rules = [
+      "d %h/.local/state 0700 - - -"
+      "d %h/.local/state/bash 0700 - - -"
+      "d %h/.local/state/less 0700 - - -"
+    ];
   };
 }
