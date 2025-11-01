@@ -128,7 +128,7 @@ in
         };
 
         tun.device = networkName;
-        staticHostMap = cfg.staticHostMap;
+        inherit (cfg) staticHostMap;
 
         firewall = {
           outbound = [

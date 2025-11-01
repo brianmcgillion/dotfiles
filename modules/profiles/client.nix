@@ -35,7 +35,6 @@
   lib,
   inputs,
   pkgs,
-  config,
   ...
 }:
 {

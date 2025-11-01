@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 # Main module entry point - exports all modules
-{ ... }:
+_:
 {
   flake.nixosModules = {
     # Profiles

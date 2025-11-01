@@ -15,11 +15,13 @@
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
-    secrets.wg-privateKeyFile.owner = "root";
-    secrets.wg-presharedKeyFile.owner = "root";
-    secrets.nebula-ca.owner = config.features.networking.nebula.configOwner;
-    secrets.nebula-key.owner = config.features.networking.nebula.configOwner;
-    secrets.nebula-cert.owner = config.features.networking.nebula.configOwner;
+    secrets = {
+      wg-privateKeyFile.owner = "root";
+      wg-presharedKeyFile.owner = "root";
+      nebula-ca.owner = config.features.networking.nebula.configOwner;
+      nebula-key.owner = config.features.networking.nebula.configOwner;
+      nebula-cert.owner = config.features.networking.nebula.configOwner;
+    };
   };
 
   # Enable Nebula network

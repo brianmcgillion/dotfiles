@@ -82,9 +82,11 @@
 
     fast-flake-update = {
       url = "github:Mic92/fast-flake-update";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
-      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        treefmt-nix.follows = "treefmt-nix";
+      };
     };
 
     # for provisioning secrets that can be embedded in the configuration

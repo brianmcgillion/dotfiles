@@ -29,7 +29,6 @@
 # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
 {
   config,
-  lib,
   ...
 }:
 {
