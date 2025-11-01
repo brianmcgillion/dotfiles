@@ -38,10 +38,12 @@ in
 
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      yubikey-manager
-      age-plugin-yubikey
-      yubikey-touch-detector
+      # keep-sorted start
       age
+      age-plugin-yubikey
+      yubikey-manager
+      yubikey-touch-detector
+      # keep-sorted end
     ];
 
     services.pcscd.enable = true;

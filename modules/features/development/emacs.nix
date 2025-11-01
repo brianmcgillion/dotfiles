@@ -74,39 +74,37 @@ in
     environment.systemPackages =
       with pkgs;
       [
-        emacs
-        binutils
-        zstd
-
+        # keep-sorted start
         (aspellWithDicts (
           ds: with ds; [
+            # keep-sorted start
             en
             en-computers
             en-science
+            # keep-sorted end
           ]
         ))
-        wordnet
-        editorconfig-core-c
-        sqlite
-
-        # Formatting
-        dockfmt
-        libxml2
-        nodePackages.prettier
-
-        # LSP servers
+        binutils
         copilot-language-server
         dockerfile-language-server
+        dockfmt
+        editorconfig-core-c
+        emacs
         github-mcp-server
+        inputs.mcp-nixos.packages."${pkgs.stdenv.hostPlatform.system}".default
+        libxml2
         neocmakelsp
         nodePackages.bash-language-server
+        nodePackages.prettier
         nodePackages.typescript-language-server
         nodePackages.vscode-langservers-extracted
         nodePackages.yaml-language-server
-        inputs.mcp-nixos.packages."${pkgs.stdenv.hostPlatform.system}".default
-
         nodejs
         python3Packages.grip
+        sqlite
+        wordnet
+        zstd
+        # keep-sorted end
       ]
       ++ [ inputs.nixd.packages."${pkgs.stdenv.hostPlatform.system}".nixd ];
 

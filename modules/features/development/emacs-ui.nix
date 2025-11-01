@@ -35,12 +35,14 @@ in
 
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      imagemagick
-      texlive.combined.scheme-medium
+      # keep-sorted start
+      gnuplot
       gnutls
       graphviz
-      gnuplot
+      imagemagick
+      texlive.combined.scheme-medium
       wl-clipboard
+      # keep-sorted end
     ];
   };
 }

@@ -3,30 +3,26 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    #Modern Linux tools
+    # keep-sorted start
+    (ripgrep.override { withPCRE2 = true; })
     cheat
+    curlie
     delta
     dogdns # DNS client
-    #df replacement duf
-    duf
-    #du replacement dust
-    dust
-    fd # faster projectile indexing
-    # sed for json
-    jq
-    (ripgrep.override { withPCRE2 = true; })
-    # simplified man pages
-    tldr
-    tree
-    psmisc
-    shfmt
-    shellcheck
-    file
-    #some network tools
-    httpie
-    curlie
-    xh
     doggo
+    duf # df replacement
+    dust # du replacement
+    fd # faster projectile indexing
+    file
+    httpie
+    jq # sed for json
+    psmisc
+    shellcheck
+    shfmt
+    tldr # simplified man pages
+    tree
+    xh
+    # keep-sorted end
   ];
 
   programs = {

@@ -43,23 +43,25 @@ in
 
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      nixfmt
+      # keep-sorted start
+      binutils
       cachix
-      wget
       curl
+      devenv
+      dnsutils
+      file
       git
       htop
-      nix-info
-      wireguard-tools
-      tree
-      file
-      binutils
       lsof
-      dnsutils
       netcat
+      nix-info
       nix-tree
+      nixfmt
+      tree
+      wget
+      wireguard-tools
       zellij
-      devenv
+      # keep-sorted end
     ];
   };
 }

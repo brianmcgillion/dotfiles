@@ -7,21 +7,22 @@
   # providing plugins (nodejs)
   #
   home.packages = with pkgs; [
-    # Generic code
+    # keep-sorted start
+    bear
+    bibtool
+    clang-tools
     cmake
     coreutils
-    gnumake
-    nodePackages_latest.nodejs
-    bibtool
-    llvm
     gcc
-    nixos-generators
-    clang-tools
-    bear
-    nixpkgs-review
-    optinix
-    nix-update
+    gnumake
+    llvm
     nix-fast-build
+    nix-update
+    nixos-generators
+    nixpkgs-review
+    nodePackages_latest.nodejs
+    optinix
+    # keep-sorted end
   ];
 
   programs = {

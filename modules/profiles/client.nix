@@ -107,26 +107,19 @@
     environment.systemPackages =
       with pkgs;
       [
-        # Hardware tools
-        usbutils
-        pciutils
-
-        # Documentation
+        # keep-sorted start
+        act
+        aider-chat-full
+        github-copilot-cli
+        globalprotect-openconnect
+        keymapp
         man-pages
         man-pages-posix
-
-        # Development tools
-        act
-        github-copilot-cli
-
-        # ZSA keyboard tools
-        wally-cli
-        keymapp
-
-        # User packages
-        aider-chat-full
+        pciutils
         rebiber
-        globalprotect-openconnect
+        usbutils
+        wally-cli
+        # keep-sorted end
       ]
       ++ [ inputs.nix-ai.packages."${pkgs.stdenv.hostPlatform.system}".default ];
 

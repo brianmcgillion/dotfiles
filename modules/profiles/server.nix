@@ -69,8 +69,10 @@
 
     # Server-specific packages
     environment.systemPackages = with pkgs; [
-      kitty.terminfo
+      # keep-sorted start
       ghostty.terminfo
+      kitty.terminfo
+      # keep-sorted end
     ];
 
     # Server-specific services
@@ -80,9 +82,11 @@
 
     # DNS configuration
     networking.nameservers = [
+      # keep-sorted start
       "1.1.1.1"
-      "8.8.8.8"
       "8.8.4.4"
+      "8.8.8.8"
+      # keep-sorted end
     ];
 
     # Home-manager configuration

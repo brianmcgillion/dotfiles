@@ -36,13 +36,15 @@ in
 #ownfile = pkgs.callPackage ./ownfile.nix {};
 {
   environment.systemPackages = [
+    # keep-sorted start
+    rebuild-agx
+    rebuild-alien
+    rebuild-caelus
     rebuild-host
     rebuild-nephele
-    rebuild-caelus
     rebuild-x1
-    rebuild-agx
     update-host
-    rebuild-alien
     #ownfile
+    # keep-sorted end
   ];
 }

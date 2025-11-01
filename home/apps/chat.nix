@@ -3,8 +3,10 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    slack
+    # keep-sorted start
     element-desktop
+    slack
     #zoom-us
+    # keep-sorted end
   ];
 }
