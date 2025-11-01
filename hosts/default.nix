@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 {
   inputs,
   self,
@@ -7,6 +7,10 @@
 }:
 {
   flake.nixosModules = {
+    # shared modules
+    common-client = import ./common-client.nix;
+    common-server = import ./common-server.nix;
+
     # host modules
     host-arcadia = import ./arcadia;
     host-minerva = import ./minerva;

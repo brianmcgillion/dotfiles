@@ -6,30 +6,12 @@
   ...
 }:
 {
-  imports = [
-    self.nixosModules.profile-client
-    self.nixosModules.hardware-nvidia
-  ];
+  #Set the baseline with common.nix
+  imports = [ self.nixosModules.common-client ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  sops = {
-    defaultSopsFile = ./secrets.yaml;
-    secrets.wg-privateKeyFile.owner = "root";
-    secrets.wg-presharedKeyFile.owner = "root";
-    secrets.nebula-ca.owner = config.features.networking.nebula.configOwner;
-    secrets.nebula-key.owner = config.features.networking.nebula.configOwner;
-    secrets.nebula-cert.owner = config.features.networking.nebula.configOwner;
-  };
-
-  # Enable Nebula network
-  features.networking.nebula = {
-    enable = true;
-    isLightHouse = false;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
-  };
+  sops.defaultSopsFile = ./secrets.yaml;
 
   boot = {
     initrd = {
@@ -95,7 +77,45 @@
     };
   };
 
-  hardware.cpu.amd.updateMicrocode = true;
+  hardware = {
+    cpu.amd.updateMicrocode = true;
 
+    graphics = {
+      enable = true;
+      #   driSupport32Bit = true;
+    };
+
+    nvidia = {
+      # Modesetting is required.
+      modesetting.enable = true;
+
+      # Nvidia power management. Experimental, and can cause sleep/suspend to fail.
+      powerManagement.enable = false; # was false
+      # Fine-grained power management. Turns off GPU when not in use.
+      # Experimental and only works on modern Nvidia GPUs (Turing or newer).
+      powerManagement.finegrained = false;
+
+      # Use the NVidia open source kernel module (not to be confused with the
+      # independent third-party "nouveau" open source driver).
+      # Support is limited to the Turing and later architectures. Full list of
+      # supported GPUs is at:
+      # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
+      # Only available from driver 515.43.04+
+      # Currently alpha-quality/buggy, so false is currently the recommended setting.
+      open = false;
+
+      # Enable the Nvidia settings menu,
+      # accessible via `nvidia-settings`.
+      nvidiaSettings = true;
+
+      # Optionally, you may need to select the appropriate driver version for your specific GPU.
+      package = config.boot.kernelPackages.nvidiaPackages.production; # was stable
+    };
+  };
+
+  # Load nvidia driver for Xorg and Wayland
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.05";
 }

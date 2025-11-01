@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 {
   lib,
   self,
@@ -8,24 +8,16 @@
 }:
 {
   imports = [
-    self.nixosModules.profile-server
+    self.nixosModules.common-server
     inputs.srvos.nixosModules.hardware-hetzner-online-amd
     ./disk-config.nix
   ];
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
-    secrets.nebula-ca.owner = config.features.networking.nebula.configOwner;
-    secrets.nebula-key.owner = config.features.networking.nebula.configOwner;
-    secrets.nebula-cert.owner = config.features.networking.nebula.configOwner;
-  };
-
-  features.networking.nebula = {
-    enable = true;
-    isLightHouse = false;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
+    secrets.nebula-ca.owner = config.my-nebula-network.configOwner;
+    secrets.nebula-key.owner = config.my-nebula-network.configOwner;
+    secrets.nebula-cert.owner = config.my-nebula-network.configOwner;
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
@@ -63,6 +55,14 @@
     hostName = lib.mkDefault "nephele";
   };
 
+  my-nebula-network = {
+    enable = true;
+    isLightHouse = false;
+    ca = config.sops.secrets.nebula-ca.path;
+    key = config.sops.secrets.nebula-key.path;
+    cert = config.sops.secrets.nebula-cert.path;
+  };
+
   systemd.network.networks."10-uplink".networkConfig.Address = "65.109.25.143";
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.05"; # Did you read the comment?
 }
