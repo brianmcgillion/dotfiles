@@ -9,7 +9,7 @@
     man-pages-posix
     #    nix-doc
     act
-    inputs.nix-ai.packages.${pkgs.system}.default
+    inputs.nix-ai.packages.${pkgs.stdenv.hostPlatform.system}.default
     github-copilot-cli
   ];
 }

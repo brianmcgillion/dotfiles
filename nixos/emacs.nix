@@ -77,7 +77,7 @@ in
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted
       nodePackages.yaml-language-server
-      inputs.mcp-nixos.packages."${pkgs.system}".default
+      inputs.mcp-nixos.packages."${pkgs.stdenv.hostPlatform.system}".default
 
       # :copilot
       nodejs
@@ -86,7 +86,7 @@ in
       python3Packages.grip
 
     ]
-    ++ [ inputs.nixd.packages."${pkgs.system}".nixd ]; # :tools lsp mode for nix
+    ++ [ inputs.nixd.packages."${pkgs.stdenv.hostPlatform.system}".nixd ]; # :tools lsp mode for nix
 
   system.userActivationScripts = {
     installDoomEmacs = ''
