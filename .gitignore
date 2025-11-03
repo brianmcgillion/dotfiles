@@ -2,4 +2,3 @@
 .direnv/
 result
 .aider*
-.nixd.json

@@ -86,9 +86,4 @@
   home.shellAliases = {
     cat = "bat";
   };
-
-  # Install direnv library for nixd LSP configuration
-  # This makes nixd configuration available system-wide for all Nix projects
-  # Usage in any project's .envrc: use_nixd
-  home.file.".config/direnv/lib/nixd.sh".source = ./direnv-nixd.sh;
 }
