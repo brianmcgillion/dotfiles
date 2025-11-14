@@ -41,7 +41,7 @@ let
   cfg = config.features.development.emacs;
   emacs =
     with pkgs;
-    ((emacsPackagesFor emacs-unstable).emacsWithPackages (
+    ((emacsPackagesFor emacs-git).emacsWithPackages (
       epkgs: with epkgs; [
         treesit-grammars.with-all-grammars
         tree-sitter-langs

@@ -19,6 +19,7 @@
           checkout-pr = "!pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr";
           pick-pr = "!am() { git fetch origin pull/$1/head:pr-$1; git cherry-pick HEAD..pr-$1; }; am";
           reset-pr = "reset --hard FETCH_HEAD";
+          qc = "commit --no-verify";
         };
 
         #core.editor = "emacs";
