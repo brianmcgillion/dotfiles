@@ -59,6 +59,7 @@
         allowUnfree = true;
         permittedInsecurePackages = [
           "qtwebengine-5.15.19" # needed for globalprotect-vpn
+          "jitsi-meet-1.0.8792"
         ];
       };
       overlays = [
@@ -177,7 +178,9 @@
           host ghaf-net
                user ghaf
                IdentityFile ~/.ssh/builder-key
-               hostname 192.168.10.108
+               #hostname 192.168.10.108 #x1-carbon
+               hostname 192.168.10.229 #darter-pro
+               #hostname 192.168.10.34 #usb-ethernet
           host ghaf-host
                user ghaf
                IdentityFile ~/.ssh/builder-key

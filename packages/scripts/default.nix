@@ -31,6 +31,9 @@ let
   rebuild-agx = pkgs.writeScriptBin "rebuild-agx" ''
     nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --no-reexec boot "$@"
   '';
+  rebuild-darter = pkgs.writeScriptBin "rebuild-darter" ''
+    nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
+  '';
 in
 #https://discourse.nixos.org/t/install-shell-script-on-nixos/6849/10
 #ownfile = pkgs.callPackage ./ownfile.nix {};
@@ -40,6 +43,7 @@ in
     rebuild-agx
     rebuild-alien
     rebuild-caelus
+    rebuild-darter
     rebuild-host
     rebuild-nephele
     rebuild-x1
