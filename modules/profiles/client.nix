@@ -96,10 +96,10 @@
       openssh.enable = true;
       openssh.startWhenNeeded = false;
       fwupd.enable = true;
-      globalprotect = {
-        enable = true;
-        csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
-      };
+      # globalprotect = {
+      #   enable = true;
+      #   csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
+      # };
       resolved.enable = false;
     };
 
@@ -111,7 +111,9 @@
         act
         aider-chat-full
         github-copilot-cli
-        globalprotect-openconnect
+        #globalprotect-openconnect
+        gpauth
+        gpclient
         keymapp
         man-pages
         man-pages-posix
@@ -121,7 +123,10 @@
         wally-cli
         # keep-sorted end
       ]
-      ++ [ inputs.nix-ai.packages."${pkgs.stdenv.hostPlatform.system}".default ];
+      ++ [
+        inputs.nix-ai.packages."${pkgs.stdenv.hostPlatform.system}".default
+        #inputs.globalprotect-openconnect.packages."${pkgs.stdenv.hostPlatform.system}".default
+      ];
 
     hardware.keyboard.zsa.enable = true;
 

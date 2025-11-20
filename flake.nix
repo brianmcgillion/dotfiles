@@ -79,6 +79,7 @@
     # nixd lsp integration
     nixd = {
       url = "github:nix-community/nixd";
+      #url = "git+file:///home/brian/projects/code/github.com/nix-community/nixd";
     };
 
     fast-flake-update = {
@@ -89,6 +90,27 @@
         treefmt-nix.follows = "treefmt-nix";
       };
     };
+
+    #### for globalprotect
+    # naersk = {
+    #   url = "github:nix-community/naersk";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+
+    # rust-overlay = {
+    #   url = "github:oxalica/rust-overlay";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+
+    # globalprotect-openconnect = {
+    #   url = "github:yuezk/GlobalProtect-openconnect";
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #     naersk.follows = "naersk";
+    #     rust-overlay.follows = "rust-overlay";
+    #   };
+    # };
+    #####
 
     # for provisioning secrets that can be embedded in the configuration
     sops-nix = {
