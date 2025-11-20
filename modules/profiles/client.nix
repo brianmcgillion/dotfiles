@@ -8,6 +8,7 @@
 # Included features:
 # - GNOME desktop environment with GDM display manager
 # - PipeWire audio system
+# - Docker containerization platform
 # - Emacs with Doom configuration and UI tools
 # - YubiKey hardware authentication support
 # - Locale and font configuration
@@ -25,6 +26,7 @@
 #   - features.desktop.audio
 #   - features.desktop.desktop-manager
 #   - features.desktop.yubikey
+#   - features.development.docker
 #   - features.development.emacs
 #   - features.development.emacs-ui
 #   - features.system.locale-fonts
@@ -43,6 +45,7 @@
     ./common.nix
     self.nixosModules.feature-audio
     self.nixosModules.feature-desktop-manager
+    self.nixosModules.feature-docker
     self.nixosModules.feature-emacs
     self.nixosModules.feature-emacs-ui
     self.nixosModules.feature-locale-fonts
@@ -63,6 +66,7 @@
         yubikey.enable = lib.mkDefault true;
       };
       development = {
+        docker.enable = lib.mkDefault true;
         emacs.enable = lib.mkDefault true;
         emacs-ui.enable = lib.mkDefault true;
       };

@@ -14,6 +14,7 @@ _: {
     feature-yubikey = import ./features/desktop/yubikey.nix;
 
     # Development features
+    feature-docker = import ./features/development/docker.nix;
     feature-emacs = import ./features/development/emacs.nix;
     feature-emacs-ui = import ./features/development/emacs-ui.nix;
 

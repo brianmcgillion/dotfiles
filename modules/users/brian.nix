@@ -18,6 +18,7 @@
 # - networkmanager: network configuration
 # - dialout: serial port access (Arduino, embedded dev)
 # - plugdev: USB device access (hardware development)
+# - docker: container management (when Docker is enabled)
 #
 # Shell: Bash (from package set)
 # UID: 1000 (standard first user)
@@ -28,7 +29,12 @@
 #
 # Usage:
 #   Automatically imported by profile-common
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   sops.secrets.login-password = {
     neededForUsers = true;
@@ -48,7 +54,8 @@
       "wheel"
       "dialout"
       "plugdev"
-    ];
+    ]
+    ++ (lib.optionals config.features.development.docker.enable [ "docker" ]);
     shell = pkgs.bash;
     uid = 1000;
     hashedPasswordFile = config.sops.secrets.login-password.path;
