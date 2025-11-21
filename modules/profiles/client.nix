@@ -55,6 +55,7 @@
     self.nixosModules.scripts
     inputs.srvos.nixosModules.desktop
     inputs.home-manager.nixosModules.home-manager
+    inputs.gp-gui.nixosModules.default
   ];
 
   config = {
@@ -74,6 +75,12 @@
         locale-fonts.enable = lib.mkDefault true;
       };
     };
+
+    # Enable gp-gui
+    programs.gp-gui.enable = lib.mkDefault true;
+
+    # Add gp-gui overlay to provide gp-gui-wrapper and gpclient-wrapper
+    nixpkgs.overlays = [ inputs.gp-gui.overlays.default ];
 
     # Bootloader configuration for UEFI systems
     boot.loader = {
@@ -115,9 +122,6 @@
         act
         aider-chat-full
         github-copilot-cli
-        #globalprotect-openconnect
-        gpauth
-        gpclient
         keymapp
         man-pages
         man-pages-posix

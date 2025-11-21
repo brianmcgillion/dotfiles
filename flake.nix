@@ -91,27 +91,6 @@
       };
     };
 
-    #### for globalprotect
-    # naersk = {
-    #   url = "github:nix-community/naersk";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-
-    # rust-overlay = {
-    #   url = "github:oxalica/rust-overlay";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-
-    # globalprotect-openconnect = {
-    #   url = "github:yuezk/GlobalProtect-openconnect";
-    #   inputs = {
-    #     nixpkgs.follows = "nixpkgs";
-    #     naersk.follows = "naersk";
-    #     rust-overlay.follows = "rust-overlay";
-    #   };
-    # };
-    #####
-
     # for provisioning secrets that can be embedded in the configuration
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -139,6 +118,19 @@
       url = "github:utensils/mcp-nixos";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.devshell.follows = "devshell";
+    };
+
+    gp-gui = {
+      #url = "git+file:///home/brian/projects/code/github.com/tiiuae/gp-gui";
+      url = "github:brianmcgillion/gp-gui";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        flake-root.follows = "flake-root";
+        treefmt-nix.follows = "treefmt-nix";
+        git-hooks-nix.follows = "git-hooks-nix";
+        devshell.follows = "devshell";
+      };
     };
   };
 

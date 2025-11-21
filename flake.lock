@@ -1,5 +1,20 @@
 {
   "nodes": {
+    "crane": {
+      "locked": {
+        "lastModified": 1763511871,
+        "narHash": "sha256-KKZWi+ij7oT0Ag8yC6MQkzfHGcytyjMJDD+47ZV1YNU=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "099f9014bc8d0cd6e445470ea1df0fd691d5a548",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
     "deploy-rs": {
       "inputs": {
         "flake-compat": [
@@ -276,6 +291,43 @@
         "type": "github"
       }
     },
+    "gp-gui": {
+      "inputs": {
+        "crane": "crane",
+        "devshell": [
+          "devshell"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "flake-root": [
+          "flake-root"
+        ],
+        "git-hooks-nix": [
+          "git-hooks-nix"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay",
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1763757505,
+        "narHash": "sha256-IaXb86qZdT2WPbUSsnqxGhWYRaGYao9kp3nZEKv+aYk=",
+        "owner": "brianmcgillion",
+        "repo": "gp-gui",
+        "rev": "17e95b3ec9bdc5a7b0299b6ef26b5500304d955d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "brianmcgillion",
+        "repo": "gp-gui",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -468,6 +520,7 @@
         "flake-parts": "flake-parts",
         "flake-root": "flake-root",
         "git-hooks-nix": "git-hooks-nix",
+        "gp-gui": "gp-gui",
         "home-manager": "home-manager",
         "mcp-nixos": "mcp-nixos",
         "nix-ai": "nix-ai",
@@ -478,6 +531,27 @@
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "treefmt-nix": "treefmt-nix_2"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "nixpkgs": [
+          "gp-gui",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1763692705,
+        "narHash": "sha256-tCKCyMYU0Vy+ph/xswlNsYXXjnFVweWBV+ew/5FS9tA=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "6fbf5d328dce1828d887b8ee7d44a785196a34e7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
       }
     },
     "sops-nix": {
