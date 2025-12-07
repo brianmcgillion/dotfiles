@@ -144,6 +144,8 @@
     # Only available when dirty
     system.configurationRevision = if (self ? rev) then self.rev else self.dirtyShortRev;
 
+    security.sudo.wheelNeedsPassword = false;
+
     systemd.services = {
       # Sometimes it fails if a store path is still in use.
       # This should fix intermediate issues.
