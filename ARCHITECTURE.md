@@ -40,7 +40,7 @@ This NixOS configuration uses a modular architecture for better maintainability,
 ├── hosts/                # Host-specific configurations
 │   ├── arcadia/          # Desktop with NVIDIA
 │   ├── minerva/          # Laptop with SSH
-│   ├── nephele/          # Hetzner server
+│   ├── nubes/          # Hetzner server
 │   └── caelus/           # Hetzner cloud (Nebula lighthouse)
 ├── home/                 # Home-manager configurations
 │   ├── profiles/
@@ -153,7 +153,7 @@ Host configurations are minimal and declarative:
 
 ### Server Systems
 
-#### nephele
+#### nubes
 - **Type**: Hetzner dedicated server
 - **Profile**: server
 - **Hardware**: AMD CPU, disko-managed disks
@@ -291,7 +291,7 @@ All hosts have been verified to build successfully:
 nix flake check
 nixos-rebuild build --flake .#arcadia
 nixos-rebuild build --flake .#minerva
-nixos-rebuild build --flake .#nephele
+nixos-rebuild build --flake .#nubes
 nixos-rebuild build --flake .#caelus
 ```
 

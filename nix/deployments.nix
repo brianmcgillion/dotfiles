@@ -13,8 +13,8 @@ let
   };
 
   x86-nodes = {
-    nephele = mkDeployment "x86_64-linux" "nephele";
     caelus = mkDeployment "x86_64-linux" "caelus";
+    nubes = mkDeployment "x86_64-linux" "nubes";
   };
 
   aarch64-nodes = {

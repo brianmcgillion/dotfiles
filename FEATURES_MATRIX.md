@@ -10,7 +10,7 @@ Overview of which features are enabled on each host.
 
 ## Desktop Features
 
-| Feature | arcadia | minerva | nephele | caelus |
+| Feature | arcadia | minerva | nubes | caelus |
 |---------|---------|---------|---------|--------|
 | Audio (PipeWire) | ✓ | ✓ | ― | ― |
 | Desktop Manager (GNOME) | ✓ | ✓ | ― | ― |
@@ -18,21 +18,21 @@ Overview of which features are enabled on each host.
 
 ## Development Features
 
-| Feature | arcadia | minerva | nephele | caelus |
+| Feature | arcadia | minerva | nubes | caelus |
 |---------|---------|---------|---------|--------|
 | Emacs (Doom) | ✓ | ✓ | ― | ― |
 | Emacs UI Tools | ✓ | ✓ | ― | ― |
 
 ## Networking Features
 
-| Feature | arcadia | minerva | nephele | caelus |
+| Feature | arcadia | minerva | nubes | caelus |
 |---------|---------|---------|---------|--------|
 | Nebula Network | ✗ | ✗ | ✗ | ✗ (lighthouse) |
 | WireGuard | ✗ | ✗ | ○ | ○ |
 
 ## Security Features
 
-| Feature | arcadia | minerva | nephele | caelus |
+| Feature | arcadia | minerva | nubes | caelus |
 |---------|---------|---------|---------|--------|
 | System Hardening | ✓ | ✓ | ✓ | ✓ |
 | SSH Server | ✓ | ✗ | ✓ | ✓ |
@@ -40,7 +40,7 @@ Overview of which features are enabled on each host.
 
 ## System Features
 
-| Feature | arcadia | minerva | nephele | caelus |
+| Feature | arcadia | minerva | nubes | caelus |
 |---------|---------|---------|---------|--------|
 | System Packages | ✓ | ✓ | ✓ | ✓ |
 | XDG Compliance | ✓ | ✓ | ✓ | ✓ |
@@ -48,7 +48,7 @@ Overview of which features are enabled on each host.
 
 ## Hardware
 
-| Feature | arcadia | minerva | nephele | caelus |
+| Feature | arcadia | minerva | nubes | caelus |
 |---------|---------|---------|---------|--------|
 | NVIDIA GPU | ✗ | ― | ― | ― |
 | Intel CPU | ― | ✓ | ― | ✓ |
@@ -62,7 +62,7 @@ Overview of which features are enabled on each host.
 |------|---------|------|
 | arcadia | client | Desktop workstation |
 | minerva | client | Laptop |
-| nephele | server | Dedicated server |
+| nubes | server | Dedicated server |
 | caelus | server | Cloud server |
 
 ## Feature Enabling Patterns

@@ -12,11 +12,6 @@ let
     sudo nixos-rebuild switch --flake .#$HOSTNAME "$@"
     popd
   '';
-  rebuild-nephele = pkgs.writeScriptBin "rebuild-nephele" ''
-    pushd $HOME/.dotfiles
-    nixos-rebuild switch --flake .#nephele --target-host "root@nephele" "$@"
-    popd
-  '';
   rebuild-nubes = pkgs.writeScriptBin "rebuild-nubes" ''
     pushd $HOME/.dotfiles
     nixos-rebuild switch --flake .#nubes --target-host "root@nubes" "$@"
@@ -50,7 +45,6 @@ in
     rebuild-caelus
     rebuild-darter
     rebuild-host
-    rebuild-nephele
     rebuild-nubes
     rebuild-x1
     update-host

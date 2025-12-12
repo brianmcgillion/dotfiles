@@ -11,7 +11,6 @@
     # host modules
     host-arcadia = import ./arcadia;
     host-minerva = import ./minerva;
-    host-nephele = import ./nephele;
     host-caelus = import ./caelus;
     host-nubes = import ./nubes;
   };
@@ -32,11 +31,6 @@
       minerva = lib.nixosSystem {
         inherit specialArgs;
         modules = [ self.nixosModules.host-minerva ];
-      };
-
-      nephele = lib.nixosSystem {
-        inherit specialArgs;
-        modules = [ self.nixosModules.host-nephele ];
       };
 
       caelus = lib.nixosSystem {

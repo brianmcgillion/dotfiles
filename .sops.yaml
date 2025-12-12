@@ -1,6 +1,5 @@
 keys:
     - &admin_brian age1fn6c3gvsmjxpqk9hf9ye863d4rtcwqvq57wax2m7tg3t4ls84vaqtyv759
-    - &host_nephele age10a0euuypltmezptwz5tnvkvwy5fmq5u47v78z437hh5e3tc3gqjszr8nwm
     - &host_nubes age1jwxydusswgeq8wvd8lzrlup4ttqwd39k243ev77crlkmkmf0sfqsq3q6lu
     - &host_caelus age17hk8tccd9a8sg875mqe6llw3euthjf8wlcmhlhk7lxlhmggvp92sfdstm5
     - &host_arcadia age1tvd5txsy62uywunnnyrhncdydnmgmg6prjczktw8f68wqun9kqysvuf94h
@@ -15,7 +14,6 @@ creation_rules:
       key_groups:
           - age:
                 - *admin_brian
-                - *host_nephele
                 - *host_nubes
                 - *host_caelus
                 - *host_arcadia
@@ -36,11 +34,7 @@ creation_rules:
           - age:
                 - *admin_brian
                 - *host_minerva
-    - path_regex: ^hosts/nephele/secrets.yaml$
-      key_groups:
-          - age:
-                - *admin_brian
-                - *host_nephele
+
     - path_regex: ^hosts/nubes/secrets.yaml$
       key_groups:
           - age:
