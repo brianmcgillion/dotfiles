@@ -13,6 +13,7 @@
     host-minerva = import ./minerva;
     host-nephele = import ./nephele;
     host-caelus = import ./caelus;
+    host-nubes = import ./nubes;
   };
 
   flake.nixosConfigurations =
@@ -42,5 +43,11 @@
         inherit specialArgs;
         modules = [ self.nixosModules.host-caelus ];
       };
+
+      nubes = lib.nixosSystem {
+        inherit specialArgs;
+        modules = [ self.nixosModules.host-nubes ];
+      };
+
     };
 }

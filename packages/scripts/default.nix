@@ -17,6 +17,11 @@ let
     nixos-rebuild switch --flake .#nephele --target-host "root@nephele" "$@"
     popd
   '';
+  rebuild-nubes = pkgs.writeScriptBin "rebuild-nubes" ''
+    pushd $HOME/.dotfiles
+    nixos-rebuild switch --flake .#nubes --target-host "root@nubes" "$@"
+    popd
+  '';
   rebuild-caelus = pkgs.writeScriptBin "rebuild-caelus" ''
     pushd $HOME/.dotfiles
     nixos-rebuild switch --flake .#caelus --target-host "root@caelus" "$@"
@@ -46,6 +51,7 @@ in
     rebuild-darter
     rebuild-host
     rebuild-nephele
+    rebuild-nubes
     rebuild-x1
     update-host
     #ownfile

@@ -28,7 +28,6 @@
 {
   self,
   lib,
-  pkgs,
   inputs,
   ...
 }:
@@ -60,20 +59,6 @@
         fail2ban.enable = lib.mkDefault true;
       };
     };
-
-    # Bootloader for legacy BIOS/MBR
-    boot.loader.grub = {
-      enable = lib.mkDefault true;
-      efiSupport = lib.mkDefault false;
-    };
-
-    # Server-specific packages
-    environment.systemPackages = with pkgs; [
-      # keep-sorted start
-      ghostty.terminfo
-      kitty.terminfo
-      # keep-sorted end
-    ];
 
     # Server-specific services
     services = {

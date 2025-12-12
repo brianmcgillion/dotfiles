@@ -1,46 +1,53 @@
 keys:
-  - &admin_brian age1fn6c3gvsmjxpqk9hf9ye863d4rtcwqvq57wax2m7tg3t4ls84vaqtyv759
-  - &host_nephele age1q3elddt6q7mecq49nwhgvhjh9ay34aznhurz8vr8eg3q9ag5p32sh5lmxx
-  - &host_caelus age17hk8tccd9a8sg875mqe6llw3euthjf8wlcmhlhk7lxlhmggvp92sfdstm5
-  - &host_arcadia age1tvd5txsy62uywunnnyrhncdydnmgmg6prjczktw8f68wqun9kqysvuf94h
-  - &host_minerva age1q8rtws7wsgrq5p7f5kxm6fhgtpfwtv5643geskn4euwfgeqkdeaqpd7mst
-  - &host_hades age1yruu5twhmlstggpmmdwjl6zg830wuvx47xxzr59efjhd4m2lrykszkf834
+    - &admin_brian age1fn6c3gvsmjxpqk9hf9ye863d4rtcwqvq57wax2m7tg3t4ls84vaqtyv759
+    - &host_nephele age10a0euuypltmezptwz5tnvkvwy5fmq5u47v78z437hh5e3tc3gqjszr8nwm
+    - &host_nubes age1jwxydusswgeq8wvd8lzrlup4ttqwd39k243ev77crlkmkmf0sfqsq3q6lu
+    - &host_caelus age17hk8tccd9a8sg875mqe6llw3euthjf8wlcmhlhk7lxlhmggvp92sfdstm5
+    - &host_arcadia age1tvd5txsy62uywunnnyrhncdydnmgmg6prjczktw8f68wqun9kqysvuf94h
+    - &host_minerva age1q8rtws7wsgrq5p7f5kxm6fhgtpfwtv5643geskn4euwfgeqkdeaqpd7mst
+    - &host_hades age1yruu5twhmlstggpmmdwjl6zg830wuvx47xxzr59efjhd4m2lrykszkf834
 creation_rules:
-  - path_regex: ^secrets.yaml$
-    key_groups:
-      - age:
-          - *admin_brian
-  - path_regex: ^users/[^/]+\.yaml$
-    key_groups:
-      - age:
-          - *admin_brian
-          - *host_nephele
-          - *host_caelus
-          - *host_arcadia
-          - *host_minerva
-          - *host_hades
-  - path_regex: ^hosts/arcadia/secrets.yaml$
-    key_groups:
-      - age:
-          - *admin_brian
-          - *host_arcadia
-  - path_regex: ^hosts/caelus/secrets.yaml$
-    key_groups:
-      - age:
-          - *admin_brian
-          - *host_caelus
-  - path_regex: ^hosts/minerva/secrets.yaml$
-    key_groups:
-      - age:
-          - *admin_brian
-          - *host_minerva
-  - path_regex: ^hosts/nephele/secrets.yaml$
-    key_groups:
-      - age:
-          - *admin_brian
-          - *host_nephele
-  - path_regex: ^hosts/hades/secrets.yaml$
-    key_groups:
-      - age:
-          - *admin_brian
-          - *host_hades
+    - path_regex: ^secrets.yaml$
+      key_groups:
+          - age:
+                - *admin_brian
+    - path_regex: ^users/[^/]+\.yaml$
+      key_groups:
+          - age:
+                - *admin_brian
+                - *host_nephele
+                - *host_nubes
+                - *host_caelus
+                - *host_arcadia
+                - *host_minerva
+                - *host_hades
+    - path_regex: ^hosts/arcadia/secrets.yaml$
+      key_groups:
+          - age:
+                - *admin_brian
+                - *host_arcadia
+    - path_regex: ^hosts/caelus/secrets.yaml$
+      key_groups:
+          - age:
+                - *admin_brian
+                - *host_caelus
+    - path_regex: ^hosts/minerva/secrets.yaml$
+      key_groups:
+          - age:
+                - *admin_brian
+                - *host_minerva
+    - path_regex: ^hosts/nephele/secrets.yaml$
+      key_groups:
+          - age:
+                - *admin_brian
+                - *host_nephele
+    - path_regex: ^hosts/nubes/secrets.yaml$
+      key_groups:
+          - age:
+                - *admin_brian
+                - *host_nubes
+    - path_regex: ^hosts/hades/secrets.yaml$
+      key_groups:
+          - age:
+                - *admin_brian
+                - *host_hades

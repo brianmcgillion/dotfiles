@@ -41,11 +41,12 @@ Then ensure to update all common secret files. Any time that a new key is added 
 #+begin_src sh
 sops updatekeys secrets.yaml
 sops updatekeys users/bmg-secrets.yaml
+sops updatekeys hosts/HOSTNAME/secrets.yaml
 #+end_src
 
 Finally deploy the configuration to the new server
 #+begin_src sh
-nix run github:nix-community/nixos-anywhere -- --flake .#{server-config} root@<IP address>
+nix run github:nix-community/nixos-anywhere -- --flake .#{server-config} --copy-host-keys root@<IP address>
 #+end_src
 
 Running this again will reset the server back to the state defined in the configuration, including wiping and recreating the disp partitioning scheme.

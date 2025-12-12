@@ -177,6 +177,9 @@
           Host nephele
                Hostname 65.109.25.143
                Port 22
+          Host nubes
+               Hostname 65.108.111.248
+               Port 22
           host ghaf-net
                user ghaf
                IdentityFile ~/.ssh/builder-key
@@ -219,6 +222,10 @@
           nephele = {
             hostNames = [ "65.109.25.143" ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFwoWKmFa6B9SBci63YG0gaP2kxhXNn1vlMgbky6LjKr";
+          };
+          nubes = {
+            hostNames = [ "65.108.111.248" ];
+            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKesx/AKktmMQm6PdBBL+G4M62XKcpFwhBOzHU393b3r";
           };
           caelus = {
             hostNames = [ "95.217.167.39" ];
