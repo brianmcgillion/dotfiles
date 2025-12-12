@@ -4,22 +4,29 @@
 let
   inherit (inputs) deploy-rs;
 
-  mkDeployment = arch: hostname: {
-    inherit hostname;
-    profiles.system = {
-      user = "root";
-      path = deploy-rs.lib.${arch}.activate.nixos self.nixosConfigurations.${hostname};
+  mkDeployment =
+    arch: hostname:
+    {
+      inherit hostname;
+      profiles.system = {
+        user = "root";
+        path = deploy-rs.lib.${arch}.activate.nixos self.nixosConfigurations.${hostname};
+        sshUser = "root";
+        sshOpts = [
+          "-i"
+          "${builtins.getEnv "HOME"}/.ssh/builder-key"
+          "-o"
+          "StrictHostKeyChecking=accept-new"
+        ];
+      };
     };
-  };
 
   x86-nodes = {
     caelus = mkDeployment "x86_64-linux" "caelus";
     nubes = mkDeployment "x86_64-linux" "nubes";
   };
 
-  aarch64-nodes = {
-    #name = mkDeployment "aarch64-linux" "name" "ip";
-  };
+  aarch64-nodes = { };
 in
 {
   flake = {

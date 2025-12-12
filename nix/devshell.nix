@@ -7,6 +7,7 @@
     {
       config,
       pkgs,
+      inputs',
       ...
     }:
     {
@@ -26,6 +27,7 @@
               pkgs.ssh-to-age
               pkgs.reuse
               config.treefmt.build.wrapper
+              inputs'.deploy-rs.packages.default
             ]
             ++ lib.attrValues config.treefmt.build.programs;
         };
@@ -37,6 +39,30 @@
             help = "Deploy NixOS to Hetzner servers (nubes, caelus)";
             command = ''
               exec ${pkgs.writeScriptBin "deploy-hetzner-server" (builtins.readFile ../packages/scripts/deploy-hetzner-server.sh)}/bin/deploy-hetzner-server "$@"
+            '';
+          }
+          {
+            category = "deployment";
+            name = "deploy-rs";
+            help = "Deploy with deploy-rs to configured nodes";
+            command = ''
+              ${inputs'.deploy-rs.packages.default}/bin/deploy "$@"
+            '';
+          }
+          {
+            category = "deployment";
+            name = "deploy-caelus";
+            help = "Deploy to caelus server";
+            command = ''
+              ${inputs'.deploy-rs.packages.default}/bin/deploy .#caelus "$@"
+            '';
+          }
+          {
+            category = "deployment";
+            name = "deploy-nubes";
+            help = "Deploy to nubes server";
+            command = ''
+              ${inputs'.deploy-rs.packages.default}/bin/deploy .#nubes "$@"
             '';
           }
         ];
