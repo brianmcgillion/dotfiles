@@ -14,22 +14,32 @@
         devshell = {
           name = "dotfiles-devshell";
           meta.description = "NixOS dotfiles development environment";
-          packages = [
-            pkgs.cachix
-            pkgs.nix-eval-jobs
-            pkgs.nix-fast-build
-            pkgs.nix-output-monitor
-            pkgs.nix-tree
-            pkgs.nixVersions.latest
-            pkgs.sops
-            pkgs.ssh-to-age
-            pkgs.reuse
-            config.treefmt.build.wrapper
-          ]
-          ++ lib.attrValues config.treefmt.build.programs;
+          packages =
+            [
+              pkgs.cachix
+              pkgs.nix-eval-jobs
+              pkgs.nix-fast-build
+              pkgs.nix-output-monitor
+              pkgs.nix-tree
+              pkgs.nixVersions.latest
+              pkgs.sops
+              pkgs.ssh-to-age
+              pkgs.reuse
+              config.treefmt.build.wrapper
+            ]
+            ++ lib.attrValues config.treefmt.build.programs;
         };
 
-        commands = [ ];
+        commands = [
+          {
+            category = "deployment";
+            name = "deploy-hetzner-server";
+            help = "Deploy NixOS to Hetzner servers (nubes, caelus)";
+            command = ''
+              exec ${pkgs.writeScriptBin "deploy-hetzner-server" (builtins.readFile ../packages/scripts/deploy-hetzner-server.sh)}/bin/deploy-hetzner-server "$@"
+            '';
+          }
+        ];
       };
     };
 }
