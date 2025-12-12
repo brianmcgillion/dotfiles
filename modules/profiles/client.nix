@@ -92,6 +92,8 @@
 
     # Network configuration
     networking = {
+      # Client systems use NetworkManager, not systemd-networkd
+      useNetworkd = lib.mkForce false;
       networkmanager = {
         enable = true;
         plugins = [ pkgs.networkmanager-openconnect ];

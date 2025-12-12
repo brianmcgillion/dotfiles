@@ -26,8 +26,6 @@
 
   sops = {
     defaultSopsFile = ./secrets.yaml;
-    # Use age key from SSH host key (automatically converted)
-    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
     secrets = {
       nebula-ca.owner = config.features.networking.nebula.configOwner;
       nebula-key.owner = config.features.networking.nebula.configOwner;

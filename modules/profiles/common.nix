@@ -165,7 +165,6 @@
       # Open ports in the firewall?
       firewall.enable = true;
       nftables.enable = true;
-      useNetworkd = lib.mkForce false;
     };
 
     programs = {
