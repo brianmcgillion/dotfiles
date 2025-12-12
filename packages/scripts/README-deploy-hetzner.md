@@ -1,3 +1,8 @@
+<!--
+SPDX-License-Identifier: MIT
+SPDX-FileCopyrightText: 2025 Brian McGillion
+-->
+
 # Automated Hetzner Server Deployment
 
 ## Overview
@@ -93,7 +98,7 @@ nix develop  # Provides all tools below
 
 Required tools (provided by devshell):
 - ✅ `nix` with flakes enabled
-- ✅ `jq` for JSON parsing  
+- ✅ `jq` for JSON parsing
 - ✅ `ssh-to-age` for SSH key → age key conversion
 - ✅ `sops` for secrets management
 - ✅ SSH access to target server

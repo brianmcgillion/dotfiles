@@ -34,7 +34,9 @@ let
   rebuild-darter = pkgs.writeScriptBin "rebuild-darter" ''
     nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
   '';
-  deploy-hetzner-server = pkgs.writeScriptBin "deploy-hetzner-server" (builtins.readFile ./deploy-hetzner-server.sh);
+  deploy-hetzner-server = pkgs.writeScriptBin "deploy-hetzner-server" (
+    builtins.readFile ./deploy-hetzner-server.sh
+  );
 in
 #https://discourse.nixos.org/t/install-shell-script-on-nixos/6849/10
 #ownfile = pkgs.callPackage ./ownfile.nix {};

@@ -52,14 +52,17 @@
       # Builder key for automated deployments
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILu6O3swRVWAjP7J8iYGT6st7NAa+o/XaemokmtKdpGa builder key"
     ];
-    extraGroups =
-      [
-        "networkmanager"
-        "wheel"
-        "dialout"
-        "plugdev"
-      ]
-      ++ (lib.optionals (config.features ? development && config.features.development ? docker && config.features.development.docker.enable) [ "docker" ]);
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "dialout"
+      "plugdev"
+    ]
+    ++ (lib.optionals (
+      config.features ? development
+      && config.features.development ? docker
+      && config.features.development.docker.enable
+    ) [ "docker" ]);
     shell = pkgs.bash;
     uid = 1000;
     hashedPasswordFile = config.sops.secrets.login-password.path;

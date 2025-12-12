@@ -4,22 +4,27 @@
 let
   inherit (inputs) deploy-rs;
 
-  mkDeployment =
-    arch: hostname:
-    {
-      inherit hostname;
-      profiles.system = {
-        user = "root";
-        path = deploy-rs.lib.${arch}.activate.nixos self.nixosConfigurations.${hostname};
-        sshUser = "root";
-        sshOpts = [
-          "-i"
-          "${builtins.getEnv "HOME"}/.ssh/builder-key"
-          "-o"
-          "StrictHostKeyChecking=accept-new"
-        ];
-      };
+  # Use impure evaluation to get HOME, or fallback to explicit path
+  sshKeyPath =
+    let
+      home = builtins.getEnv "HOME";
+    in
+    if home != "" then "${home}/.ssh/builder-key" else "/home/brian/.ssh/builder-key";
+
+  mkDeployment = arch: hostname: {
+    inherit hostname;
+    profiles.system = {
+      user = "root";
+      path = deploy-rs.lib.${arch}.activate.nixos self.nixosConfigurations.${hostname};
+      sshUser = "root";
+      sshOpts = [
+        "-i"
+        sshKeyPath
+        "-o"
+        "StrictHostKeyChecking=accept-new"
+      ];
     };
+  };
 
   x86-nodes = {
     caelus = mkDeployment "x86_64-linux" "caelus";

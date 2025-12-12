@@ -127,10 +127,10 @@ Host configurations are minimal and declarative:
 
   # Hardware-specific config
   hardware.cpu.amd.updateMicrocode = true;
-  
+
   # Network interfaces
   networking.hostName = "arcadia";
-  
+
   system.stateVersion = "22.05";
 }
 ```
@@ -190,7 +190,7 @@ Host configurations are minimal and declarative:
 
   # Hardware configuration
   nixpkgs.hostPlatform = "x86_64-linux";
-  
+
   # ... rest of hardware config
 
   system.stateVersion = "24.11";

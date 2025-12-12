@@ -15,22 +15,23 @@
         devshell = {
           name = "dotfiles-devshell";
           meta.description = "NixOS dotfiles development environment";
-          packages =
-            [
-              pkgs.cachix
-              pkgs.nix-eval-jobs
-              pkgs.nix-fast-build
-              pkgs.nix-output-monitor
-              pkgs.nix-tree
-              pkgs.nixVersions.latest
-              pkgs.sops
-              pkgs.ssh-to-age
-              pkgs.reuse
-              config.treefmt.build.wrapper
-              inputs'.deploy-rs.packages.default
-            ]
-            ++ lib.attrValues config.treefmt.build.programs;
+          packages = [
+            pkgs.cachix
+            pkgs.nix-eval-jobs
+            pkgs.nix-fast-build
+            pkgs.nix-output-monitor
+            pkgs.nix-tree
+            pkgs.nixVersions.latest
+            pkgs.sops
+            pkgs.ssh-to-age
+            pkgs.reuse
+            config.treefmt.build.wrapper
+            inputs'.deploy-rs.packages.default
+          ]
+          ++ lib.attrValues config.treefmt.build.programs;
         };
+
+        devshell.startup.pre-commit-hooks.text = config.pre-commit.installationScript;
 
         commands = [
           {
@@ -52,17 +53,17 @@
           {
             category = "deployment";
             name = "deploy-caelus";
-            help = "Deploy to caelus server";
+            help = "Deploy to caelus server (skips flake checks)";
             command = ''
-              ${inputs'.deploy-rs.packages.default}/bin/deploy .#caelus "$@"
+              ${inputs'.deploy-rs.packages.default}/bin/deploy --skip-checks .#caelus "$@"
             '';
           }
           {
             category = "deployment";
             name = "deploy-nubes";
-            help = "Deploy to nubes server";
+            help = "Deploy to nubes server (skips flake checks)";
             command = ''
-              ${inputs'.deploy-rs.packages.default}/bin/deploy .#nubes "$@"
+              ${inputs'.deploy-rs.packages.default}/bin/deploy --skip-checks .#nubes "$@"
             '';
           }
         ];
