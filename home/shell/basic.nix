@@ -62,12 +62,20 @@
       ];
       # The order is important here, because we can override functions in the bashrc
       initExtra = ''
-        # Bash history synchronization across terminals
-        # - history -a: Append new commands to history file
-        # - history -n: Read new history entries from file (commands from other terminals)
-        # This shares history across terminals with less overhead than -c; -r
-        # Note: Only new entries since last read are loaded, not full re-read
-        PROMPT_COMMAND="history -a; history -n"
+        # Disable history for GitHub Copilot CLI sessions
+        # Copilot sets GITHUB_COPILOT_CLI=1 when running commands
+        if [[ -n "$GITHUB_COPILOT_CLI" ]]; then
+          unset HISTFILE
+          # Disable PROMPT_COMMAND to prevent history operations
+          unset PROMPT_COMMAND
+        else
+          # Bash history synchronization across terminals (only for interactive sessions)
+          # - history -a: Append new commands to history file
+          # - history -n: Read new history entries from file (commands from other terminals)
+          # This shares history across terminals with less overhead than -c; -r
+          # Note: Only new entries since last read are loaded, not full re-read
+          PROMPT_COMMAND="history -a; history -n"
+        fi
 
         # Add timestamps to history
         HISTTIMEFORMAT='%F %T '
