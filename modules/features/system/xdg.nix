@@ -68,11 +68,10 @@ in
       };
     };
 
-    # Ensure XDG state directories exist for applications that need them
+    # Ensure XDG state directories exist system-wide
+    # Note: User-specific directories (bash, less) are created in home-manager
     systemd.tmpfiles.rules = [
       "d %h/.local/state 0700 - - -"
-      "d %h/.local/state/bash 0700 - - -"
-      "d %h/.local/state/less 0700 - - -"
     ];
   };
 }

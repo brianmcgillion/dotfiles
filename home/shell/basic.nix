@@ -62,11 +62,12 @@
       ];
       # The order is important here, because we can override functions in the bashrc
       initExtra = ''
-        # Ensure bash state directory exists
-        mkdir -p "''${XDG_STATE_HOME:-$HOME/.local/state}/bash"
-
-        # Write history immediately after each command
-        PROMPT_COMMAND="history -a"
+        # Bash history synchronization across terminals
+        # - history -a: Append new commands to history file
+        # - history -n: Read new history entries from file (commands from other terminals)
+        # This shares history across terminals with less overhead than -c; -r
+        # Note: Only new entries since last read are loaded, not full re-read
+        PROMPT_COMMAND="history -a; history -n"
 
         # Add timestamps to history
         HISTTIMEFORMAT='%F %T '

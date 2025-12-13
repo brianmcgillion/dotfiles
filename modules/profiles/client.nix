@@ -124,7 +124,6 @@
       [
         # keep-sorted start
         act
-        aider-chat-full
         github-copilot-cli
         keymapp
         man-pages

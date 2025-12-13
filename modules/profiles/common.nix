@@ -52,18 +52,34 @@
         "client"
         "server"
       ];
-      description = "Profile target type (client for desktop/laptop, server for headless systems)";
+      example = "client";
+      description = ''
+        Profile target type determining which features are enabled by default.
+        - "client": Desktop/laptop systems with GUI, audio, and development tools
+        - "server": Headless systems with minimal packages and server-focused features
+        Set automatically by importing profile-client or profile-server.
+      '';
     };
 
     common.remoteBuild = {
       sshUser = lib.mkOption {
         type = lib.types.str;
-        description = "SSH user for connecting to remote build machines";
+        example = "builder";
+        description = ''
+          SSH username for connecting to remote Nix build machines.
+          This user must have permission to run Nix builds on the remote system.
+          Used by both deploy-rs and nix.buildMachines configuration.
+        '';
       };
 
       sshKey = lib.mkOption {
         type = lib.types.path;
-        description = "Path to SSH key for authenticating to remote build machines";
+        example = "/home/user/.ssh/builder-key";
+        description = ''
+          Path to SSH private key for authenticating to remote build machines.
+          The corresponding public key must be in the authorized_keys of the remote builder user.
+          Should have restrictive permissions (0600) for security.
+        '';
       };
     };
   };

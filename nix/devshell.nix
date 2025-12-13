@@ -1,6 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
-{ inputs, lib, ... }:
+{
+  inputs,
+  lib,
+  self,
+  ...
+}:
 {
   imports = [ inputs.devshell.flakeModule ];
   perSystem =
@@ -39,7 +44,7 @@
             name = "deploy-hetzner-server";
             help = "Deploy NixOS to Hetzner servers (nubes, caelus)";
             command = ''
-              exec ${pkgs.writeScriptBin "deploy-hetzner-server" (builtins.readFile ../packages/scripts/deploy-hetzner-server.sh)}/bin/deploy-hetzner-server "$@"
+              exec ${pkgs.writeScriptBin "deploy-hetzner-server" (builtins.readFile "${self}/packages/scripts/deploy-hetzner-server.sh")}/bin/deploy-hetzner-server "$@"
             '';
           }
           {

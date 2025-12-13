@@ -62,23 +62,43 @@ in
 
     cert = lib.mkOption {
       type = lib.types.path;
-      description = "Path to the certificate file";
+      example = "/etc/nebula/host.crt";
+      description = ''
+        Path to the Nebula host certificate file.
+        This certificate must be signed by the CA specified in the ca option.
+        Generated using: nebula-cert sign -name "hostname" -ip "10.99.99.x/16"
+      '';
     };
 
     key = lib.mkOption {
       type = lib.types.path;
-      description = "Path to the key file";
+      example = "/etc/nebula/host.key";
+      description = ''
+        Path to the Nebula host private key file.
+        This key is generated alongside the certificate and must be kept secure.
+        Permissions should be 0600 and owned by the nebula service user.
+      '';
     };
 
     ca = lib.mkOption {
       type = lib.types.path;
-      description = "Path to the CA file";
+      example = "/etc/nebula/ca.crt";
+      description = ''
+        Path to the Nebula Certificate Authority (CA) certificate file.
+        All nodes in the Nebula network must share the same CA certificate.
+        Generated using: nebula-cert ca -name "Organization Name"
+      '';
     };
 
     configOwner = lib.mkOption {
       type = lib.types.str;
       default = defaultOwner;
-      description = "Owner of the nebula config file";
+      example = "nebula";
+      description = ''
+        Owner of the Nebula configuration file.
+        Defaults to the user running the nebula systemd service.
+        Must have read access to cert, key, and ca files.
+      '';
     };
 
     staticHostMap = lib.mkOption {
@@ -86,10 +106,19 @@ in
       default = {
         "10.99.99.1" = [ "95.217.167.39:${toString port}" ];
       };
-      description = "Static host map for nebula lighthouse nodes";
       example = {
-        "10.99.99.1" = [ "192.0.2.1:4242" ];
+        "10.99.99.1" = [
+          "192.0.2.1:4242"
+          "198.51.100.1:4242"
+        ];
+        "10.99.99.2" = [ "203.0.113.10:4242" ];
       };
+      description = ''
+        Static mappings of Nebula IP addresses to public internet addresses.
+        Used to initially contact lighthouse nodes before using the Nebula network for discovery.
+        Format: { "nebula-ip" = [ "public-ip:port" ... ]; }
+        Multiple public addresses can be specified for redundancy.
+      '';
     };
   };
 

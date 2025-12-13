@@ -6,6 +6,7 @@
 # shared with other users:
 # - Git identity and configuration
 # - Doom Emacs personal configuration repository (client systems only)
+# - XDG state directory initialization for user applications
 # - Other user-specific preferences
 #
 # Usage:
@@ -13,7 +14,10 @@
 #
 # Options:
 #   userProfile.enableEmacs - Whether to enable Brian's Emacs config (default: false)
-{ lib, ... }:
+{
+  lib,
+  ...
+}:
 {
   options.userProfile.enableEmacs = lib.mkOption {
     type = lib.types.bool;
@@ -25,4 +29,13 @@
     ./git.nix
     ./emacs.nix
   ];
+
+  config = {
+    # Ensure XDG state directories exist for user applications
+    # $DRY_RUN_CMD is provided by home-manager for dry-run support
+    # See: https://nix-community.github.io/home-manager/index.xhtml#sec-usage-activation
+    home.activation.ensureXdgStateDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD mkdir -p "''${XDG_STATE_HOME:-$HOME/.local/state}"/{bash,less}
+    '';
+  };
 }
