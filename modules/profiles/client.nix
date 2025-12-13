@@ -54,11 +54,13 @@
     self.nixosModules.feature-fail2ban
     self.nixosModules.scripts
     inputs.srvos.nixosModules.desktop
-    inputs.home-manager.nixosModules.home-manager
     inputs.gp-gui.nixosModules.default
   ];
 
   config = {
+    # Set profile target
+    profile.target = "client";
+
     # Enable client features by default
     features = {
       desktop = {
@@ -143,21 +145,6 @@
     # Developer documentation
     documentation = {
       dev.enable = true;
-    };
-
-    # Home-manager configuration
-    home-manager = {
-      useGlobalPkgs = true;
-      useUserPackages = true;
-      extraSpecialArgs = {
-        inherit inputs self;
-      };
-      users.brian = {
-        imports = [
-          ../../home/profiles/client.nix
-          inputs.nix-index-database.homeModules.nix-index
-        ];
-      };
     };
   };
 }

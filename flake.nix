@@ -152,6 +152,7 @@
 
         imports = [
           ./modules
+          ./home
           ./hosts
           ./nix
           ./packages

@@ -33,9 +33,13 @@
   config,
   lib,
   pkgs,
+  inputs,
+  self,
   ...
 }:
 {
+  imports = [ inputs.home-manager.nixosModules.home-manager ];
+
   sops.secrets.login-password = {
     neededForUsers = true;
     sopsFile = ../../users/bmg-secrets.yaml;
@@ -66,5 +70,20 @@
     shell = pkgs.bash;
     uid = 1000;
     hashedPasswordFile = config.sops.secrets.login-password.path;
+  };
+
+  # Home-manager configuration
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    extraSpecialArgs = {
+      inherit inputs self;
+    };
+    users.brian = {
+      imports = [
+        self.homeModules."home-profile-${config.profile.target}"
+        inputs.nix-index-database.homeModules.nix-index
+      ];
+    };
   };
 }

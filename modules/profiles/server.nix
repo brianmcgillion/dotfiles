@@ -42,7 +42,6 @@
     inputs.srvos.nixosModules.mixins-terminfo
     inputs.srvos.nixosModules.mixins-mdns
     inputs.srvos.nixosModules.roles-nix-remote-builder
-    inputs.home-manager.nixosModules.home-manager
     {
       # TODO: set the key programmatically
       roles.nix-remote-builder.schedulerPublicKeys = [
@@ -52,6 +51,9 @@
   ];
 
   config = {
+    # Set profile target
+    profile.target = "server";
+
     # Enable server features by default
     features = {
       security = {
@@ -73,20 +75,5 @@
       "8.8.8.8"
       # keep-sorted end
     ];
-
-    # Home-manager configuration
-    home-manager = {
-      useGlobalPkgs = true;
-      useUserPackages = true;
-      extraSpecialArgs = {
-        inherit inputs self;
-      };
-      users.brian = {
-        imports = [
-          ../../home/profiles/server.nix
-          inputs.nix-index-database.homeModules.nix-index
-        ];
-      };
-    };
   };
 }

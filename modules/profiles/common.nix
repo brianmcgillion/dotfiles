@@ -46,6 +46,14 @@
     inputs.disko.nixosModules.disko
   ];
 
+  options.profile.target = lib.mkOption {
+    type = lib.types.enum [
+      "client"
+      "server"
+    ];
+    description = "Profile target type (client for desktop/laptop, server for headless systems)";
+  };
+
   config = {
     # Enable hardening and system packages by default
     features = {
