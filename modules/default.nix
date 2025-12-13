@@ -30,6 +30,7 @@ _: {
     feature-locale-fonts = import ./features/system/locale-fonts.nix;
     feature-xdg = import ./features/system/xdg.nix;
     feature-system-packages = import ./features/system/packages.nix;
+    feature-nix-settings = import ./features/system/nix-settings.nix;
 
     # Hardware
     hardware-nvidia = import ./hardware/nvidia.nix;

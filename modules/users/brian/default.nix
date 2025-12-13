@@ -43,6 +43,15 @@
   # Nix settings
   nix.settings.trusted-users = [ "brian" ];
 
+  # GitHub token for Nix flake operations (avoiding rate limits)
+  features.system.nix-settings = {
+    enable = true;
+    githubToken = {
+      enable = true;
+      sopsFile = ./bmg-secrets.yaml;
+    };
+  };
+
   # Remote build settings (defined in common.nix)
   common.remoteBuild = {
     sshUser = "bmg";

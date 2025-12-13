@@ -9,6 +9,100 @@ SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 
 **CRITICAL: Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
 
+## Serena Code Analysis (MCP Server)
+
+**IMPORTANT: At the start of every session, check if Serena is available by running `serena-get_current_config` or `serena-check_onboarding_performed`. If Serena is enabled, use it for ALL code analysis and investigation tasks.**
+
+### When to Use Serena
+
+Use Serena's semantic analysis tools for:
+- **Understanding NixOS module structure**: Find symbols, analyze imports, trace feature dependencies
+- **Investigating configuration options**: Find where options are defined, used, or referenced
+- **Analyzing function definitions**: Understand NixOS module functions, overlays, and package definitions
+- **Tracking changes**: Find all references to a specific option or function before modifications
+- **Code navigation**: Browse symbol hierarchies in Nix modules without reading entire files
+
+### Standard Serena Workflow for NixOS
+
+1. **Check session state**: `serena-check_onboarding_performed` to verify Serena is ready
+2. **List available memories**: `serena-list_memories` to see existing project knowledge
+3. **Read relevant memories**: `serena-read_memory` for context on specific areas (e.g., "features-architecture")
+4. **Find symbols/options**: Use `serena-find_symbol` to locate NixOS options, functions, or module definitions
+5. **Analyze references**: Use `serena-find_referencing_symbols` to see where options/functions are used
+6. **Get file overview**: Use `serena-get_symbols_overview` to understand module structure
+7. **Create memories**: Use `serena-write_memory` to document findings for future sessions
+
+### Example Serena Commands
+
+```
+# Find a feature module definition
+serena-find_symbol --name_path_pattern "features.desktop.audio.enable"
+
+# See all references to a specific option
+serena-find_referencing_symbols --name_path "enable" --relative_path "modules/features/desktop/audio.nix"
+
+# Get overview of a module's exports
+serena-get_symbols_overview --relative_path "modules/features/security/sshd.nix"
+
+# Search for SOPS-related patterns
+serena-search_for_pattern --substring_pattern "sops\\.secrets\\." --restrict_search_to_code_files true
+```
+
+**Note**: If Serena is not available in the session, fall back to standard grep/view tools for code analysis.
+
+## Context7 Documentation Lookup (MCP Server)
+
+**IMPORTANT: Use Context7 for up-to-date documentation on NixOS, Nix language, Home Manager, and other Nix ecosystem tools.**
+
+### When to Use Context7
+
+Use Context7 for:
+- **NixOS options documentation**: Understanding system configuration options and their usage
+- **Home Manager options**: Looking up home-manager configuration syntax and available options
+- **Nix language features**: Getting current Nix language syntax, builtins, and best practices
+- **Package information**: Understanding package attributes, overlays, and derivation patterns
+- **Module system**: Learning about NixOS module structure, option definitions, and imports
+
+### Standard Context7 Workflow
+
+1. **Resolve library ID**: Use `context7-resolve-library-id` to find the correct library
+   - Examples: "nixos", "home-manager", "nix", "nixpkgs"
+2. **Get documentation**: Use `context7-get-library-docs` with the resolved library ID
+   - Use `mode='code'` (default) for API references, options, and code examples
+   - Use `mode='info'` for conceptual guides, tutorials, and architecture
+3. **Iterate with pagination**: If context is insufficient, use `page=2`, `page=3`, etc.
+4. **Focus with topics**: Use the `topic` parameter to narrow documentation scope
+
+### Example Context7 Commands
+
+```
+# Find NixOS documentation library
+context7-resolve-library-id --libraryName "nixos"
+
+# Get NixOS options documentation (code mode)
+context7-get-library-docs --context7CompatibleLibraryID "/NixOS/nixos" --mode "code" --topic "services.sshd"
+
+# Get Home Manager options
+context7-get-library-docs --context7CompatibleLibraryID "/nix-community/home-manager" --mode "code" --topic "programs.git"
+
+# Get conceptual Nix language guide (info mode)
+context7-get-library-docs --context7CompatibleLibraryID "/NixOS/nix" --mode "info" --topic "language"
+
+# Get SOPS-nix documentation
+context7-get-library-docs --context7CompatibleLibraryID "/Mic92/sops-nix" --mode "code" --topic "secrets"
+```
+
+### Common NixOS Libraries
+
+- `/NixOS/nixos` - NixOS system configuration options
+- `/NixOS/nixpkgs` - Nixpkgs package set and functions
+- `/NixOS/nix` - Nix language and package manager
+- `/nix-community/home-manager` - Home Manager user environment management
+- `/Mic92/sops-nix` - SOPS secrets management for NixOS
+- `/numtide/flake-utils` - Flake utility functions
+
+**Note**: Always resolve library IDs first unless you know the exact Context7-compatible ID format.
+
 ## Project Overview
 
 This repository manages NixOS configurations for multiple machines:
@@ -193,11 +287,11 @@ For provisioning a new server from scratch:
    ssh-keyscan SERVER | ssh-to-age
    # or from the host itself:
    cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age
-   
+
    # Add key to .sops.yaml
    # Create host secrets
    sops hosts/SERVER/secrets.yaml
-   
+
    # Update all common secrets with new key
    sops updatekeys secrets.yaml
    sops updatekeys users/bmg-secrets.yaml
@@ -207,7 +301,7 @@ For provisioning a new server from scratch:
    ```bash
    nix run github:nix-community/nixos-anywhere -- --flake .#<server-config> root@<IP address>
    ```
-   
+
    **WARNING**: This wipes and recreates the disk partitioning scheme!
 
 ## Common Tasks
@@ -290,4 +384,3 @@ in
 - Use kebab-case for file names: `feature-name.nix`
 - Use camelCase for option names: `features.category.featureName.enable`
 - Host names should be lowercase: `arcadia`, `nephele`
-

@@ -35,6 +35,7 @@
   imports = [
     self.nixosModules.feature-hardening
     self.nixosModules.feature-system-packages
+    self.nixosModules.feature-nix-settings
     self.nixosModules.feature-xdg
     self.nixosModules.feature-nebula
     self.nixosModules.user-brian
@@ -88,8 +89,10 @@
     # Enable hardening and system packages by default
     features = {
       security.hardening.enable = lib.mkDefault true;
-      system.packages.enable = lib.mkDefault true;
-      system.xdg.enable = lib.mkDefault true;
+      system = {
+        packages.enable = lib.mkDefault true;
+        xdg.enable = lib.mkDefault true;
+      };
     };
 
     nixpkgs = {
