@@ -4,12 +4,19 @@
 let
   inherit (inputs) deploy-rs;
 
-  # Use impure evaluation to get HOME, or fallback to explicit path
+  # Use impure evaluation to get HOME, or fallback to config value
   sshKeyPath =
     let
       home = builtins.getEnv "HOME";
+      # Get SSH key from system configuration (using caelus as reference)
+      configKey = self.nixosConfigurations.arcadia.config.common.remoteBuild.sshKey or null;
     in
-    if home != "" then "${home}/.ssh/builder-key" else "/home/brian/.ssh/builder-key";
+    if home != "" then
+      "${home}/.ssh/builder-key"
+    else if configKey != null then
+      configKey
+    else
+      throw "Cannot determine SSH key path for deployment. Set HOME environment variable or configure common.remoteBuild.sshKey.";
 
   mkDeployment = arch: hostname: {
     inherit hostname;

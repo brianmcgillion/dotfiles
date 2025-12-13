@@ -46,12 +46,26 @@
     inputs.disko.nixosModules.disko
   ];
 
-  options.profile.target = lib.mkOption {
-    type = lib.types.enum [
-      "client"
-      "server"
-    ];
-    description = "Profile target type (client for desktop/laptop, server for headless systems)";
+  options = {
+    common.profile.target = lib.mkOption {
+      type = lib.types.enum [
+        "client"
+        "server"
+      ];
+      description = "Profile target type (client for desktop/laptop, server for headless systems)";
+    };
+
+    common.remoteBuild = {
+      sshUser = lib.mkOption {
+        type = lib.types.str;
+        description = "SSH user for connecting to remote build machines";
+      };
+
+      sshKey = lib.mkOption {
+        type = lib.types.path;
+        description = "Path to SSH key for authenticating to remote build machines";
+      };
+    };
   };
 
   config = {
@@ -95,10 +109,7 @@
         # Avoid copying unnecessary stuff over SSH
         builders-use-substitutes = true;
         build-users-group = "nixbld";
-        trusted-users = [
-          "root"
-          "brian"
-        ];
+        trusted-users = [ "root" ];
         auto-optimise-store = true; # Optimise syslinks
         keep-outputs = true; # Keep outputs of derivations
         keep-derivations = true; # Keep derivations
@@ -125,9 +136,8 @@
             "big-parallel"
             "kvm"
           ];
-          # TODO: Fix this
-          sshUser = "bmg";
-          sshKey = "/home/brian/.ssh/builder-key";
+          inherit (config.common.remoteBuild) sshUser;
+          inherit (config.common.remoteBuild) sshKey;
         }
         {
           hostName = "vedenemo-builder";
@@ -140,9 +150,8 @@
             "big-parallel"
             "kvm"
           ];
-          # TODO: Fix this
-          sshUser = "bmg";
-          sshKey = "/home/brian/.ssh/builder-key";
+          inherit (config.common.remoteBuild) sshUser;
+          inherit (config.common.remoteBuild) sshKey;
         }
       ];
 
@@ -177,58 +186,15 @@
 
     programs = {
       ssh = {
-        extraConfig = ''
-          Host hetzarm
-               user bmg
-               HostName 65.21.20.242
-          Host nephele
-               Hostname 65.109.25.143
-               Port 22
-          Host nubes
-               Hostname 65.108.111.248
-               Port 22
-          host ghaf-net
-               user ghaf
-               IdentityFile ~/.ssh/builder-key
-               #hostname 192.168.10.108 #x1-carbon
-               hostname 192.168.10.229 #darter-pro
-               #hostname 192.168.10.34 #usb-ethernet
-          host ghaf-host
-               user ghaf
-               IdentityFile ~/.ssh/builder-key
-               hostname 192.168.100.2
-               proxyjump ghaf-net
-          host ghaf-ui
-               user ghaf
-               IdentityFile ~/.ssh/builder-key
-               hostname 192.168.100.3
-               proxyjump ghaf-net
-          host agx-host
-               user ghaf
-               IdentityFile ~/.ssh/builder-key
-               hostname 192.168.10.149
-          host vedenemo-builder
-               user bmg
-               hostname builder.vedenemo.dev
-               IdentityFile ~/.ssh/builder-key
-          host caelus
-               hostname 95.217.167.39
-          host uae-lab-node1
-               user bmg
-               hostname 10.161.5.196
-        '';
+        # SSH known hosts (system-wide, needed for build machines and all users)
         knownHosts = {
-          hetzarm-ed25519 = {
+          hetzarm = {
             hostNames = [ "65.21.20.242" ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILx4zU4gIkTY/1oKEOkf9gTJChdx/jR3lDgZ7p/c7LEK";
           };
           vedenemo-builder = {
             hostNames = [ "builder.vedenemo.dev" ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG68NdmOw3mhiBZwDv81dXitePoc1w//p/LpsHHA8QRp";
-          };
-          nephele = {
-            hostNames = [ "65.109.25.143" ];
-            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFwoWKmFa6B9SBci63YG0gaP2kxhXNn1vlMgbky6LjKr";
           };
           nubes = {
             hostNames = [ "65.108.111.248" ];

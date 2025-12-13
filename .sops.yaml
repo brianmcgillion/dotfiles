@@ -10,7 +10,7 @@ creation_rules:
       key_groups:
           - age:
                 - *admin_brian
-    - path_regex: ^users/[^/]+\.yaml$
+    - path_regex: ^modules/users/[^/]+/[^/]+\.yaml$
       key_groups:
           - age:
                 - *admin_brian

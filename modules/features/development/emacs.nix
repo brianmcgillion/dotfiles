@@ -107,15 +107,5 @@ in
         # keep-sorted end
       ]
       ++ [ inputs.nixd.packages."${pkgs.stdenv.hostPlatform.system}".nixd ];
-
-    system.userActivationScripts = {
-      installDoomEmacs = ''
-        source ${config.system.build.setEnvironment}
-        if [ ! -d "$XDG_CONFIG_HOME/emacs" ]; then
-          git clone https://github.com/doomemacs/doomemacs.git "$XDG_CONFIG_HOME/emacs"
-          git clone https://github.com/brianmcgillion/doomd.git "$XDG_CONFIG_HOME/doom"
-        fi
-      '';
-    };
   };
 }

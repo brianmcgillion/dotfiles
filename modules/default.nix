@@ -35,7 +35,7 @@ _: {
     hardware-nvidia = import ./hardware/nvidia.nix;
 
     # Users
-    user-brian = import ./users/brian.nix;
+    user-brian = import ./users/brian;
     user-root = import ./users/root.nix;
     user-groups = import ./users/groups.nix;
   };

@@ -52,7 +52,7 @@
 
   config = {
     # Set profile target
-    profile.target = "server";
+    common.profile.target = "server";
 
     # Enable server features by default
     features = {

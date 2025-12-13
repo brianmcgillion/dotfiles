@@ -6,5 +6,8 @@ _: {
     # Home-manager profiles
     home-profile-client = import ./profiles/client.nix;
     home-profile-server = import ./profiles/server.nix;
+
+    # User-specific profiles
+    user-profile-brian = import ./profiles/brian;
   };
 }

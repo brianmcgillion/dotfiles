@@ -183,17 +183,24 @@ if [ "$OLD_AGE_KEY" != "$NEW_AGE_KEY" ]; then
   echo ""
   log_step "Step 5: Updating SOPS secrets"
 
-  # Update user secrets
-  if [ -f "users/bmg-secrets.yaml" ]; then
-    log_info "Updating users/bmg-secrets.yaml..."
-    if echo "y" | sops updatekeys users/bmg-secrets.yaml 2>&1 | grep -q "synced with new keys"; then
-      log_info "✓ users/bmg-secrets.yaml updated"
-    else
-      log_error "Failed to update users/bmg-secrets.yaml"
-      mv .sops.yaml.backup .sops.yaml
-      exit 1
+  # Update user secrets - auto-detect all user modules
+  for user_dir in modules/users/*/; do
+    if [ -d "$user_dir" ]; then
+      # Find any .yaml files in the user directory (excluding default.nix)
+      for secret_file in "$user_dir"*.yaml; do
+        if [ -f "$secret_file" ]; then
+          log_info "Updating $secret_file..."
+          if echo "y" | sops updatekeys "$secret_file" 2>&1 | grep -q "synced with new keys"; then
+            log_info "✓ $secret_file updated"
+          else
+            log_error "Failed to update $secret_file"
+            mv .sops.yaml.backup .sops.yaml
+            exit 1
+          fi
+        fi
+      done
     fi
-  fi
+  done
 
   # Update host-specific secrets
   if [ -f "hosts/$HOST/secrets.yaml" ]; then
@@ -255,7 +262,16 @@ if nix run github:nix-community/nixos-anywhere -- \
   log_info "Server is rebooting. Wait 2-3 minutes then connect with:"
   log_info "  ssh -i $SSH_KEY root@$HOST_IP"
   log_info ""
-  log_info "You can also login via Hetzner KVM console as user 'brian'"
+
+  # Auto-detect primary user from configuration
+  # shellcheck disable=SC2016
+  PRIMARY_USER=$(nix eval --raw ".#nixosConfigurations.$HOST.config.users.users" --apply 'users: builtins.head (builtins.filter (u: users.${u}.isNormalUser or false) (builtins.attrNames users))' 2>/dev/null || echo "")
+
+  if [ -n "$PRIMARY_USER" ]; then
+    log_info "You can also login via Hetzner KVM console as user '$PRIMARY_USER'"
+  else
+    log_info "You can also login via Hetzner KVM console"
+  fi
   log_info "======================================================================"
 else
   log_error "Deployment failed"

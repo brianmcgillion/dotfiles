@@ -59,7 +59,7 @@
 
   config = {
     # Set profile target
-    profile.target = "client";
+    common.profile.target = "client";
 
     # Enable client features by default
     features = {
