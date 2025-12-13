@@ -88,8 +88,7 @@ in
       content = ''
         access-tokens = github.com=${config.sops.placeholder."github-token-ratelimit"}
       '';
-      mode = "0440";
-      group = config.users.groups.keys.name;
+      mode = "0444";
     };
 
     # Ensure the secret file is read before Nix daemon starts
