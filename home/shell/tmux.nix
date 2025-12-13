@@ -8,15 +8,17 @@
       clock24 = true;
       mouse = true;
       newSession = true;
-      plugins = with pkgs; [
-        tmuxPlugins.dracula
-        tmuxPlugins.tmux-fzf
-        tmuxPlugins.sensible
-        tmuxPlugins.tmux-which-key
-        #tmuxPlugins.tmux-thumbs
-        #tmuxPlugins.sysstat
-        tmuxPlugins.better-mouse-mode
-        #tmuxPlugins.tmux-powerline
+      plugins = [
+        # keep-sorted start
+        pkgs.tmuxPlugins.better-mouse-mode
+        pkgs.tmuxPlugins.dracula
+        pkgs.tmuxPlugins.sensible
+        pkgs.tmuxPlugins.tmux-fzf
+        pkgs.tmuxPlugins.tmux-which-key
+        #pkgs.tmuxPlugins.sysstat
+        #pkgs.tmuxPlugins.tmux-powerline
+        #pkgs.tmuxPlugins.tmux-thumbs
+        # keep-sorted end
       ];
       terminal = "tmux-256color";
     };

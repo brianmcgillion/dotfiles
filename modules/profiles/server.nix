@@ -33,15 +33,17 @@
 }:
 {
   imports = [
+    # keep-sorted start
     ./common.nix
-    self.nixosModules.feature-sshd
-    self.nixosModules.feature-fail2ban
-    self.nixosModules.user-root
-    self.nixosModules.scripts
-    inputs.srvos.nixosModules.server
-    inputs.srvos.nixosModules.mixins-terminfo
     inputs.srvos.nixosModules.mixins-mdns
+    inputs.srvos.nixosModules.mixins-terminfo
     inputs.srvos.nixosModules.roles-nix-remote-builder
+    inputs.srvos.nixosModules.server
+    self.nixosModules.feature-fail2ban
+    self.nixosModules.feature-sshd
+    self.nixosModules.scripts
+    self.nixosModules.user-root
+    # keep-sorted end
     {
       # TODO: set the key programmatically
       roles.nix-remote-builder.schedulerPublicKeys = [

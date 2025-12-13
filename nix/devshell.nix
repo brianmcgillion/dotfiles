@@ -21,17 +21,19 @@
           name = "dotfiles-devshell";
           meta.description = "NixOS dotfiles development environment";
           packages = [
+            # keep-sorted start
+            config.treefmt.build.wrapper
+            inputs'.deploy-rs.packages.default
             pkgs.cachix
             pkgs.nix-eval-jobs
             pkgs.nix-fast-build
             pkgs.nix-output-monitor
             pkgs.nix-tree
             pkgs.nixVersions.latest
+            pkgs.reuse
             pkgs.sops
             pkgs.ssh-to-age
-            pkgs.reuse
-            config.treefmt.build.wrapper
-            inputs'.deploy-rs.packages.default
+            # keep-sorted end
           ]
           ++ lib.attrValues config.treefmt.build.programs;
         };

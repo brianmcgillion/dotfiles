@@ -37,16 +37,16 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = [
       # keep-sorted start
-      age
-      age-plugin-yubikey
-      yubikey-manager
-      yubikey-touch-detector
+      pkgs.age
+      pkgs.age-plugin-yubikey
+      pkgs.yubikey-manager
+      pkgs.yubikey-touch-detector
       # keep-sorted end
     ];
 
     services.pcscd.enable = true;
-    services.udev.packages = with pkgs; [ yubikey-manager ];
+    services.udev.packages = [ pkgs.yubikey-manager ];
   };
 }

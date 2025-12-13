@@ -63,18 +63,20 @@ in
     };
 
     fonts = {
-      packages = with pkgs; [
-        carlito
-        vegur
-        liberation_ttf
-        font-awesome
-        nerd-fonts.fira-code
-        nerd-fonts.symbols-only
-        noto-fonts-color-emoji
-        source-serif
-        fira-go
-        fira-sans
-        symbola
+      packages = [
+        # keep-sorted start
+        pkgs.carlito
+        pkgs.fira-go
+        pkgs.fira-sans
+        pkgs.font-awesome
+        pkgs.liberation_ttf
+        pkgs.nerd-fonts.fira-code
+        pkgs.nerd-fonts.symbols-only
+        pkgs.noto-fonts-color-emoji
+        pkgs.source-serif
+        pkgs.symbola
+        pkgs.vegur
+        # keep-sorted end
       ];
 
       enableDefaultPackages = true;

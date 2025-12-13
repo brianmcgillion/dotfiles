@@ -3,10 +3,10 @@
 { pkgs, ... }:
 {
   # graphical tools used for development
-  home.packages = with pkgs; [
+  home.packages = [
     # keep-sorted start
-    bcompare
-    mendeley
+    pkgs.bcompare
+    pkgs.mendeley
     # keep-sorted end
   ];
   #services.flameshot.enable = true;

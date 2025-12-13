@@ -2,26 +2,26 @@
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 { pkgs, ... }:
 {
-  home.packages = with pkgs; [
+  home.packages = [
     # keep-sorted start
-    (ripgrep.override { withPCRE2 = true; })
-    cheat
-    curlie
-    delta
-    dogdns # DNS client
-    doggo
-    duf # df replacement
-    dust # du replacement
-    fd # faster projectile indexing
-    file
-    httpie
-    jq # sed for json
-    psmisc
-    shellcheck
-    shfmt
-    tldr # simplified man pages
-    tree
-    xh
+    (pkgs.ripgrep.override { withPCRE2 = true; })
+    pkgs.cheat
+    pkgs.curlie
+    pkgs.delta
+    pkgs.dogdns # DNS client
+    pkgs.doggo
+    pkgs.duf # df replacement
+    pkgs.dust # du replacement
+    pkgs.fd # faster projectile indexing
+    pkgs.file
+    pkgs.httpie
+    pkgs.jq # sed for json
+    pkgs.psmisc
+    pkgs.shellcheck
+    pkgs.shfmt
+    pkgs.tldr # simplified man pages
+    pkgs.tree
+    pkgs.xh
     # keep-sorted end
   ];
 

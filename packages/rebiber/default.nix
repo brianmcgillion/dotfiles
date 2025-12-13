@@ -6,9 +6,12 @@
   fetchFromGitHub,
 }:
 
-python3Packages.buildPythonPackage rec {
+let
   pname = "rebiber";
   version = "1.3.0";
+in
+python3Packages.buildPythonPackage {
+  inherit pname version;
   pyproject = true;
 
   src = fetchFromGitHub {
@@ -20,13 +23,13 @@ python3Packages.buildPythonPackage rec {
 
   strictDeps = true;
 
-  build-system = with python3Packages; [
-    hatchling
+  build-system = [
+    python3Packages.hatchling
   ];
 
-  dependencies = with python3Packages; [
-    bibtexparser
-    tqdm
+  dependencies = [
+    python3Packages.bibtexparser
+    python3Packages.tqdm
   ];
 
   pythonImportsCheck = [ "rebiber" ];

@@ -42,19 +42,21 @@
 }:
 {
   imports = [
+    # keep-sorted start
     ./common.nix
+    inputs.gp-gui.nixosModules.default
+    inputs.srvos.nixosModules.desktop
     self.nixosModules.feature-audio
     self.nixosModules.feature-desktop-manager
     self.nixosModules.feature-docker
     self.nixosModules.feature-emacs
     self.nixosModules.feature-emacs-ui
-    self.nixosModules.feature-locale-fonts
-    self.nixosModules.feature-yubikey
-    self.nixosModules.feature-sshd
     self.nixosModules.feature-fail2ban
+    self.nixosModules.feature-locale-fonts
+    self.nixosModules.feature-sshd
+    self.nixosModules.feature-yubikey
     self.nixosModules.scripts
-    inputs.srvos.nixosModules.desktop
-    inputs.gp-gui.nixosModules.default
+    # keep-sorted end
   ];
 
   config = {
@@ -119,25 +121,23 @@
     };
 
     # Client-specific packages
-    environment.systemPackages =
-      with pkgs;
-      [
-        # keep-sorted start
-        act
-        github-copilot-cli
-        keymapp
-        man-pages
-        man-pages-posix
-        pciutils
-        rebiber
-        usbutils
-        wally-cli
-        # keep-sorted end
-      ]
-      ++ [
-        inputs.nix-ai.packages."${pkgs.stdenv.hostPlatform.system}".default
-        #inputs.globalprotect-openconnect.packages."${pkgs.stdenv.hostPlatform.system}".default
-      ];
+    environment.systemPackages = [
+      # keep-sorted start
+      pkgs.act
+      pkgs.github-copilot-cli
+      pkgs.keymapp
+      pkgs.man-pages
+      pkgs.man-pages-posix
+      pkgs.pciutils
+      pkgs.rebiber
+      pkgs.usbutils
+      pkgs.wally-cli
+      # keep-sorted end
+    ]
+    ++ [
+      inputs.nix-ai.packages."${pkgs.stdenv.hostPlatform.system}".default
+      #inputs.globalprotect-openconnect.packages."${pkgs.stdenv.hostPlatform.system}".default
+    ];
 
     hardware.keyboard.zsa.enable = true;
 

@@ -39,17 +39,15 @@
 }:
 let
   cfg = config.features.development.emacs;
-  emacs =
-    with pkgs;
-    ((emacsPackagesFor emacs-git).emacsWithPackages (
-      epkgs: with epkgs; [
-        treesit-grammars.with-all-grammars
-        tree-sitter-langs
-        vterm
-        pdf-tools
-        org-pdftools
-      ]
-    ));
+  emacs = (pkgs.emacsPackagesFor pkgs.emacs-git).emacsWithPackages (epkgs: [
+    # keep-sorted start
+    epkgs.org-pdftools
+    epkgs.pdf-tools
+    epkgs.tree-sitter-langs
+    epkgs.treesit-grammars.with-all-grammars
+    epkgs.vterm
+    # keep-sorted end
+  ]);
 in
 {
   options.features.development.emacs = {
@@ -71,41 +69,37 @@ in
       PATH = lib.mkAfter [ "\${XDG_CONFIG_HOME}/emacs/bin" ];
     };
 
-    environment.systemPackages =
-      with pkgs;
-      [
+    environment.systemPackages = [
+      # keep-sorted start
+      (pkgs.aspellWithDicts (ds: [
         # keep-sorted start
-        (aspellWithDicts (
-          ds: with ds; [
-            # keep-sorted start
-            en
-            en-computers
-            en-science
-            # keep-sorted end
-          ]
-        ))
-        binutils
-        copilot-language-server
-        dockerfile-language-server
-        dockfmt
-        editorconfig-core-c
-        emacs
-        github-mcp-server
-        inputs.mcp-nixos.packages."${pkgs.stdenv.hostPlatform.system}".default
-        libxml2
-        neocmakelsp
-        nodePackages.bash-language-server
-        nodePackages.prettier
-        nodePackages.typescript-language-server
-        nodePackages.vscode-langservers-extracted
-        nodePackages.yaml-language-server
-        nodejs
-        python3Packages.grip
-        sqlite
-        wordnet
-        zstd
+        ds.en
+        ds.en-computers
+        ds.en-science
         # keep-sorted end
-      ]
-      ++ [ inputs.nixd.packages."${pkgs.stdenv.hostPlatform.system}".nixd ];
+      ]))
+      emacs
+      inputs.mcp-nixos.packages."${pkgs.stdenv.hostPlatform.system}".default
+      pkgs.binutils
+      pkgs.copilot-language-server
+      pkgs.dockerfile-language-server
+      pkgs.dockfmt
+      pkgs.editorconfig-core-c
+      pkgs.github-mcp-server
+      pkgs.libxml2
+      pkgs.neocmakelsp
+      pkgs.nodePackages.bash-language-server
+      pkgs.nodePackages.prettier
+      pkgs.nodePackages.typescript-language-server
+      pkgs.nodePackages.vscode-langservers-extracted
+      pkgs.nodePackages.yaml-language-server
+      pkgs.nodejs
+      pkgs.python3Packages.grip
+      pkgs.sqlite
+      pkgs.wordnet
+      pkgs.zstd
+      # keep-sorted end
+    ]
+    ++ [ inputs.nixd.packages."${pkgs.stdenv.hostPlatform.system}".nixd ];
   };
 }

@@ -34,14 +34,14 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = [
       # keep-sorted start
-      gnuplot
-      gnutls
-      graphviz
-      imagemagick
-      texlive.combined.scheme-medium
-      wl-clipboard
+      pkgs.gnuplot
+      pkgs.gnutls
+      pkgs.graphviz
+      pkgs.imagemagick
+      pkgs.texlive.combined.scheme-medium
+      pkgs.wl-clipboard
       # keep-sorted end
     ];
   };

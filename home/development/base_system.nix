@@ -6,23 +6,23 @@
   # Building plugins
   # providing plugins (nodejs)
   #
-  home.packages = with pkgs; [
+  home.packages = [
     # keep-sorted start
-    bear
-    bibtool
-    clang-tools
-    cmake
-    coreutils
-    gcc
-    gnumake
-    llvm
-    nix-fast-build
-    nix-update
-    nixos-generators
-    nixpkgs-review
-    nodePackages_latest.nodejs
-    optinix
-    uv
+    pkgs.bear
+    pkgs.bibtool
+    pkgs.clang-tools
+    pkgs.cmake
+    pkgs.coreutils
+    pkgs.gcc
+    pkgs.gnumake
+    pkgs.llvm
+    pkgs.nix-fast-build
+    pkgs.nix-update
+    pkgs.nixos-generators
+    pkgs.nixpkgs-review
+    pkgs.nodePackages_latest.nodejs
+    pkgs.optinix
+    pkgs.uv
     # keep-sorted end
   ];
 

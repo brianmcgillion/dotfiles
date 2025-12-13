@@ -42,25 +42,25 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
+    environment.systemPackages = [
       # keep-sorted start
-      binutils
-      cachix
-      curl
-      devenv
-      dnsutils
-      file
-      git
-      htop
-      lsof
-      netcat
-      nix-info
-      nix-tree
-      nixfmt
-      tree
-      wget
-      wireguard-tools
-      zellij
+      pkgs.binutils
+      pkgs.cachix
+      pkgs.curl
+      pkgs.devenv
+      pkgs.dnsutils
+      pkgs.file
+      pkgs.git
+      pkgs.htop
+      pkgs.lsof
+      pkgs.netcat
+      pkgs.nix-info
+      pkgs.nix-tree
+      pkgs.nixfmt
+      pkgs.tree
+      pkgs.wget
+      pkgs.wireguard-tools
+      pkgs.zellij
       # keep-sorted end
     ];
   };

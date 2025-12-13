@@ -33,18 +33,20 @@
 }:
 {
   imports = [
-    self.nixosModules.feature-hardening
-    self.nixosModules.feature-system-packages
-    self.nixosModules.feature-nix-settings
-    self.nixosModules.feature-xdg
-    self.nixosModules.feature-nebula
-    self.nixosModules.user-brian
-    self.nixosModules.user-groups
+    # keep-sorted start
+    inputs.disko.nixosModules.disko
     inputs.nix-index-database.nixosModules.nix-index
+    inputs.sops-nix.nixosModules.sops
     inputs.srvos.nixosModules.mixins-nix-experimental
     inputs.srvos.nixosModules.mixins-trusted-nix-caches
-    inputs.sops-nix.nixosModules.sops
-    inputs.disko.nixosModules.disko
+    self.nixosModules.feature-hardening
+    self.nixosModules.feature-nebula
+    self.nixosModules.feature-nix-settings
+    self.nixosModules.feature-system-packages
+    self.nixosModules.feature-xdg
+    self.nixosModules.user-brian
+    self.nixosModules.user-groups
+    # keep-sorted end
   ];
 
   options = {

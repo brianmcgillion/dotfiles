@@ -38,16 +38,16 @@ in
       desktopManager.gnome.enable = true;
     };
 
-    environment.gnome.excludePackages = with pkgs; [
-      gnome-tour
-      epiphany
-      evolution
-      evolutionWithPlugins
-      evolution-data-server
-      geary
-      gnome-music
-      gnome-contacts
-      cheese
+    environment.gnome.excludePackages = [
+      pkgs.gnome-tour
+      pkgs.epiphany
+      pkgs.evolution
+      pkgs.evolutionWithPlugins
+      pkgs.evolution-data-server
+      pkgs.geary
+      pkgs.gnome-music
+      pkgs.gnome-contacts
+      pkgs.cheese
     ];
   };
 }

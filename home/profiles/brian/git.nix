@@ -65,13 +65,15 @@
 
     gh = {
       enable = true;
-      extensions = with pkgs; [
-        gh-poi
-        gh-eco
-        gh-dash
-        gh-markdown-preview
-        gh-copilot
-        gh-f
+      extensions = [
+        # keep-sorted start
+        pkgs.gh-copilot
+        pkgs.gh-dash
+        pkgs.gh-eco
+        pkgs.gh-f
+        pkgs.gh-markdown-preview
+        pkgs.gh-poi
+        # keep-sorted end
       ];
     };
 
