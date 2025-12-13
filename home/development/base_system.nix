@@ -22,6 +22,7 @@
     nixpkgs-review
     nodePackages_latest.nodejs
     optinix
+    uv
     # keep-sorted end
   ];
 

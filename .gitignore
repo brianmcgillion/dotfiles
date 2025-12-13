@@ -1,5 +1,6 @@
 *~
 .direnv/
+.serena/
 result
 .aider*
 
