@@ -72,6 +72,10 @@
          #hostname 192.168.10.108 #x1-carbon
          hostname 192.168.10.229 #darter-pro
          #hostname 192.168.10.34 #usb-ethernet
+    host ghaf-usb
+         user ghaf
+         IdentityFile ~/.ssh/builder-key
+         hostname 192.168.10.34 #usb-ethernet
     host ghaf-host
          user ghaf
          IdentityFile ~/.ssh/builder-key
