@@ -66,7 +66,7 @@ in
       packages = [
         # keep-sorted start
         pkgs.carlito
-        pkgs.fira-go
+        #pkgs.fira-go
         pkgs.fira-sans
         pkgs.font-awesome
         pkgs.liberation_ttf

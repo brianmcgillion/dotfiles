@@ -55,6 +55,7 @@ in
       pkgs.lsof
       pkgs.netcat
       pkgs.nix-info
+      pkgs.nix-output-monitor
       pkgs.nix-tree
       pkgs.nixfmt
       pkgs.tree

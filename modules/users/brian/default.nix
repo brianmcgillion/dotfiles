@@ -81,6 +81,11 @@
          IdentityFile ~/.ssh/builder-key
          hostname 192.168.100.2
          proxyjump ghaf-net
+    host ghaf-host-usb
+         user ghaf
+         IdentityFile ~/.ssh/builder-key
+         hostname 192.168.100.2
+         proxyjump ghaf-usb
     host ghaf-ui
          user ghaf
          IdentityFile ~/.ssh/builder-key
