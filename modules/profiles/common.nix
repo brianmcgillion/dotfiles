@@ -241,7 +241,9 @@
     users.mutableUsers = false;
 
     # Enable userborn to take care of managing the default users and groups
-    services.userborn.enable = true;
+    services = {
+      userborn.enable = true;
+    };
 
     # Hardware
     hardware = {

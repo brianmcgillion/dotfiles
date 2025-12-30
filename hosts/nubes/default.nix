@@ -45,7 +45,6 @@
 
   networking = {
     hostName = lib.mkDefault "nubes";
-    useNetworkd = true;
   };
 
   systemd.network = {

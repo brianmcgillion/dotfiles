@@ -41,8 +41,6 @@
 
   networking = {
     hostName = lib.mkDefault "caelus";
-    # Cloud VMs use cloud-init for networking, not NixOS networkd config
-    useNetworkd = lib.mkForce false;
   };
 
   system.stateVersion = "24.05";

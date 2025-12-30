@@ -153,7 +153,8 @@ in
       # run DNS server on the lighthouse
       lighthouse.dns = lib.mkIf cfg.isLightHouse {
         enable = true;
-        host = "[::]";
+        # specify the internal interface to avoid conflicts with resolved
+        host = lighthouseAddress;
         port = 53;
       };
 
@@ -198,11 +199,15 @@ in
       };
     };
 
-    networking.firewall = {
-      # don't stack nixos firewall on top of the nebula firewall
-      trustedInterfaces = [ "nebula.${networkName}" ];
-      # globally open port 53 to serve DNS
-      allowedUDPPorts = lib.mkIf cfg.isLightHouse [ 53 ];
+    networking = {
+      firewall = {
+        # don't stack nixos firewall on top of the nebula firewall
+        trustedInterfaces = [ "nebula.${networkName}" ];
+        # globally open port 53 to serve DNS
+        allowedUDPPorts = lib.mkIf cfg.isLightHouse [ 53 ];
+      };
+      # Use the lighthouse as a DNS server for Nebula clients
+      nameservers = [ lighthouseAddress ];
     };
   };
 }
