@@ -34,7 +34,6 @@ creation_rules:
           - age:
                 - *admin_brian
                 - *host_minerva
-
     - path_regex: ^hosts/nubes/secrets.yaml$
       key_groups:
           - age:

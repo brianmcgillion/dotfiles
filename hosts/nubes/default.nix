@@ -34,7 +34,7 @@
   };
 
   features.networking.nebula = {
-    enable = false;
+    enable = true;
     isLightHouse = false;
     ca = config.sops.secrets.nebula-ca.path;
     key = config.sops.secrets.nebula-key.path;

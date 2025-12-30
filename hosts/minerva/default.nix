@@ -26,7 +26,7 @@
 
   # Enable Nebula network
   features.networking.nebula = {
-    enable = false; # TODO the certificated need to be renewed
+    enable = true;
     isLightHouse = false;
     ca = config.sops.secrets.nebula-ca.path;
     key = config.sops.secrets.nebula-key.path;
