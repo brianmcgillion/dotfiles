@@ -122,101 +122,87 @@ in
     };
   };
 
-  config = # lib.mkMerge [
-    lib.mkIf cfg.enable {
-      assertions = [
-        {
-          assertion = cfg.cert != null && cfg.cert != "";
-          message = "features.networking.nebula.cert must be set when Nebula is enabled";
-        }
-        {
-          assertion = cfg.key != null && cfg.key != "";
-          message = "features.networking.nebula.key must be set when Nebula is enabled";
-        }
-        {
-          assertion = cfg.ca != null && cfg.ca != "";
-          message = "features.networking.nebula.ca must be set when Nebula is enabled";
-        }
-      ];
+  config = lib.mkIf cfg.enable {
+    assertions = [
+      {
+        assertion = cfg.cert != null && cfg.cert != "";
+        message = "features.networking.nebula.cert must be set when Nebula is enabled";
+      }
+      {
+        assertion = cfg.key != null && cfg.key != "";
+        message = "features.networking.nebula.key must be set when Nebula is enabled";
+      }
+      {
+        assertion = cfg.ca != null && cfg.ca != "";
+        message = "features.networking.nebula.ca must be set when Nebula is enabled";
+      }
+    ];
 
-      environment.systemPackages = [
-        pkgs.nebula
-        pkgs.dig
-      ];
+    environment.systemPackages = [
+      pkgs.nebula
+      pkgs.dig
+    ];
 
-      services.nebula.networks."${networkName}" = {
+    services.nebula.networks."${networkName}" = {
+      enable = true;
+
+      isLighthouse = cfg.isLightHouse;
+      inherit (cfg) cert key ca;
+      lighthouses = if cfg.isLightHouse then [ ] else [ lighthouseAddress ];
+
+      # run DNS server on the lighthouse
+      lighthouse.dns = lib.mkIf cfg.isLightHouse {
         enable = true;
-
-        isLighthouse = cfg.isLightHouse;
-        inherit (cfg) cert key ca;
-        lighthouses = if cfg.isLightHouse then [ ] else [ lighthouseAddress ];
-
-        # run DNS server on the lighthouse
-        lighthouse.dns = lib.mkIf cfg.isLightHouse {
-          enable = true;
-          host = "[::]";
-          port = 53;
-        };
-
-        listen.port = listenPort;
-
-        #tun.device = networkName;
-        inherit (cfg) staticHostMap;
-
-        # https://nebula.defined.net/docs/config/punchy
-        settings.punchy = {
-          punch = true;
-          respond = true;
-        };
-
-        firewall = {
-          outbound = [
-            {
-              host = "any";
-              port = "any";
-              proto = "any";
-            }
-          ];
-          inbound = [
-            {
-              host = "any";
-              port = "any";
-              proto = "icmp";
-            }
-            {
-              host = "any";
-              port = 22;
-              proto = "tcp";
-            }
-          ]
-          ++ lib.optionals cfg.isLightHouse [
-            {
-              port = 53;
-              proto = "udp";
-              group = "any";
-              host = "any";
-            }
-          ];
-        };
+        host = "[::]";
+        port = 53;
       };
 
-      networking.firewall = {
-        # don't stack nixos firewall on top of the nebula firewall
-        trustedInterfaces = [ "nebula.${networkName}" ];
-        # globally open port 53 to serve DNS
-        allowedUDPPorts = lib.mkIf cfg.isLightHouse [ 53 ];
+      listen.port = listenPort;
+
+      inherit (cfg) staticHostMap;
+
+      # https://nebula.defined.net/docs/config/punchy
+      settings.punchy = {
+        punch = true;
+        respond = true;
+      };
+
+      firewall = {
+        outbound = [
+          {
+            host = "any";
+            port = "any";
+            proto = "any";
+          }
+        ];
+        inbound = [
+          {
+            host = "any";
+            port = "any";
+            proto = "icmp";
+          }
+          {
+            host = "any";
+            port = 22;
+            proto = "tcp";
+          }
+        ]
+        ++ lib.optionals cfg.isLightHouse [
+          {
+            port = 53;
+            proto = "udp";
+            group = "any";
+            host = "any";
+          }
+        ];
       };
     };
 
-  # (lib.mkIf (cfg.enable && cfg.isLightHouse) {
-  #   systemd.services."nebula@${networkName}".serviceConfig = {
-  #     CapabilityBoundingSet = lib.mkForce "CAP_NET_ADMIN CAP_NET_BIND_SERVICE";
-  #     AmbientCapabilities = lib.mkForce "CAP_NET_ADMIN CAP_NET_BIND_SERVICE";
-  #   };
-  #   services.resolved.extraConfig = ''
-  #     DNSStubListener=no
-  #   '';
-  #   networking.firewall.interfaces."${networkName}".allowedUDPPorts = [ 53 ];
-  # })
-  #];
+    networking.firewall = {
+      # don't stack nixos firewall on top of the nebula firewall
+      trustedInterfaces = [ "nebula.${networkName}" ];
+      # globally open port 53 to serve DNS
+      allowedUDPPorts = lib.mkIf cfg.isLightHouse [ 53 ];
+    };
+  };
 }
