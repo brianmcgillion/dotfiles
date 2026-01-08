@@ -114,12 +114,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    mcp-nixos = {
-      url = "github:utensils/mcp-nixos";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.devshell.follows = "devshell";
-    };
-
     gp-gui = {
       #url = "git+file:///home/brian/projects/code/github.com/tiiuae/gp-gui";
       url = "github:brianmcgillion/gp-gui";

@@ -79,7 +79,6 @@ in
         # keep-sorted end
       ]))
       emacs
-      inputs.mcp-nixos.packages."${pkgs.stdenv.hostPlatform.system}".default
       pkgs.binutils
       pkgs.copilot-language-server
       pkgs.dockerfile-language-server
