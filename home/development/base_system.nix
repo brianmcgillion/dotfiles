@@ -9,7 +9,7 @@
   home.packages = [
     # keep-sorted start
     pkgs.bear
-    pkgs.bibtool
+    #pkgs.bibtool # broken upstream
     pkgs.clang-tools
     pkgs.cmake
     pkgs.coreutils

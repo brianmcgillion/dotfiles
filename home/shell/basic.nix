@@ -8,8 +8,7 @@
     pkgs.cheat
     pkgs.curlie
     pkgs.delta
-    pkgs.dogdns # DNS client
-    pkgs.doggo
+    pkgs.doggo # dns related like dogdns
     pkgs.duf # df replacement
     pkgs.dust # du replacement
     pkgs.fd # faster projectile indexing
