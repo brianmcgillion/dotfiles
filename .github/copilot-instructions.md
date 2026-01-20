@@ -109,7 +109,7 @@ This repository manages NixOS configurations for multiple machines:
 - **arcadia** - Desktop system with NVIDIA GPU (local)
 - **minerva** - Laptop system (local)
 - **caelus** - Hetzner cloud server (remote, Nebula lighthouse)
-- **nephele** - Hetzner dedicated server (remote)
+- **nubes** - Hetzner dedicated server (remote)
 
 ### Architecture
 
@@ -178,7 +178,7 @@ This provides: cachix, nix-eval-jobs, nix-fast-build, nix-output-monitor, nix-tr
 - `arcadia` - NixOS system configuration
 - `caelus` - NixOS system configuration
 - `minerva` - NixOS system configuration
-- `nephele` - NixOS system configuration
+- `nubes` - NixOS system configuration
 
 ### Code Formatting and Quality Checks
 
@@ -226,7 +226,7 @@ nixos-rebuild dry-run --flake .#arcadia
 nixos-rebuild dry-run --flake .#minerva
 
 # Remote hosts
-nixos-rebuild dry-run --flake .#nephele --target-host "root@nephele"
+nixos-rebuild dry-run --flake .#nubes --target-host "root@nubes"
 nixos-rebuild dry-run --flake .#caelus --target-host "root@caelus"
 ```
 
@@ -237,7 +237,7 @@ nixos-rebuild dry-activate --flake .#arcadia
 nixos-rebuild dry-activate --flake .#minerva
 
 # Remote hosts (builds locally, activates on remote)
-nixos-rebuild dry-activate --flake .#nephele --target-host "root@nephele"
+nixos-rebuild dry-activate --flake .#nubes --target-host "root@nubes"
 nixos-rebuild dry-activate --flake .#caelus --target-host "root@caelus"
 ```
 
@@ -254,15 +254,20 @@ sudo nixos-rebuild switch --flake .#$HOSTNAME
 ### Remote Systems
 Deploy to remote hosts (builds locally, activates remotely):
 ```bash
-nixos-rebuild switch --flake .#nephele --target-host "root@nephele"
+nixos-rebuild switch --flake .#nubes --target-host "root@nubes"
 nixos-rebuild switch --flake .#caelus --target-host "root@caelus"
 ```
 
-Convenience scripts are available in the dev shell:
+Convenience scripts are available system-wide (installed via `environment.systemPackages`):
 - `rebuild-host` - Rebuild current host
-- `rebuild-nephele` - Deploy to nephele
-- `rebuild-caelus` - Deploy to caelus
+- `rebuild-nubes` - Deploy to nubes server
+- `rebuild-caelus` - Deploy to caelus server
 - `update-host` - Update flake inputs
+
+Additional deployment commands available in the devshell (`nix develop`):
+- `deploy-rs` - Deploy with deploy-rs
+- `deploy-caelus` - Deploy to caelus (skips flake checks)
+- `deploy-nubes` - Deploy to nubes (skips flake checks)
 
 ### New Server Provisioning
 
