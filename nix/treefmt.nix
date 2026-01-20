@@ -44,11 +44,9 @@
           nixf-diagnose = {
             # Ensure nixfmt cleans up after nixf-diagnose.
             priority = -1;
-            options = [
-              "--auto-fix"
-              # Rule names can currently be looked up here:
-              # https://github.com/nix-community/nixd/blob/main/libnixf/src/Basic/diagnostic.py
-            ];
+            # Note: --auto-fix is already enabled by default via programs.nixf-diagnose.autoFix
+            # Rule names can currently be looked up here:
+            # https://github.com/nix-community/nixd/blob/main/libnixf/src/Basic/diagnostic.py
           };
         };
       };
