@@ -34,7 +34,13 @@ This NixOS configuration uses a modular architecture for better maintainability,
 │   ├── hardware/         # Hardware-specific configurations
 │   │   └── nvidia.nix
 │   └── users/            # User management
-│       ├── brian.nix
+│       ├── brian/
+│       │   ├── default.nix    # NixOS user config
+│       │   ├── bmg-secrets.yaml
+│       │   └── hm-profile/    # Home-manager profile
+│       │       ├── default.nix
+│       │       ├── git.nix
+│       │       └── emacs.nix
 │       ├── root.nix
 │       └── groups.nix
 ├── hosts/                # Host-specific configurations

@@ -35,9 +35,11 @@ _: {
     # Hardware
     hardware-nvidia = import ./hardware/nvidia.nix;
 
-    # Users
-    user-brian = import ./users/brian;
+    # Users (non-flake-parts modules)
     user-root = import ./users/root.nix;
     user-groups = import ./users/groups.nix;
   };
+
+  # Import brian user as flake-parts module (exports both nixosModules and homeModules)
+  imports = [ ./users/brian ];
 }

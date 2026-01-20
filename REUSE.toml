@@ -16,13 +16,19 @@ SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
-path = ["secrets.yaml", "modules/users/brian/bmg-secrets.yaml", "hosts/**/secrets.yaml", "home/profiles/brian/keys/**"]
+path = ["secrets.yaml", "modules/users/brian/bmg-secrets.yaml", "hosts/**/secrets.yaml", "modules/users/brian/hm-profile/keys/**"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = "home/shell/bashrc"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "modules/users/brian/hm-profile/mcp-config.json"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"

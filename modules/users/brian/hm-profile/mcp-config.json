@@ -1,0 +1,64 @@
+{
+  "mcpServers": {
+    "mcp-nixos": {
+      "type": "local",
+      "command": "uvx",
+      "tools": [
+        "*"
+      ],
+      "args": [
+        "mcp-nixos"
+      ]
+    },
+    "filesystem": {
+      "type": "local",
+      "command": "npx",
+      "tools": [
+        "*"
+      ],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/home/brian/projects",
+        "/home/brian/.dotfiles"
+      ]
+    },
+    "serena": {
+      "type": "local",
+      "command": "uvx",
+      "tools": [
+        "*"
+      ],
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "desktop-app"
+      ]
+    },
+    "context7": {
+      "tools": [
+        "*"
+      ],
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": "npx",
+      "tools": [
+        "*"
+      ],
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    }
+  }
+}

@@ -37,5 +37,9 @@
     home.activation.ensureXdgStateDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD mkdir -p "''${XDG_STATE_HOME:-$HOME/.local/state}"/{bash,less}
     '';
+
+    # GitHub Copilot CLI MCP server configuration
+    # Shared across client machines for consistent AI assistant behavior
+    home.file.".config/.copilot/mcp-config.json".source = ./mcp-config.json;
   };
 }
