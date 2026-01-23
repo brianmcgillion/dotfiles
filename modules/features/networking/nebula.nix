@@ -52,6 +52,7 @@ let
   lighthouseAddress = "10.99.99.1";
   listenPort = 4242;
   networkName = "pantheon";
+  dnsDomain = "pantheon.bmg.sh";
   defaultOwner = config.systemd.services."nebula@${networkName}".serviceConfig.User or "root";
 in
 {
@@ -168,6 +169,18 @@ in
         respond = true;
       };
 
+      # https://nebula.defined.net/docs/config/relay
+      # Relay allows peers that cannot establish direct connections (e.g., both behind NAT)
+      # to communicate through a relay node (the lighthouse in this case)
+      settings.relay = {
+        # Lighthouse acts as a relay for other nodes
+        am_relay = cfg.isLightHouse;
+        # Non-lighthouse nodes use the lighthouse as a relay when direct connection fails
+        relays = if cfg.isLightHouse then [ ] else [ lighthouseAddress ];
+        # Enable using relays for all nodes
+        use_relays = true;
+      };
+
       firewall = {
         outbound = [
           {
@@ -208,6 +221,9 @@ in
       };
       # Use the lighthouse as a DNS server for Nebula clients
       nameservers = [ lighthouseAddress ];
+      # Add search domain so short hostnames resolve via Nebula DNS
+      # e.g., "ssh minerva" becomes "ssh minerva.pantheon.bmg.sh"
+      search = [ dnsDomain ];
     };
   };
 }

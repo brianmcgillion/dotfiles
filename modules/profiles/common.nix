@@ -218,12 +218,38 @@
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG68NdmOw3mhiBZwDv81dXitePoc1w//p/LpsHHA8QRp";
           };
           nubes = {
-            hostNames = [ "65.108.111.248" ];
+            hostNames = [
+              "nubes"
+              "nubes.pantheon.bmg.sh"
+              "10.99.99.4"
+              "65.108.111.248"
+            ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKesx/AKktmMQm6PdBBL+G4M62XKcpFwhBOzHU393b3r";
           };
           caelus = {
-            hostNames = [ "95.217.167.39" ];
+            hostNames = [
+              "caelus"
+              "caelus.pantheon.bmg.sh"
+              "10.99.99.1"
+              "95.217.167.39"
+            ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFHrlodsjLMgGSEM0+NP+0FN7MD6gkySxo7ydKWxP44w";
+          };
+          arcadia = {
+            hostNames = [
+              "arcadia"
+              "arcadia.pantheon.bmg.sh"
+              "10.99.99.2"
+            ];
+            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEiajFgF+LqkBNeVWzIU7+qyoDLnci1MCH6rBemnHur+";
+          };
+          minerva = {
+            hostNames = [
+              "minerva"
+              "minerva.pantheon.bmg.sh"
+              "10.99.99.3"
+            ];
+            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHHfhmdcNJ2PFosRHjzjucWcoa3Ri8OUONzs+S/orx2C";
           };
         };
       };
