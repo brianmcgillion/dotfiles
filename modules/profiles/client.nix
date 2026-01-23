@@ -101,6 +101,8 @@
       networkmanager = {
         enable = true;
         plugins = [ pkgs.networkmanager-openconnect ];
+        # Use systemd-resolved for DNS (required for Nebula split-horizon DNS)
+        dns = "systemd-resolved";
       };
       firewall = {
         allowedTCPPorts = [ 8080 ];
@@ -117,7 +119,7 @@
       #   enable = true;
       #   csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
       # };
-      resolved.enable = false;
+      # resolved.enable is managed by features.networking.nebula when needed
     };
 
     # Client-specific packages

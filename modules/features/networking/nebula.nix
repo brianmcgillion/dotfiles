@@ -144,6 +144,10 @@ in
       pkgs.dig
     ];
 
+    # Enable systemd-resolved for split-horizon DNS
+    # This allows per-interface DNS configuration via resolvectl
+    services.resolved.enable = true;
+
     services.nebula.networks."${networkName}" = {
       enable = true;
 
@@ -219,11 +223,32 @@ in
         # globally open port 53 to serve DNS
         allowedUDPPorts = lib.mkIf cfg.isLightHouse [ 53 ];
       };
-      # Use the lighthouse as a DNS server for Nebula clients
-      nameservers = [ lighthouseAddress ];
-      # Add search domain so short hostnames resolve via Nebula DNS
-      # e.g., "ssh minerva" becomes "ssh minerva.pantheon.bmg.sh"
-      search = [ dnsDomain ];
+
+      # Static hosts entry for the lighthouse
+      # Nebula's DNS only resolves hosts that have connected to the lighthouse,
+      # but the lighthouse never connects to itself, so it won't be in the hostmap.
+      # This provides a static fallback for resolving the lighthouse hostname.
+      # Include both FQDN and short name for convenience.
+      hosts = {
+        "${lighthouseAddress}" = [
+          "caelus.${dnsDomain}"
+          "caelus"
+        ];
+      };
+    };
+
+    # Configure per-link DNS for the Nebula interface using resolvectl
+    # This works regardless of whether systemd-networkd or NetworkManager manages networking
+    # After Nebula creates the interface, we configure:
+    # - DNS server pointing to the lighthouse
+    # - Routing domain (~pantheon.bmg.sh) so only Nebula queries go to lighthouse
+    # Note: '+' prefix runs the command with full privileges (root) since resolvectl
+    # requires elevated permissions to modify DNS configuration
+    systemd.services."nebula@${networkName}".serviceConfig = {
+      ExecStartPost = [
+        "+${pkgs.systemd}/bin/resolvectl dns nebula.${networkName} ${lighthouseAddress}"
+        "+${pkgs.systemd}/bin/resolvectl domain nebula.${networkName} ${dnsDomain}"
+      ];
     };
   };
 }
