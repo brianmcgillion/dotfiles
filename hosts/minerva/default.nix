@@ -95,6 +95,7 @@
 
     wg-quick.interfaces = {
       wg0 = {
+        autostart = false;
         address = [ "10.7.0.7/24" ];
         dns = [ "172.26.0.2" ];
         privateKeyFile = config.sops.secrets.wg-privateKeyFile.path;

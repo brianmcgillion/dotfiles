@@ -1,28 +1,37 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
-  home.packages = [
-    # keep-sorted start
-    (pkgs.ripgrep.override { withPCRE2 = true; })
-    pkgs.cheat
-    pkgs.curlie
-    pkgs.delta
-    pkgs.doggo # dns related like dogdns
-    pkgs.duf # df replacement
-    pkgs.dust # du replacement
-    pkgs.fd # faster projectile indexing
-    pkgs.file
-    pkgs.httpie
-    pkgs.jq # sed for json
-    pkgs.psmisc
-    pkgs.shellcheck
-    pkgs.shfmt
-    pkgs.tldr # simplified man pages
-    pkgs.tree
-    pkgs.xh
-    # keep-sorted end
-  ];
+  # Ensure XDG state directories exist for bash history
+  # HISTFILE is set to $XDG_STATE_HOME/bash/history in modules/features/system/xdg.nix
+  xdg.stateHome = "${config.home.homeDirectory}/.local/state";
+  home = {
+    packages = [
+      # keep-sorted start
+      (pkgs.ripgrep.override { withPCRE2 = true; })
+      pkgs.cheat
+      pkgs.curlie
+      pkgs.delta
+      pkgs.doggo # dns related like dogdns
+      pkgs.duf # df replacement
+      pkgs.dust # du replacement
+      pkgs.fd # faster projectile indexing
+      pkgs.file
+      pkgs.httpie
+      pkgs.jq # sed for json
+      pkgs.psmisc
+      pkgs.shellcheck
+      pkgs.shfmt
+      pkgs.tldr # simplified man pages
+      pkgs.tree
+      pkgs.xh
+      # keep-sorted end
+    ];
+
+    # Ensure bash state directory exists for history
+    # This avoids issues where bash cannot write to history file if directory is missing
+    file.".local/state/bash/.keep".text = "";
+  };
 
   programs = {
     bat = {
@@ -50,11 +59,11 @@
 
     bash = {
       enable = true;
-      historySize = 10000;
-      historyFileSize = 20000;
+      historySize = 100000;
+      historyFileSize = 200000;
       historyControl = [
-        "ignoreboth"
-        "erasedups"
+        "ignoredups"
+        "ignorespace"
       ];
       shellOptions = [
         "histappend"
