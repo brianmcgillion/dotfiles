@@ -19,6 +19,7 @@
           checkout-pr = "!pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr";
           pick-pr = "!am() { git fetch origin pull/$1/head:pr-$1; git cherry-pick HEAD..pr-$1; }; am";
           reset-pr = "reset --hard FETCH_HEAD";
+          update-PR = "!upr() { git fetch origin pull/$1/head && git reset --hard FETCH_HEAD; }; upr";
           qc = "commit --no-verify";
         };
 
@@ -67,7 +68,6 @@
       enable = true;
       extensions = [
         # keep-sorted start
-        pkgs.gh-copilot
         pkgs.gh-dash
         pkgs.gh-eco
         pkgs.gh-f

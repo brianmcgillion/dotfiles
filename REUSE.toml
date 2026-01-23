@@ -32,3 +32,9 @@ path = "modules/users/brian/hm-profile/mcp-config.json"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ".serena/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"
