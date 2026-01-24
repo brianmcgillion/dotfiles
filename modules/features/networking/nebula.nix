@@ -144,10 +144,6 @@ in
       pkgs.dig
     ];
 
-    # Enable systemd-resolved for split-horizon DNS
-    # This allows per-interface DNS configuration via resolvectl
-    services.resolved.enable = true;
-
     services.nebula.networks."${networkName}" = {
       enable = true;
 

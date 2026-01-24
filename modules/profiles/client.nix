@@ -115,11 +115,9 @@
       openssh.enable = true;
       openssh.startWhenNeeded = false;
       fwupd.enable = true;
-      # globalprotect = {
-      #   enable = true;
-      #   csdWrapper = "${pkgs.openconnect}/libexec/openconnect/hipreport.sh";
-      # };
-      # resolved.enable is managed by features.networking.nebula when needed
+      # Enable systemd-resolved for split-horizon DNS
+      # This allows per-interface DNS configuration via resolvectl
+      resolved.enable = true;
     };
 
     # Client-specific packages
