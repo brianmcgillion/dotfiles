@@ -134,6 +134,11 @@
         auto-optimise-store = true; # Optimise syslinks
         keep-outputs = true; # Keep outputs of derivations
         keep-derivations = true; # Keep derivations
+
+        # Enable cgroups for auto-allocate-uids to work properly
+        # This allows Nix to dynamically allocate UIDs for builds instead of
+        # using pre-created nixbld users
+        use-cgroups = true;
       };
 
       # Garbage collection
