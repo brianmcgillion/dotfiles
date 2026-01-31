@@ -119,7 +119,14 @@
       fwupd.enable = true;
       # Enable systemd-resolved for split-horizon DNS
       # This allows per-interface DNS configuration via resolvectl
-      resolved.enable = true;
+      # Disable mDNS in resolved since avahi handles it (avoids "another mDNS stack" warning)
+      resolved = {
+        enable = true;
+        settings.Resolve = {
+          LLMNR = true;
+          MulticastDNS = false;
+        };
+      };
       # Enable Bluetooth for wireplumber/PipeWire audio
       blueman.enable = true;
       # Avahi for mDNS with nss-mdns support
