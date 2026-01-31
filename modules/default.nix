@@ -17,6 +17,7 @@ _: {
     feature-docker = import ./features/development/docker.nix;
     feature-emacs = import ./features/development/emacs.nix;
     feature-emacs-ui = import ./features/development/emacs-ui.nix;
+    feature-remarkable = import ./features/development/remarkable.nix;
 
     # Networking features
     feature-nebula = import ./features/networking/nebula.nix;

@@ -7,8 +7,13 @@
 # - Systemd timer for periodic CLI sync (every 15 minutes)
 #
 # Synced directories:
-# - ~/Documents/Papers <-> /Documents/Papers
-# - ~/Documents/EPUB   <-> /Documents/EPUB
+# - ~/Documents/Papers                    <-> /Documents/Papers (academic PDFs)
+# - ~/Documents/EPUB                      <-> /Documents/EPUB (ebooks)
+# - ~/Documents/org/remarkable/downloads  <-> /Documents/remarkable/downloads (PDFs with annotations)
+# - ~/Documents/org/remarkable/notes      <-> /Documents/remarkable/notes (handwritten notes as PDF)
+#
+# NOT synced (local only):
+# - ~/Documents/org/remarkable/outbox (temporary staging for upload)
 #
 # Authentication:
 # - Uses ~/.netrc for credentials (machine nx89231.your-storageshare.de)
@@ -47,15 +52,30 @@ in
         Type = "oneshot";
         ExecStart = pkgs.writeShellScript "nextcloud-sync" ''
           mkdir -p "$HOME/Documents/Papers" "$HOME/Documents/EPUB"
+          mkdir -p "$HOME/Documents/org/remarkable"/{downloads,outbox,notes}
 
+          # Sync academic papers
           ${pkgs.nextcloud-client}/bin/nextcloudcmd \
             -n --path "/Documents/Papers" --silent \
             "$HOME/Documents/Papers" \
             "https://nx89231.your-storageshare.de"
 
+          # Sync ebooks
           ${pkgs.nextcloud-client}/bin/nextcloudcmd \
             -n --path "/Documents/EPUB" --silent \
             "$HOME/Documents/EPUB" \
+            "https://nx89231.your-storageshare.de"
+
+          # Sync reMarkable downloaded PDFs (with annotations pre-rendered)
+          ${pkgs.nextcloud-client}/bin/nextcloudcmd \
+            -n --path "/Documents/remarkable/downloads" --silent \
+            "$HOME/Documents/org/remarkable/downloads" \
+            "https://nx89231.your-storageshare.de"
+
+          # Sync reMarkable handwritten notes (converted to PDF)
+          ${pkgs.nextcloud-client}/bin/nextcloudcmd \
+            -n --path "/Documents/remarkable/notes" --silent \
+            "$HOME/Documents/org/remarkable/notes" \
             "https://nx89231.your-storageshare.de"
         '';
       };

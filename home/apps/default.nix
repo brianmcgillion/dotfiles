@@ -5,5 +5,6 @@ _: {
     ./chat.nix
     ./documents.nix
     ./nextcloud.nix
+    ./remarkable.nix
   ];
 }
