@@ -9,6 +9,10 @@
 # - github.com/doomemacs/doomemacs -> ~/.config/emacs
 # - github.com/brianmcgillion/doomd -> ~/.config/doom (Brian's config)
 #
+# org-protocol:
+# - Desktop file registers emacsclient as handler for org-protocol:// URLs
+# - Use with browser bookmarklet or extension to capture web pages to org-mode
+#
 # Note: Run 'doom sync' after first install to complete setup
 # Only enabled when userProfile.enableEmacs is true
 {
@@ -28,5 +32,29 @@
         $DRY_RUN_CMD ${pkgs.git}/bin/git clone https://github.com/brianmcgillion/doomd.git "$XDG_CONFIG_HOME/doom"
       fi
     '';
+
+    # org-protocol desktop handler for browser integration
+    # Allows capturing web pages to org-mode via org-protocol:// URLs
+    xdg.desktopEntries.org-protocol = {
+      name = "Org Protocol";
+      comment = "Handle org-protocol:// URLs for Emacs capture";
+      exec = "emacsclient -- %u";
+      icon = "emacs";
+      type = "Application";
+      mimeType = [ "x-scheme-handler/org-protocol" ];
+      categories = [
+        "Development"
+        "TextEditor"
+      ];
+      noDisplay = true;
+    };
+
+    # Register org-protocol handler with the desktop environment
+    xdg.mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "x-scheme-handler/org-protocol" = [ "org-protocol.desktop" ];
+      };
+    };
   };
 }
