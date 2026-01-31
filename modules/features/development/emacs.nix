@@ -41,13 +41,13 @@ let
   cfg = config.features.development.emacs;
   emacs = (pkgs.emacsPackagesFor pkgs.emacs-git).emacsWithPackages (epkgs: [
     # keep-sorted start
+    epkgs.djvu
+    epkgs.nov
     epkgs.org-pdftools
     epkgs.pdf-tools
     epkgs.tree-sitter-langs
     epkgs.treesit-grammars.with-all-grammars
     epkgs.vterm
-    epkgs.nov
-    epkgs.djvu
     # keep-sorted end
   ]);
 in
