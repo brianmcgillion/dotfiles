@@ -133,35 +133,35 @@ in
 
           log "Full sync started"
 
-          # Check device connectivity
-          if ! ${pkgs.curl}/bin/curl --silent --connect-timeout 3 "$REMARKABLE_URL/documents/" >/dev/null 2>&1; then
-            log "Device not connected via USB, skipping"
+          # Check device connectivity (with proper timeout for slow web interface)
+          if ! ${pkgs.curl}/bin/curl --silent --connect-timeout 3 --max-time 15 "$REMARKABLE_URL/documents/" >/dev/null 2>&1; then
+            log "Device not connected or web interface not responding, skipping"
             exit 0
           fi
 
           log "Downloading documents..."
 
-          # Get root documents and download PDFs
-          ${pkgs.curl}/bin/curl --silent "$REMARKABLE_URL/documents/" | \
+          # Get root documents and download PDFs (with timeouts to prevent hanging)
+          ${pkgs.curl}/bin/curl --silent --connect-timeout 5 --max-time 30 "$REMARKABLE_URL/documents/" | \
             ${pkgs.jq}/bin/jq -r '.[] | "\(.Type)\t\(.ID)\t\(.VissibleName)"' | \
             while IFS=$'\t' read -r type id name; do
               if [ "$type" = "DocumentType" ]; then
                 output_file="$DOWNLOADS/$name.pdf"
                 if [ ! -f "$output_file" ]; then
                   log "Downloading: $name"
-                  ${pkgs.curl}/bin/curl --silent --fail -o "$output_file" \
+                  ${pkgs.curl}/bin/curl --silent --fail --connect-timeout 5 --max-time 120 -o "$output_file" \
                     "$REMARKABLE_URL/download/$id/pdf" 2>/dev/null || log "Failed: $name"
                 fi
               elif [ "$type" = "CollectionType" ]; then
                 # Download folder contents
                 mkdir -p "$DOWNLOADS/$name"
-                ${pkgs.curl}/bin/curl --silent "$REMARKABLE_URL/documents/$id" | \
+                ${pkgs.curl}/bin/curl --silent --connect-timeout 5 --max-time 30 "$REMARKABLE_URL/documents/$id" | \
                   ${pkgs.jq}/bin/jq -r '.[] | select(.Type == "DocumentType") | "\(.ID)\t\(.VissibleName)"' | \
                   while IFS=$'\t' read -r doc_id doc_name; do
                     output_file="$DOWNLOADS/$name/$doc_name.pdf"
                     if [ ! -f "$output_file" ]; then
                       log "Downloading: $name/$doc_name"
-                      ${pkgs.curl}/bin/curl --silent --fail -o "$output_file" \
+                      ${pkgs.curl}/bin/curl --silent --fail --connect-timeout 5 --max-time 120 -o "$output_file" \
                         "$REMARKABLE_URL/download/$doc_id/pdf" 2>/dev/null || log "Failed: $doc_name"
                     fi
                   done

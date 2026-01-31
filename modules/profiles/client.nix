@@ -120,7 +120,17 @@
       # Enable systemd-resolved for split-horizon DNS
       # This allows per-interface DNS configuration via resolvectl
       resolved.enable = true;
+      # Enable Bluetooth for wireplumber/PipeWire audio
+      blueman.enable = true;
+      # Avahi for mDNS with nss-mdns support
+      avahi = {
+        enable = true;
+        nssmdns4 = true;
+      };
     };
+
+    # Enable Bluetooth hardware support
+    hardware.bluetooth.enable = true;
 
     # Client-specific packages
     environment.systemPackages = [

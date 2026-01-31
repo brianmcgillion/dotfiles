@@ -38,6 +38,20 @@ in
       desktopManager.gnome.enable = true;
     };
 
+    # Fix GDM permission errors for session data directories
+    # GDM needs these directories for session management, ICC profiles, ibus, gnome-shell, and keyring
+    systemd.tmpfiles.rules = [
+      "d /run/gdm/.local 0755 gdm gdm -"
+      "d /run/gdm/.local/share 0755 gdm gdm -"
+      "d /run/gdm/.local/share/icc 0755 gdm gdm -"
+      "d /run/gdm/.local/share/gnome-shell 0755 gdm gdm -"
+      "d /run/gdm/.local/share/keyrings 0700 gdm gdm -"
+      "d /run/gdm/.cache 0755 gdm gdm -"
+      "d /run/gdm/.cache/ibus 0755 gdm gdm -"
+      "d /run/gdm/.config 0755 gdm gdm -"
+      "d /run/gdm/.config/ibus 0755 gdm gdm -"
+    ];
+
     environment.gnome.excludePackages = [
       pkgs.gnome-tour
       pkgs.epiphany
