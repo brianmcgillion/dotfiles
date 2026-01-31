@@ -46,6 +46,8 @@ let
     epkgs.tree-sitter-langs
     epkgs.treesit-grammars.with-all-grammars
     epkgs.vterm
+    epkgs.nov
+    epkgs.djvu
     # keep-sorted end
   ]);
 in
