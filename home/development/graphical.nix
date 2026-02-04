@@ -6,7 +6,7 @@
   home.packages = [
     # keep-sorted start
     pkgs.bcompare
-    pkgs.mendeley
+    #pkgs.mendeley
     # keep-sorted end
   ];
   #services.flameshot.enable = true;
