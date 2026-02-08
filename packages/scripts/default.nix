@@ -34,6 +34,9 @@ let
   rebuild-darter = pkgs.writeScriptBin "rebuild-darter" ''
     nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
   '';
+  rebuild-darter-usb = pkgs.writeScriptBin "rebuild-darter-usb" ''
+    nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host-usb" --no-reexec boot "$@"
+  '';
   deploy-hetzner-server = pkgs.writeScriptBin "deploy-hetzner-server" (
     builtins.readFile ./deploy-hetzner-server.sh
   );
@@ -48,6 +51,7 @@ in
     rebuild-alien
     rebuild-caelus
     rebuild-darter
+    rebuild-darter-usb
     rebuild-host
     rebuild-nubes
     rebuild-x1

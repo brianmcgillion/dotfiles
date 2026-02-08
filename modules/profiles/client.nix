@@ -143,6 +143,8 @@
     environment.systemPackages = [
       # keep-sorted start
       pkgs.act
+      pkgs.claude-code
+      pkgs.claude-code-acp
       pkgs.github-copilot-cli
       pkgs.keymapp
       pkgs.man-pages

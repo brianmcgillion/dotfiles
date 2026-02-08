@@ -41,6 +41,7 @@ let
   cfg = config.features.development.emacs;
   emacs = (pkgs.emacsPackagesFor pkgs.emacs-git).emacsWithPackages (epkgs: [
     # keep-sorted start
+    epkgs.claude-code
     epkgs.djvu
     epkgs.nov
     epkgs.org-pdftools

@@ -20,6 +20,7 @@
       pkgs.httpie
       pkgs.jq # sed for json
       pkgs.psmisc
+      pkgs.ripgrep-all # search inside PDFs, archives, etc.
       pkgs.shellcheck
       pkgs.shfmt
       pkgs.tldr # simplified man pages
