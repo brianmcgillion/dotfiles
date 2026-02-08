@@ -10,7 +10,7 @@ SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
-path = ["README.md", "ARCHITECTURE.md", "FEATURES_MATRIX.md", "TODO.org", "hosts/README-server.org"]
+path = ["README.md", "ARCHITECTURE.md", "CLAUDE.md", "FEATURES_MATRIX.md", "TODO.org", "hosts/README-server.org"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"
@@ -35,6 +35,12 @@ SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 path = ".serena/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ".claude/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"

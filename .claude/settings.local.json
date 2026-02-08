@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /home/brian/.dotfiles log --oneline -20)",
+      "Bash(nix flake metadata:*)",
+      "Bash(nix-store -qR:*)",
+      "Bash(nix-store:*)",
+      "Bash(head -3 echo \"\" echo \"=== 2.33.1+1 \\(likely main nix\\) ===\")",
+      "Bash(nix-store -q --referrers:*)"
+    ]
+  }
+}

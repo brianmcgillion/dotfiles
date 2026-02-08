@@ -136,6 +136,11 @@
       };
     };
 
+    # Disable ModemManager - not needed and interferes with serial consoles
+    # Both services must be disabled to prevent D-Bus activation on reboot
+    # See: https://github.com/NixOS/nixpkgs/issues/41055
+    systemd.services.ModemManager.enable = false;
+
     # Enable Bluetooth hardware support
     hardware.bluetooth.enable = true;
 

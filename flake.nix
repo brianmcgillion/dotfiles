@@ -80,6 +80,7 @@
     nixd = {
       url = "github:nix-community/nixd";
       #url = "git+file:///home/brian/projects/code/github.com/nix-community/nixd";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     fast-flake-update = {
