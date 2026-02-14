@@ -4,7 +4,7 @@ keys:
     - &host_caelus age17hk8tccd9a8sg875mqe6llw3euthjf8wlcmhlhk7lxlhmggvp92sfdstm5
     - &host_arcadia age1tvd5txsy62uywunnnyrhncdydnmgmg6prjczktw8f68wqun9kqysvuf94h
     - &host_minerva age1q8rtws7wsgrq5p7f5kxm6fhgtpfwtv5643geskn4euwfgeqkdeaqpd7mst
-    - &host_hades age1yruu5twhmlstggpmmdwjl6zg830wuvx47xxzr59efjhd4m2lrykszkf834
+    - &host_argus age12ch83stxkqmc55ckxsvmfagjtgrp53dg7qjnsw9w2nuy3y7pgs5sd59d46
 creation_rules:
     - path_regex: ^secrets.yaml$
       key_groups:
@@ -18,12 +18,17 @@ creation_rules:
                 - *host_caelus
                 - *host_arcadia
                 - *host_minerva
-                - *host_hades
+                - *host_argus
     - path_regex: ^hosts/arcadia/secrets.yaml$
       key_groups:
           - age:
                 - *admin_brian
                 - *host_arcadia
+    - path_regex: ^hosts/argus/secrets.yaml$
+      key_groups:
+          - age:
+                - *admin_brian
+                - *host_argus
     - path_regex: ^hosts/caelus/secrets.yaml$
       key_groups:
           - age:
@@ -39,8 +44,3 @@ creation_rules:
           - age:
                 - *admin_brian
                 - *host_nubes
-    - path_regex: ^hosts/hades/secrets.yaml$
-      key_groups:
-          - age:
-                - *admin_brian
-                - *host_hades

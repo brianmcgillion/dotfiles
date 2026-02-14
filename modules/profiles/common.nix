@@ -256,6 +256,14 @@
             ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHHfhmdcNJ2PFosRHjzjucWcoa3Ri8OUONzs+S/orx2C";
           };
+          argus = {
+            hostNames = [
+              "argus"
+              "argus.pantheon.bmg.sh"
+              "10.99.99.5"
+            ];
+            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMbQgFCatA2Gu6hRXK8S30FR/epuVdv8Xzt4uXAI/jgz";
+          };
         };
       };
       command-not-found.enable = false;

@@ -10,6 +10,7 @@
   flake.nixosModules = {
     # host modules
     host-arcadia = import ./arcadia;
+    host-argus = import ./argus;
     host-minerva = import ./minerva;
     host-caelus = import ./caelus;
     host-nubes = import ./nubes;
@@ -26,6 +27,11 @@
       arcadia = lib.nixosSystem {
         inherit specialArgs;
         modules = [ self.nixosModules.host-arcadia ];
+      };
+
+      argus = lib.nixosSystem {
+        inherit specialArgs;
+        modules = [ self.nixosModules.host-argus ];
       };
 
       minerva = lib.nixosSystem {

@@ -25,11 +25,15 @@ ls -al /mnt/etc/nixos/
 use [[https://github.com/nix-community/disko][disko]] to define the disk partitioning scheme that you with to apply and add the server to the list of hosts.
 
 Add the sops components that are needed to the relevant secrets.yaml files.
-Start by adding the new devices key to the .sops.yaml file. run one of the following commands to add the ssh-key as a reference.
+Start by adding the new devices key to the .sops.yaml file. run one of the following commands to find the ssh-key based age key.
 
 #+begin_src sh
 ssh-keyscan SERVER | ssh-to-age
 cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age
+#+end_src
+
+#+begin_src sh
+add the key to .sops.yaml and create a new section for the new host
 #+end_src
 
 #+begin_src sh
@@ -40,7 +44,7 @@ Then ensure to update all common secret files. Any time that a new key is added 
 
 #+begin_src sh
 sops updatekeys secrets.yaml
-sops updatekeys users/bmg-secrets.yaml
+sops updatekeys modules/users/brian/bmg-secrets.yaml
 sops updatekeys hosts/HOSTNAME/secrets.yaml
 #+end_src
 

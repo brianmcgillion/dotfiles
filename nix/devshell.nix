@@ -59,6 +59,14 @@
           }
           {
             category = "deployment";
+            name = "deploy-argus";
+            help = "Deploy to argus (skips flake checks)";
+            command = ''
+              ${inputs'.deploy-rs.packages.default}/bin/deploy --skip-checks .#argus "$@"
+            '';
+          }
+          {
+            category = "deployment";
             name = "deploy-caelus";
             help = "Deploy to caelus server (skips flake checks)";
             command = ''

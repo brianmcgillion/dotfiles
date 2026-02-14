@@ -101,6 +101,9 @@
     host uae-lab-node1
          user bmg
          hostname 10.161.5.196
+    host bmg-vps
+         user ubuntu
+         hostname 35.178.208.8
   '';
 
   sops.secrets.login-password = {
