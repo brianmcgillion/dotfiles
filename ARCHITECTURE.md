@@ -14,6 +14,8 @@ This NixOS configuration uses a modular architecture for better maintainability,
 │   │   ├── client.nix    # Desktop/laptop profile
 │   │   └── server.nix    # Server/headless profile
 │   ├── features/         # Feature modules with explicit enable options
+│   │   ├── ai/           # AI/ML tooling
+│   │   │   └── default.nix
 │   │   ├── desktop/      # Desktop environment features
 │   │   │   ├── audio.nix
 │   │   │   ├── desktop-manager.nix
@@ -45,6 +47,7 @@ This NixOS configuration uses a modular architecture for better maintainability,
 │       └── groups.nix
 ├── hosts/                # Host-specific configurations
 │   ├── arcadia/          # Desktop with NVIDIA
+│   ├── argus/            # ML desktop with NVIDIA RTX 5080
 │   ├── minerva/          # Laptop with SSH
 │   ├── nubes/          # Hetzner server
 │   └── caelus/           # Hetzner cloud (Nebula lighthouse)
@@ -150,6 +153,12 @@ Host configurations are minimal and declarative:
 - **Profile**: client
 - **Hardware**: AMD CPU, NVIDIA GPU
 - **Features**: GNOME, audio, Emacs, Nebula network
+
+#### argus
+- **Type**: ML Desktop
+- **Profile**: client
+- **Hardware**: Intel CPU, NVIDIA RTX 5080 GPU
+- **Features**: GNOME, audio, Emacs, Nebula network, AI/ML (Ollama + Goose)
 
 #### minerva
 - **Type**: Laptop (Lenovo ThinkPad X1 9th Gen)

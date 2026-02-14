@@ -8,6 +8,9 @@ _: {
     profile-client = import ./profiles/client.nix;
     profile-server = import ./profiles/server.nix;
 
+    # AI features
+    feature-ai = import ./features/ai;
+
     # Desktop features
     feature-audio = import ./features/desktop/audio.nix;
     feature-desktop-manager = import ./features/desktop/desktop-manager.nix;

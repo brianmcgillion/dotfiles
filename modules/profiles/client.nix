@@ -46,6 +46,7 @@
     ./common.nix
     inputs.gp-gui.nixosModules.default
     inputs.srvos.nixosModules.desktop
+    self.nixosModules.feature-ai
     self.nixosModules.feature-audio
     self.nixosModules.feature-desktop-manager
     self.nixosModules.feature-docker

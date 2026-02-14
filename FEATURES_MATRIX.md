@@ -8,53 +8,60 @@ Overview of which features are enabled on each host.
 - ○ Available but not enabled
 - ― Not applicable
 
+## AI Features
+
+| Feature | arcadia | minerva | argus | nubes | caelus |
+|---------|---------|---------|-------|-------|--------|
+| Ollama (LLM inference) | ○ | ○ | ✗ | ― | ― |
+| Goose CLI (AI coding) | ○ | ○ | ✗ | ― | ― |
+
 ## Desktop Features
 
-| Feature | arcadia | minerva | nubes | caelus |
-|---------|---------|---------|---------|--------|
-| Audio (PipeWire) | ✓ | ✓ | ― | ― |
-| Desktop Manager (GNOME) | ✓ | ✓ | ― | ― |
-| YubiKey Support | ✓ | ✓ | ― | ― |
+| Feature | arcadia | minerva | argus | nubes | caelus |
+|---------|---------|---------|-------|-------|--------|
+| Audio (PipeWire) | ✓ | ✓ | ✓ | ― | ― |
+| Desktop Manager (GNOME) | ✓ | ✓ | ✓ | ― | ― |
+| YubiKey Support | ✓ | ✓ | ✓ | ― | ― |
 
 ## Development Features
 
-| Feature | arcadia | minerva | nubes | caelus |
-|---------|---------|---------|---------|--------|
-| Emacs (Doom) | ✓ | ✓ | ― | ― |
-| Emacs UI Tools | ✓ | ✓ | ― | ― |
+| Feature | arcadia | minerva | argus | nubes | caelus |
+|---------|---------|---------|-------|-------|--------|
+| Emacs (Doom) | ✓ | ✓ | ✓ | ― | ― |
+| Emacs UI Tools | ✓ | ✓ | ✓ | ― | ― |
 
 ## Networking Features
 
-| Feature | arcadia | minerva | nubes | caelus |
-|---------|---------|---------|---------|--------|
-| Nebula Network | ✗ | ✗ | ✗ | ✗ (lighthouse) |
-| WireGuard | ✗ | ✗ | ○ | ○ |
+| Feature | arcadia | minerva | argus | nubes | caelus |
+|---------|---------|---------|-------|-------|--------|
+| Nebula Network | ✗ | ✗ | ✗ | ✗ | ✗ (lighthouse) |
+| WireGuard | ✗ | ✗ | ✗ | ○ | ○ |
 
 ## Security Features
 
-| Feature | arcadia | minerva | nubes | caelus |
-|---------|---------|---------|---------|--------|
-| System Hardening | ✓ | ✓ | ✓ | ✓ |
-| SSH Server | ✓ | ✗ | ✓ | ✓ |
-| Fail2ban | ○ | ○ | ✓ | ✓ |
+| Feature | arcadia | minerva | argus | nubes | caelus |
+|---------|---------|---------|-------|-------|--------|
+| System Hardening | ✓ | ✓ | ✓ | ✓ | ✓ |
+| SSH Server | ✓ | ✗ | ✓ | ✓ | ✓ |
+| Fail2ban | ○ | ○ | ○ | ✓ | ✓ |
 
 ## System Features
 
-| Feature | arcadia | minerva | nubes | caelus |
-|---------|---------|---------|---------|--------|
-| System Packages | ✓ | ✓ | ✓ | ✓ |
-| XDG Compliance | ✓ | ✓ | ✓ | ✓ |
-| Locale & Fonts | ✓ | ✓ | ― | ― |
+| Feature | arcadia | minerva | argus | nubes | caelus |
+|---------|---------|---------|-------|-------|--------|
+| System Packages | ✓ | ✓ | ✓ | ✓ | ✓ |
+| XDG Compliance | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Locale & Fonts | ✓ | ✓ | ✓ | ― | ― |
 
 ## Hardware
 
-| Feature | arcadia | minerva | nubes | caelus |
-|---------|---------|---------|---------|--------|
-| NVIDIA GPU | ✗ | ― | ― | ― |
-| Intel CPU | ― | ✓ | ― | ✓ |
-| AMD CPU | ✓ | ― | ✓ | ― |
-| Disk Encryption | ― | ✓ | ― | ― |
-| Disko Management | ― | ― | ✓ | ✓ |
+| Feature | arcadia | minerva | argus | nubes | caelus |
+|---------|---------|---------|-------|-------|--------|
+| NVIDIA GPU | ✗ | ― | ✗ | ― | ― |
+| Intel CPU | ― | ✓ | ✓ | ― | ✓ |
+| AMD CPU | ✓ | ― | ― | ✓ | ― |
+| Disk Encryption | ― | ✓ | ― | ― | ― |
+| Disko Management | ― | ― | ✓ | ✓ | ✓ |
 
 ## Profiles
 
@@ -62,6 +69,7 @@ Overview of which features are enabled on each host.
 |------|---------|------|
 | arcadia | client | Desktop workstation |
 | minerva | client | Laptop |
+| argus | client | ML desktop (NVIDIA RTX 5080) |
 | nubes | server | Dedicated server |
 | caelus | server | Cloud server |
 

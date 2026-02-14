@@ -26,6 +26,17 @@
     };
   };
 
+  # Enable AI features (CUDA auto-detected from hardware-nvidia)
+  # Note: Qwen3-Coder-480B-A35B is the best Qwen coding model but requires a cluster of GPUs
+  features.ai = {
+    enable = true;
+    ollama.models = [
+      "llama3.2:3b"
+      "qwen3-coder-next" # 80B MoE, 3B active — best local coding model (needs ~52GB RAM+VRAM)
+      "qwen3:30b-a3b" # 30B MoE, 3.3B active — fits fully in GPU VRAM
+    ];
+  };
+
   # Enable Nebula network
   features.networking.nebula = {
     enable = true;
