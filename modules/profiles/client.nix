@@ -156,6 +156,7 @@
       pkgs.man-pages-posix
       pkgs.pciutils
       pkgs.rebiber
+      pkgs.solaar
       pkgs.usbutils
       pkgs.wally-cli
       # keep-sorted end

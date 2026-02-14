@@ -14,7 +14,10 @@
         pkgs.tmuxPlugins.dracula
         pkgs.tmuxPlugins.sensible
         pkgs.tmuxPlugins.tmux-fzf
-        pkgs.tmuxPlugins.tmux-which-key
+        {
+          plugin = pkgs.tmuxPlugins.tmux-which-key;
+          extraConfig = "set -g @tmux-which-key-xdg-enable 1";
+        }
         #pkgs.tmuxPlugins.sysstat
         #pkgs.tmuxPlugins.tmux-powerline
         #pkgs.tmuxPlugins.tmux-thumbs
