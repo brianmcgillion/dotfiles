@@ -25,6 +25,7 @@
 # Enabled features by default:
 #   - features.desktop.audio
 #   - features.desktop.desktop-manager
+#   - features.desktop.power-management
 #   - features.desktop.yubikey
 #   - features.development.docker
 #   - features.development.emacs
@@ -54,6 +55,7 @@
     self.nixosModules.feature-emacs-ui
     self.nixosModules.feature-fail2ban
     self.nixosModules.feature-locale-fonts
+    self.nixosModules.feature-power-management
     self.nixosModules.feature-remarkable
     self.nixosModules.feature-sshd
     self.nixosModules.feature-yubikey
@@ -71,6 +73,7 @@
       desktop = {
         audio.enable = lib.mkDefault true;
         desktop-manager.enable = lib.mkDefault true;
+        power-management.enable = lib.mkDefault true;
         yubikey.enable = lib.mkDefault true;
       };
       development = {

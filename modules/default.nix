@@ -14,6 +14,7 @@ _: {
     # Desktop features
     feature-audio = import ./features/desktop/audio.nix;
     feature-desktop-manager = import ./features/desktop/desktop-manager.nix;
+    feature-power-management = import ./features/desktop/power-management.nix;
     feature-yubikey = import ./features/desktop/yubikey.nix;
 
     # Development features
