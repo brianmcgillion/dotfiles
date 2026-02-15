@@ -3,6 +3,7 @@
 {
   config,
   lib,
+  pkgs,
   self,
   ...
 }:
@@ -96,6 +97,10 @@
     };
   };
 
+  # RTX 5080 (Blackwell/GB203) requires open kernel modules
+  hardware.nvidia.open = true;
+  # Pin to 6.12 LTS: nvidia-open doesn't compile against 6.19 yet
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
   hardware.cpu.intel.updateMicrocode = true;
 
   system.stateVersion = "25.11";

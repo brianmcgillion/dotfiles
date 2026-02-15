@@ -18,18 +18,21 @@
 # - Fine-grained power management disabled (experimental, Turing+ only)
 #
 # Driver type:
-# - Closed-source kernel module (open=false)
-# - Open kernel module only supports Turing and newer
+# - Defaults to closed-source kernel module (open=false via mkDefault)
+# - Hosts can override with hardware.nvidia.open = true
+# - Blackwell+ GPUs (e.g. RTX 5080) require open = true
+# - Open kernel module supports Turing and newer
 #
 # Usage:
 #   imports = [ self.nixosModules.hardware-nvidia ];
 #
-# Used by: arcadia (AMD + NVIDIA desktop)
+# Used by: arcadia (AMD + NVIDIA desktop), argus (Intel + NVIDIA desktop)
 #
 # Note: Requires compatible GPU. Check supported GPUs at:
 # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
 {
   config,
+  lib,
   ...
 }:
 {
@@ -38,9 +41,9 @@
       modesetting.enable = true;
       powerManagement.enable = false;
       powerManagement.finegrained = false;
-      open = false;
+      open = lib.mkDefault false;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.production;
+      package = lib.mkDefault config.boot.kernelPackages.nvidiaPackages.production;
     };
     graphics.enable = true;
   };
