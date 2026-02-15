@@ -78,6 +78,7 @@ in
     environment.systemPackages = [
       pkgs.goose-cli
       pkgs.ollama
+      pkgs.nvtopPackages.full
     ];
 
     environment.sessionVariables = {

@@ -58,6 +58,7 @@
     self.nixosModules.feature-sshd
     self.nixosModules.feature-yubikey
     self.nixosModules.scripts
+    self.nixosModules.user-root
     # keep-sorted end
   ];
 
