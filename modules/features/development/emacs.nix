@@ -41,13 +41,15 @@ let
   cfg = config.features.development.emacs;
   emacs = (pkgs.emacsPackagesFor pkgs.emacs-git).emacsWithPackages (epkgs: [
     # keep-sorted start
+    (epkgs.treesit-grammars.with-grammars (
+      grammars: builtins.attrValues (removeAttrs grammars [ "tree-sitter-quint" ])
+    ))
     epkgs.claude-code
     epkgs.djvu
     epkgs.nov
     epkgs.org-pdftools
     epkgs.pdf-tools
     epkgs.tree-sitter-langs
-    epkgs.treesit-grammars.with-all-grammars
     epkgs.vterm
     # keep-sorted end
   ]);
