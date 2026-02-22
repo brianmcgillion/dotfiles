@@ -96,6 +96,7 @@ in
       pkgs.nodePackages.vscode-langservers-extracted
       pkgs.nodePackages.yaml-language-server
       pkgs.nodejs
+      pkgs.poppler-utils
       pkgs.python3Packages.grip
       pkgs.sqlite
       pkgs.wordnet
