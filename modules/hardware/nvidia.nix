@@ -14,8 +14,10 @@
 # - X11 and Wayland support
 #
 # Power management:
-# - Standard power management disabled (can cause suspend issues)
-# - Fine-grained power management disabled (experimental, Turing+ only)
+# - Enables nvidia-suspend/resume/hibernate systemd services
+# - Sets NVreg_PreserveVideoMemoryAllocations=1 to save VRAM on suspend
+# - Required for working S3 suspend/resume with proprietary driver
+# - Fine-grained power management disabled (runtime D3, laptops only)
 #
 # Driver type:
 # - Defaults to closed-source kernel module (open=false via mkDefault)
@@ -39,7 +41,7 @@
   hardware = {
     nvidia = {
       modesetting.enable = true;
-      powerManagement.enable = false;
+      powerManagement.enable = true;
       powerManagement.finegrained = false;
       open = lib.mkDefault false;
       nvidiaSettings = true;
