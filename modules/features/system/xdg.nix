@@ -14,6 +14,7 @@
 #
 # Configured applications:
 # - aspell: Configuration and dictionaries
+# - claude: Config directory (CLAUDE_CONFIG_DIR, upstream ignores XDG)
 # - less: History file
 # - wget: Configuration file
 # - bash: History file
@@ -53,6 +54,7 @@ in
         XDG_DATA_HOME = "$HOME/.local/share";
         XDG_STATE_HOME = "$HOME/.local/state";
         XDG_BIN_HOME = "$HOME/.local/bin";
+        CLAUDE_CONFIG_DIR = "$HOME/.config/claude";
         PATH = [ "\${XDG_BIN_HOME}" ];
       };
       variables = {

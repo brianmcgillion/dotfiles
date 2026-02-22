@@ -40,6 +40,12 @@ SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
+path = "home/development/claude/settings.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
 path = ".claude/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022-2025 Brian McGillion"

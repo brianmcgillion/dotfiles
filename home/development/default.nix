@@ -3,6 +3,7 @@
 _: {
   imports = [
     ./base_system.nix
+    ./claude
     ./graphical.nix
     ./embedded.nix
   ];

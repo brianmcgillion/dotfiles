@@ -6,7 +6,8 @@
       "Bash(nix-store -qR:*)",
       "Bash(nix-store:*)",
       "Bash(head -3 echo \"\" echo \"=== 2.33.1+1 \\(likely main nix\\) ===\")",
-      "Bash(nix-store -q --referrers:*)"
+      "Bash(nix-store -q --referrers:*)",
+      "Bash(rebuild-host:*)"
     ]
   }
 }
