@@ -4,7 +4,7 @@ keys:
     - &host_caelus age17hk8tccd9a8sg875mqe6llw3euthjf8wlcmhlhk7lxlhmggvp92sfdstm5
     - &host_arcadia age1tvd5txsy62uywunnnyrhncdydnmgmg6prjczktw8f68wqun9kqysvuf94h
     - &host_minerva age1q8rtws7wsgrq5p7f5kxm6fhgtpfwtv5643geskn4euwfgeqkdeaqpd7mst
-    - &host_argus age12ch83stxkqmc55ckxsvmfagjtgrp53dg7qjnsw9w2nuy3y7pgs5sd59d46
+    - &host_argus age1h2uggcyd4yt0s7egqyxzwje093n78c96xyyckwvzjrk9atn67cnsp80vgy
 creation_rules:
     - path_regex: ^secrets.yaml$
       key_groups:

@@ -52,15 +52,17 @@
     initrd = {
       availableKernelModules = [
         "xhci_pci"
+        "thunderbolt"
         "ahci"
         "nvme"
         "usbhid"
         "usb_storage"
+        "uas"
         "sd_mod"
       ];
       kernelModules = [ ];
     };
-    kernelModules = [ "kvm-intel" ];
+    kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];
   };
 
@@ -71,7 +73,7 @@
   };
 
   networking = {
-    interfaces.enp4s0.useDHCP = true;
+    interfaces.enp173s0.useDHCP = true;
 
     #TODO Replace this with the name of the nixosConfiguration so it can be common
     # Define your hostname
@@ -101,7 +103,7 @@
   hardware.nvidia.open = true;
   # Pin to 6.12 LTS: nvidia-open doesn't compile against 6.19 yet
   boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
-  hardware.cpu.intel.updateMicrocode = true;
+  hardware.cpu.amd.updateMicrocode = true;
 
   system.stateVersion = "25.11";
 }
