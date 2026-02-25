@@ -48,6 +48,8 @@
   };
 
   boot = {
+    swraid.enable = true;
+    swraid.mdadmConf = "PROGRAM ${pkgs.coreutils}/bin/true";
     loader.efi.efiSysMountPoint = "/boot";
     initrd = {
       availableKernelModules = [
@@ -60,7 +62,10 @@
         "uas"
         "sd_mod"
       ];
-      kernelModules = [ ];
+      kernelModules = [
+        "raid0"
+        "dm-mod"
+      ];
     };
     kernelModules = [ "kvm-amd" ];
     extraModulePackages = [ ];

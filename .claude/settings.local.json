@@ -7,7 +7,8 @@
       "Bash(nix-store:*)",
       "Bash(head -3 echo \"\" echo \"=== 2.33.1+1 \\(likely main nix\\) ===\")",
       "Bash(nix-store -q --referrers:*)",
-      "Bash(rebuild-host:*)"
+      "Bash(rebuild-host:*)",
+      "mcp__plugin_context7_context7__resolve-library-id"
     ]
   }
 }

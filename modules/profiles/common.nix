@@ -262,7 +262,7 @@
               "argus.pantheon.bmg.sh"
               "10.99.99.5"
             ];
-            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMbQgFCatA2Gu6hRXK8S30FR/epuVdv8Xzt4uXAI/jgz";
+            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKvQrrjqRRqg5GPwBEIcu/3lb4p1t0C2P+A+qe4CUn9i";
           };
         };
       };

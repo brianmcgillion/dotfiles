@@ -42,6 +42,14 @@
 
         commands = [
           {
+            category = "setup";
+            name = "setup-netrc";
+            help = "Extract netrc credentials from SOPS secrets to ~/.netrc";
+            command = ''
+              exec ${pkgs.writeScriptBin "setup-netrc" (builtins.readFile "${self}/packages/scripts/setup-netrc.sh")}/bin/setup-netrc "$@"
+            '';
+          }
+          {
             category = "deployment";
             name = "deploy-hetzner-server";
             help = "Deploy NixOS to Hetzner servers (nubes, caelus)";
