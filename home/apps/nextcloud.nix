@@ -45,8 +45,6 @@ in
     services.nextcloud-sync = {
       Unit = {
         Description = "Nextcloud CLI Sync";
-        After = [ "network-online.target" ];
-        Wants = [ "network-online.target" ];
       };
       Service = {
         Type = "oneshot";
