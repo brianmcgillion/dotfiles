@@ -43,15 +43,6 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  # Ghaf project binary cache (used with nix-fast-build)
-  # Priority 50 ensures cache.nixos.org (default priority 40) is checked first
-  nix.settings = {
-    extra-substituters = [ "https://ghaf-dev.cachix.org?priority=50" ];
-    extra-trusted-public-keys = [
-      "ghaf-dev.cachix.org-1:S3M8x3no8LFQPBfHw1jl6nmP8A7cVWKntoMKN3IsEQY="
-    ];
-  };
-
   networking = {
     hostName = lib.mkDefault "nubes";
   };

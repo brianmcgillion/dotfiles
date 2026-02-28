@@ -3,7 +3,7 @@
 # Doom Emacs user configuration
 #
 # Installs user-specific Doom Emacs configuration.
-# Automatically clones Doom Emacs and user configuration on first activation.
+# Automatically clones Doom Emacs and user configuration via systemd user service.
 #
 # Repositories:
 # - github.com/doomemacs/doomemacs -> ~/.config/emacs
@@ -23,15 +23,30 @@
 }:
 {
   config = lib.mkIf config.userProfile.enableEmacs {
-    # Doom Emacs installation and user config
-    # $DRY_RUN_CMD is provided by home-manager for dry-run support
-    # See: https://nix-community.github.io/home-manager/index.xhtml#sec-usage-activation
-    home.activation.installDoomEmacs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      if [ ! -d "$XDG_CONFIG_HOME/emacs" ]; then
-        $DRY_RUN_CMD ${pkgs.git}/bin/git clone https://github.com/doomemacs/doomemacs.git "$XDG_CONFIG_HOME/emacs"
-        $DRY_RUN_CMD ${pkgs.git}/bin/git clone https://github.com/brianmcgillion/doomd.git "$XDG_CONFIG_HOME/doom"
-      fi
-    '';
+    # Clone Doom Emacs and user config before emacs.service starts
+    systemd.user.services.install-doom-emacs = {
+      Unit = {
+        Description = "Clone Doom Emacs and user configuration";
+        After = [ "network-online.target" ];
+        Wants = [ "network-online.target" ];
+        Before = [ "emacs.service" ];
+      };
+      Service = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeShellScript "install-doom-emacs" ''
+          if [ ! -d "$HOME/.config/emacs" ]; then
+            ${pkgs.git}/bin/git clone https://github.com/doomemacs/doomemacs.git "$HOME/.config/emacs"
+          fi
+          if [ ! -d "$HOME/.config/doom" ]; then
+            ${pkgs.git}/bin/git clone https://github.com/brianmcgillion/doomd.git "$HOME/.config/doom"
+          fi
+        '';
+      };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
 
     # org-protocol desktop handler for browser integration
     # Allows capturing web pages to org-mode via org-protocol:// URLs
