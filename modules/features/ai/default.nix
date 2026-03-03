@@ -73,16 +73,24 @@ in
         }
         .${cfg.ollama.acceleration};
       loadModels = cfg.ollama.models;
+      user = "ollama";
+      group = "ollama";
+      environmentVariables = {
+        OLLAMA_NUM_CTX = "131072";
+      };
     };
+
+    systemd.services.ollama.serviceConfig.UMask = lib.mkForce "0027";
 
     environment.systemPackages = [
       pkgs.goose-cli
-      pkgs.ollama
       pkgs.nvtopPackages.full
     ];
 
     environment.sessionVariables = {
       OLLAMA_HOST = "http://127.0.0.1:11434";
+      OLLAMA_MODELS = "/var/lib/ollama/models";
+      OLLAMA_NUM_CTX = "131072";
     };
 
   };

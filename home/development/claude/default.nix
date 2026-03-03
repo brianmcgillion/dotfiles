@@ -25,6 +25,7 @@ let
     runtimeInputs = [
       pkgs.claude-code
       pkgs.jq
+      pkgs.git
     ];
     text = ''
       # Skip if claude binary is not yet available (first bootstrap)

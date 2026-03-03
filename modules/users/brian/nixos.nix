@@ -132,7 +132,8 @@
       config.features ? development
       && config.features.development ? docker
       && config.features.development.docker.enable
-    ) [ "docker" ]);
+    ) [ "docker" ])
+    ++ (lib.optionals (config.features ? ai && config.features.ai.enable) [ "ollama" ]);
     shell = pkgs.bash;
     uid = 1000;
     hashedPasswordFile = config.sops.secrets.login-password.path;

@@ -16,6 +16,8 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
+  time.timeZone = "Asia/Dubai";
+
   sops = {
     defaultSopsFile = ./secrets.yaml;
     secrets = {
