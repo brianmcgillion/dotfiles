@@ -121,7 +121,10 @@
         dns = "systemd-resolved";
       };
       firewall = {
-        allowedTCPPorts = [ 8080 ];
+        allowedTCPPorts = [
+          8080
+          8147
+        ];
         allowedUDPPorts = [ 8080 ];
       };
     };
