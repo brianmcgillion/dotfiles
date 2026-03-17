@@ -62,5 +62,15 @@ in
       IdleAction = "suspend";
       IdleActionSec = cfg.idleActionSec;
     };
+
+    # Enable Wake-on-LAN for ethernet interfaces so the machine can be
+    # woken by incoming network traffic (e.g. Nebula UDP probes on the
+    # physical NIC). This allows remote SSH-over-Nebula to wake a
+    # suspended machine automatically.
+    # Note: Has no effect on WiFi-only devices (e.g. laptops).
+    systemd.network.links."50-wol" = {
+      matchConfig.Type = "ether";
+      linkConfig.WakeOnLan = "unicast";
+    };
   };
 }
