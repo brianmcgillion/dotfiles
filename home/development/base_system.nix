@@ -9,7 +9,6 @@
   home.packages = [
     # keep-sorted start
     pkgs.bear
-    pkgs.binaryninja-free
     #pkgs.bibtool # broken upstream
     pkgs.clang-tools
     pkgs.cmake

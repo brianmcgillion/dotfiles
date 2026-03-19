@@ -3,6 +3,7 @@
 _: {
   imports = [
     ./base_system.nix
+    ./binary-ninja.nix
     ./claude
     ./graphical.nix
     ./embedded.nix
