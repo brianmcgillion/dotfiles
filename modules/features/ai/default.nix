@@ -83,7 +83,7 @@ in
     systemd.services.ollama.serviceConfig.UMask = lib.mkForce "0027";
 
     environment.systemPackages = [
-      pkgs.goose-cli
+      #pkgs.goose-cli
       pkgs.nvtopPackages.full
     ];
 
