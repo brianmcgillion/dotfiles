@@ -58,6 +58,7 @@
     self.nixosModules.feature-power-management
     self.nixosModules.feature-remarkable
     self.nixosModules.feature-sshd
+    self.nixosModules.feature-stm32cubeprog
     self.nixosModules.feature-yubikey
     self.nixosModules.scripts
     self.nixosModules.user-root

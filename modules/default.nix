@@ -18,10 +18,12 @@ _: {
     feature-yubikey = import ./features/desktop/yubikey.nix;
 
     # Development features
+    feature-binaryninja = import ./features/development/binaryninja.nix;
     feature-docker = import ./features/development/docker.nix;
     feature-emacs = import ./features/development/emacs.nix;
     feature-emacs-ui = import ./features/development/emacs-ui.nix;
     feature-remarkable = import ./features/development/remarkable.nix;
+    feature-stm32cubeprog = import ./features/development/stm32cubeprog.nix;
 
     # Networking features
     feature-nebula = import ./features/networking/nebula.nix;

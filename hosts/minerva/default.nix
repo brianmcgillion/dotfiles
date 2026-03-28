@@ -36,6 +36,9 @@
   # Enable SSH server for this laptop
   features.security.sshd.enable = true;
 
+  # STM32 development tools with udev rules
+  features.development.stm32cubeprog.enable = true;
+
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   boot = {
