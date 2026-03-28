@@ -28,7 +28,6 @@
   inputs,
   lib,
   config,
-  pkgs,
   ...
 }:
 {
@@ -293,7 +292,7 @@
     # Boot configuration
     boot = {
       # Use the bleeding edge kernel
-      kernelPackages = pkgs.linuxPackages_latest;
+      #kernelPackages = pkgs.linuxPackages_latest;
       binfmt.emulatedSystems = [
         "riscv64-linux"
         "aarch64-linux"
