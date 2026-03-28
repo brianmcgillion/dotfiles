@@ -49,6 +49,7 @@
     inputs.srvos.nixosModules.desktop
     self.nixosModules.feature-ai
     self.nixosModules.feature-audio
+    self.nixosModules.feature-binaryninja
     self.nixosModules.feature-desktop-manager
     self.nixosModules.feature-docker
     self.nixosModules.feature-emacs
@@ -87,6 +88,7 @@
         yubikey.enable = lib.mkDefault true;
       };
       development = {
+        binaryninja.enable = lib.mkDefault true;
         docker.enable = lib.mkDefault true;
         emacs.enable = lib.mkDefault true;
         emacs-ui.enable = lib.mkDefault true;

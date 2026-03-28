@@ -133,6 +133,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    binary-ninja-source = {
+      url = "file+file:///home/brian/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip";
+      flake = false;
+    };
+
   };
 
   outputs =

@@ -3,21 +3,20 @@
 {
   inputs,
   lib,
+  osConfig,
   pkgs,
   ...
 }:
 let
-  sourcePath = /home/brian/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip;
-  sourceAvailable = builtins.pathExists sourcePath;
   binaryninja-src = pkgs.runCommand "binaryninja_linux_dev_ultimate.zip" { } ''
-    cp ${sourcePath} $out
+    cp ${inputs.binary-ninja-source} $out
   '';
 in
 {
   # Not using inputs.nix-binary-ninja.hmModules.binaryninja because it sets
   # nixpkgs.overlays in the home-manager scope, which is incompatible with
   # home-manager.useGlobalPkgs. Instead, add the package directly.
-  home.packages = lib.optionals sourceAvailable [
+  home.packages = lib.optionals osConfig.features.development.binaryninja.enable [
     (
       (inputs.nix-binary-ninja.packages.x86_64-linux.binary-ninja-ultimate.override {
         overrideSource = binaryninja-src;
