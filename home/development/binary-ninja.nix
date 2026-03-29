@@ -11,6 +11,13 @@ let
   binaryninja-src = pkgs.runCommand "binaryninja_linux_dev_ultimate.zip" { } ''
     cp ${inputs.binary-ninja-source} $out
   '';
+
+  # Python packages required by Binary Ninja plugins
+  pluginPythonDeps = with pkgs.python3Packages; [
+    click
+    pyyaml
+    pkgs.svd2py
+  ];
 in
 {
   # Not using inputs.nix-binary-ninja.hmModules.binaryninja because it sets
@@ -42,8 +49,9 @@ in
           } $out/share/pixmaps/binaryninja.png
           chmod +x $out/opt/binaryninja/binaryninja
           buildPythonPath "$pythonDeps"
+          pluginPythonPath="${pkgs.python3.pkgs.makePythonPath pluginPythonDeps}"
           makeWrapper $out/opt/binaryninja/binaryninja $out/bin/binaryninja \
-            --prefix PYTHONPATH : "$program_PYTHONPATH"
+            --prefix PYTHONPATH : "$program_PYTHONPATH:$pluginPythonPath"
 
           runHook postInstall
         '';
