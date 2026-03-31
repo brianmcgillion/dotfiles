@@ -55,6 +55,7 @@
     self.nixosModules.feature-emacs
     self.nixosModules.feature-emacs-ui
     self.nixosModules.feature-fail2ban
+    self.nixosModules.feature-keyd
     self.nixosModules.feature-locale-fonts
     self.nixosModules.feature-power-management
     self.nixosModules.feature-remarkable

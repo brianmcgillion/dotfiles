@@ -116,12 +116,19 @@
     };
   };
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    options = "ctrl:swapcaps";
+  # Per-device keyboard remapping — swap caps/ctrl only on the internal keyboard.
+  # The ZSA Voyager is programmable and handles its own layout.
+  # Find device IDs with: sudo keyd monitor
+  features.desktop.keyd = {
+    enable = true;
+    keyboards.internal = {
+      ids = [ "0001:0001" ];
+      settings.main = {
+        capslock = "leftcontrol";
+        leftcontrol = "capslock";
+      };
+    };
   };
-
-  console.useXkbConfig = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.05";
