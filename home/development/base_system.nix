@@ -20,7 +20,7 @@
     pkgs.nix-update
     pkgs.nixos-generators
     pkgs.nixpkgs-review
-    pkgs.nodePackages_latest.nodejs
+    pkgs.nodejs
     pkgs.optinix
     pkgs.uv
     # keep-sorted end

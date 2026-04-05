@@ -231,7 +231,7 @@ let
 
       # HiDPI scaling: GDK_SCALE works at the GTK level for XWayland apps
       # Override with STM32CUBEPROG_SCALE env var (default: 3 for HiDPI displays)
-      export GDK_SCALE=''${STM32CUBEPROG_SCALE:-3}
+      export GDK_SCALE=''${STM32CUBEPROG_SCALE:-1}
       export GDK_DPI_SCALE=1
 
       exec ${jdk21}/bin/java \

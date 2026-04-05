@@ -84,6 +84,7 @@ in
         # keep-sorted end
       ]))
       emacs
+      pkgs.bash-language-server
       pkgs.binutils
       pkgs.copilot-language-server
       pkgs.dockerfile-language-server
@@ -92,16 +93,15 @@ in
       pkgs.github-mcp-server
       pkgs.libxml2
       pkgs.neocmakelsp
-      pkgs.nodePackages.bash-language-server
-      pkgs.nodePackages.prettier
-      pkgs.nodePackages.typescript-language-server
-      pkgs.nodePackages.vscode-langservers-extracted
-      pkgs.nodePackages.yaml-language-server
       pkgs.nodejs
       pkgs.poppler-utils
+      pkgs.prettier
       pkgs.python3Packages.grip
       pkgs.sqlite
+      pkgs.typescript-language-server
+      pkgs.vscode-langservers-extracted
       pkgs.wordnet
+      pkgs.yaml-language-server
       pkgs.zstd
       # keep-sorted end
     ]

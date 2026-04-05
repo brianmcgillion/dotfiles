@@ -83,6 +83,21 @@
         "--storage-path",
         "/path/to/your/paper/storage"
       ]
+    },
+    "binary-ninja-mcp": {
+      "type": "local",
+      "command": "npx",
+      "tools": [
+        "*"
+      ],
+      "args": [
+        "-y",
+        "binary-ninja-mcp",
+        "--host",
+        "localhost",
+        "--port",
+        "9009"
+      ]
     }
   }
 }
