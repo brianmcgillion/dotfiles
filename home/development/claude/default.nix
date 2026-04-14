@@ -20,6 +20,37 @@ let
     "poemswe/co-researcher"
   ];
 
+  # User-scope MCP servers managed by nix.
+  # Each entry maps server name to its CLI args for `claude mcp add --scope user`.
+  mcpServers = {
+    binary-ninja-mcp = {
+      command = "npx";
+      args = [
+        "-y"
+        "binary-ninja-mcp"
+        "--host"
+        "localhost"
+        "--port"
+        "9009"
+      ];
+    };
+  };
+
+  # Build `claude mcp add` commands from the mcpServers attrset.
+  mcpAddCommands = lib.concatStringsSep "\n" (
+    lib.mapAttrsToList (
+      name: cfg:
+      let
+        args = lib.concatStringsSep " " (map lib.escapeShellArg cfg.args);
+      in
+      ''
+        if ! claude mcp list 2>/dev/null | grep -q ${lib.escapeShellArg name}; then
+          claude mcp add --scope user ${lib.escapeShellArg name} -- ${lib.escapeShellArg cfg.command} ${args} 2>/dev/null || true
+        fi
+      ''
+    ) mcpServers
+  );
+
   pluginSyncScript = pkgs.writeShellApplication {
     name = "claude-plugin-sync";
     runtimeInputs = [
@@ -47,6 +78,9 @@ let
           claude plugin install "$plugin" 2>/dev/null || true
         fi
       done
+
+      # Ensure nix-managed MCP servers are registered
+      ${mcpAddCommands}
     '';
   };
 in

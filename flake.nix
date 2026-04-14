@@ -138,6 +138,11 @@
       flake = false;
     };
 
+    tms320c28x-re = {
+      url = "git+ssh://git@github.com/brianmcgillion/tms320c28x-re.git";
+      flake = false;
+    };
+
   };
 
   outputs =

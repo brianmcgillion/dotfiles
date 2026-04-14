@@ -23,6 +23,10 @@ in
   # Not using inputs.nix-binary-ninja.hmModules.binaryninja because it sets
   # nixpkgs.overlays in the home-manager scope, which is incompatible with
   # home-manager.useGlobalPkgs. Instead, add the package directly.
+  # TMS320C28x plugin is now a Rust native .so deployed manually from
+  # tms320c28x-re/rust/target/release/libtms320c28x_binja.so
+  # into ~/.binaryninja/plugins/
+
   home.packages = lib.optionals osConfig.features.development.binaryninja.enable [
     (
       (inputs.nix-binary-ninja.packages.x86_64-linux.binary-ninja-ultimate.override {
