@@ -297,6 +297,10 @@
         "riscv64-linux"
         "aarch64-linux"
       ];
+
+      # Use systemd-based initrd (scripted initrd is deprecated in 26.05,
+      # removed in 26.11)
+      initrd.systemd.enable = true;
     };
 
     # Tie the sops module to the system's ssh keys
