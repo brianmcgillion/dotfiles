@@ -39,6 +39,9 @@
   # STM32 development tools with udev rules
   features.development.stm32cubeprog.enable = true;
 
+  # TI DSP development tools (UniFlash + XDS200 JTAG)
+  features.development.uniflash.enable = true;
+
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   boot = {

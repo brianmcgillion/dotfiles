@@ -10,6 +10,7 @@ _: {
       rebiber = final.callPackage ./rebiber/default.nix { };
       stm32cubeprogrammer = final.callPackage ./stm32cubeprogrammer/default.nix { };
       svd2py = final.callPackage ./svd2py/default.nix { };
+      uniflash = final.callPackage ./uniflash/default.nix { };
     };
   };
 }
