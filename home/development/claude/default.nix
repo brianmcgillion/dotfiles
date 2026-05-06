@@ -22,6 +22,7 @@ let
 
   # User-scope MCP servers managed by nix.
   # Each entry maps server name to its CLI args for `claude mcp add --scope user`.
+  # For HTTP servers, set transport = "http" and url instead of command/args.
   mcpServers = {
     binary-ninja-mcp = {
       command = "npx";
@@ -34,20 +35,65 @@ let
         "9009"
       ];
     };
+    mcp-nixos = {
+      command = "uvx";
+      args = [ "mcp-nixos" ];
+    };
+    filesystem = {
+      command = "npx";
+      args = [
+        "-y"
+        "@modelcontextprotocol/server-filesystem"
+        "/home/brian/projects"
+        "/home/brian/.dotfiles"
+      ];
+    };
+    sequential-thinking = {
+      command = "npx";
+      args = [
+        "-y"
+        "@modelcontextprotocol/server-sequential-thinking"
+      ];
+    };
+    mcp-dblp = {
+      command = "uvx";
+      args = [ "mcp-dblp" ];
+    };
+    arxiv-mcp-server = {
+      command = "uv";
+      args = [
+        "tool"
+        "run"
+        "arxiv-mcp-server"
+        "--storage-path"
+        "/path/to/your/paper/storage"
+      ];
+    };
+    logic2 = {
+      transport = "http";
+      url = "http://127.0.0.1:10530";
+    };
   };
 
   # Build `claude mcp add` commands from the mcpServers attrset.
   mcpAddCommands = lib.concatStringsSep "\n" (
     lib.mapAttrsToList (
       name: cfg:
-      let
-        args = lib.concatStringsSep " " (map lib.escapeShellArg cfg.args);
-      in
-      ''
-        if ! claude mcp list 2>/dev/null | grep -q ${lib.escapeShellArg name}; then
-          claude mcp add --scope user ${lib.escapeShellArg name} -- ${lib.escapeShellArg cfg.command} ${args} 2>/dev/null || true
-        fi
-      ''
+      if cfg ? transport && cfg.transport == "http" then
+        ''
+          if ! claude mcp list 2>/dev/null | grep -q ${lib.escapeShellArg name}; then
+            claude mcp add --scope user --transport http ${lib.escapeShellArg name} ${lib.escapeShellArg cfg.url} 2>/dev/null || true
+          fi
+        ''
+      else
+        let
+          args = lib.concatStringsSep " " (map lib.escapeShellArg cfg.args);
+        in
+        ''
+          if ! claude mcp list 2>/dev/null | grep -q ${lib.escapeShellArg name}; then
+            claude mcp add --scope user ${lib.escapeShellArg name} -- ${lib.escapeShellArg cfg.command} ${args} 2>/dev/null || true
+          fi
+        ''
     ) mcpServers
   );
 

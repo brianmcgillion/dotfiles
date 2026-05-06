@@ -59,6 +59,7 @@
     self.nixosModules.feature-locale-fonts
     self.nixosModules.feature-power-management
     self.nixosModules.feature-remarkable
+    self.nixosModules.feature-saleae-logic
     self.nixosModules.feature-sshd
     self.nixosModules.feature-stm32cubeprog
     self.nixosModules.feature-uniflash
@@ -95,6 +96,7 @@
         emacs.enable = lib.mkDefault true;
         emacs-ui.enable = lib.mkDefault true;
         remarkable.enable = lib.mkDefault true;
+        saleae-logic.enable = lib.mkDefault true;
       };
       system = {
         locale-fonts.enable = lib.mkDefault true;

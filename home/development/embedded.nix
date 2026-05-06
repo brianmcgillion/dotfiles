@@ -4,6 +4,7 @@
 {
   home.packages = [
     # keep-sorted start
+    pkgs.saleae-logic-2
     pkgs.socat
     pkgs.stm32cubeprogrammer
     pkgs.uniflash
