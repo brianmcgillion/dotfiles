@@ -7,6 +7,7 @@ _: {
     };
 
     overlays.own-pkgs-overlay = final: prev: {
+      f28335-dump = final.callPackage ./f28335-dump/default.nix { };
       rebiber = final.callPackage ./rebiber/default.nix { };
       stm32cubeprogrammer = final.callPackage ./stm32cubeprogrammer/default.nix { };
       svd2py = final.callPackage ./svd2py/default.nix { };

@@ -134,7 +134,7 @@
     };
 
     binary-ninja-source = {
-      url = "file+file:///home/brian/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip";
+      url = "file+file:///home/brian/projects/tools/binaryninja/binaryninja_linux_stable_ultimate.zip";
       flake = false;
     };
 

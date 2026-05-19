@@ -23,6 +23,7 @@
     pkgs.nodejs
     pkgs.optinix
     pkgs.uv
+    pkgs.xxd
     # keep-sorted end
   ];
 

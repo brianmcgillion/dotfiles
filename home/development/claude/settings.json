@@ -3,6 +3,7 @@
     "type": "command",
     "command": "bash ~/.config/claude/statusline-command.sh"
   },
+  "skillListingBudgetFraction": 0.03,
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,

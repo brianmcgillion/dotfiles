@@ -110,6 +110,7 @@ let
 
       # Graphics / display (for GUI - node-webkit based)
       libGL
+      libgbm
       libdrm
       libxkbcommon
       libx11
