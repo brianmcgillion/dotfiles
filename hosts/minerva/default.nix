@@ -42,6 +42,10 @@
   # TI DSP development tools (UniFlash + XDS200 JTAG)
   features.development.uniflash.enable = true;
 
+  # TI C2000 code generation toolchain (cl2000/lnk2000/ar2000) for TMS320F28xxx
+  # firmware audit / reverse-engineering work.
+  features.development.c2000-cgt.enable = true;
+
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   boot = {

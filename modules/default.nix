@@ -20,6 +20,7 @@ _: {
 
     # Development features
     feature-binaryninja = import ./features/development/binaryninja.nix;
+    feature-c2000-cgt = import ./features/development/c2000-cgt.nix;
     feature-docker = import ./features/development/docker.nix;
     feature-emacs = import ./features/development/emacs.nix;
     feature-emacs-ui = import ./features/development/emacs-ui.nix;

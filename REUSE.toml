@@ -50,3 +50,9 @@ path = ".claude/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "packages/f28335-dump/f28335_xds200.ccxml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"

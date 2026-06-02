@@ -57,7 +57,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-hardware.url = "github:nixos/nixos-hardware";
+    nixos-hardware = {
+      url = "github:nixos/nixos-hardware";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Disko for disk partitioning
     disko = {
@@ -80,7 +83,7 @@
     nixd = {
       url = "github:nix-community/nixd";
       #url = "git+file:///home/brian/projects/code/github.com/nix-community/nixd";
-      #inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     fast-flake-update = {

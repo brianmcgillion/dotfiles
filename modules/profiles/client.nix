@@ -50,6 +50,7 @@
     self.nixosModules.feature-ai
     self.nixosModules.feature-audio
     self.nixosModules.feature-binaryninja
+    self.nixosModules.feature-c2000-cgt
     self.nixosModules.feature-desktop-manager
     self.nixosModules.feature-docker
     self.nixosModules.feature-emacs
