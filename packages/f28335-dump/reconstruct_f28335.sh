@@ -44,6 +44,19 @@ DIS_DIR="$DUMP_DIR/dis"
 LOG_DIR="$DUMP_DIR/log"
 mkdir -p "$RECON_DIR" "$LINK_DIR" "$DIS_DIR" "$LOG_DIR"
 
+# Post-link analysis/verification helpers (Python). Resolved from nix-store paths
+# when packaged (@classify_py@/@verify_py@ substituted by default.nix), else from
+# alongside this script for a direct `bash reconstruct_f28335.sh` run. Both are
+# OPTIONAL: with no python3 (or no c28x package for the classifier) the COFF/.dis
+# still build. A byte-fidelity MISMATCH is the one fatal outcome (see below).
+SELF="$(readlink -f "$0" 2>/dev/null || echo "$0")"
+SELF_DIR="$(dirname "$SELF")"
+CLASSIFY_PY="@classify_py@"
+VERIFY_PY="@verify_py@"
+[[ $CLASSIFY_PY == @* ]] && CLASSIFY_PY="$SELF_DIR/classify_f28335.py"
+[[ $VERIFY_PY == @* ]] && VERIFY_PY="$SELF_DIR/verify_roundtrip.py"
+PYTHON="${PYTHON:-python3}"
+
 stamp=$(date +%Y%m%d-%H%M%S)
 LOG="$LOG_DIR/${stamp}-reconstruct.log"
 exec > >(tee -a "$LOG") 2>&1
@@ -281,9 +294,48 @@ echo "  $map_file  ($(wc -l <"$map_file") lines)"
 
 echo
 echo "=== disassembling (dis2000 --data_as_text --all) ==="
+# NB: '--data_as_text' is required. A reconstructed COFF built from .word data is
+# all STYP_DATA -- TI only marks STYP_TEXT from assembled instructions, never from
+# .word (fixture-verified), and re-emitting decoded mnemonics would break byte
+# fidelity. So code/data structure lives in the JSON manifest below, not the .dis.
 dis_file="$DIS_DIR/dumped.dis"
 dis2000 --data_as_text --all "$out_file" >"$dis_file"
 echo "  $dis_file  ($(wc -l <"$dis_file") lines, $(stat -c%s "$dis_file") bytes)"
+
+echo
+echo "=== byte-fidelity check (derived COFF vs raw dump) ==="
+# flash.bin is the immutable device extraction; the derived dumped.out MUST hold
+# byte-identical region bytes or the .dis/CRC tooling is untrustworthy. A
+# mismatch is fatal; a missing interpreter only skips the check.
+if command -v "$PYTHON" >/dev/null 2>&1 && [[ -f $VERIFY_PY ]]; then
+  if "$PYTHON" "$VERIFY_PY" "$DUMP_DIR"; then
+    :
+  else
+    echo "error: reconstructed COFF is NOT byte-identical to the dump" >&2
+    exit 1
+  fi
+else
+  echo "  (skipped: no '$PYTHON' on PATH or verify_roundtrip.py missing)"
+fi
+
+echo
+echo "=== classification manifest (code/data + function entries) ==="
+# Standalone recursive-descent classifier (reuses the tms320c28x-re c28x decoder).
+# Emits dumped.analysis.json -- the contract consumed by the BN dis_sidecar. This
+# is best-effort: if python3/c28x/PyYAML are unavailable it is skipped without
+# failing the reconstruction. Set C28X_RE_ROOT to the tms320c28x-re checkout if
+# the c28x import fails.
+analysis_file="$DIS_DIR/dumped.analysis.json"
+if command -v "$PYTHON" >/dev/null 2>&1 && [[ -f $CLASSIFY_PY ]]; then
+  if "$PYTHON" "$CLASSIFY_PY" "$DUMP_DIR" --out "$analysis_file"; then
+    echo "  $analysis_file  ($(stat -c%s "$analysis_file") bytes)"
+  else
+    echo "  (classification unavailable -- manifest not written; pipeline continues)" >&2
+    echo "   hint: set C28X_RE_ROOT to your tms320c28x-re checkout (needs c28x/ + isa/)" >&2
+  fi
+else
+  echo "  (skipped: no '$PYTHON' on PATH or classify_f28335.py missing)"
+fi
 
 echo
 echo "=== summary ==="

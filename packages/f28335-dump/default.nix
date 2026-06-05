@@ -15,9 +15,17 @@
   c2000-cgt,
   findutils,
   gawk,
+  python3,
 }:
 let
   defaultCcxml = ./f28335_xds200.ccxml;
+
+  # Python helpers run as a post-link stage: classify_f28335.py emits the
+  # code/data + function manifest (needs PyYAML, via the c28x decoder it reuses)
+  # and verify_roundtrip.py enforces byte-fidelity of the derived COFF (stdlib
+  # only). The classifier imports the c28x package from a tms320c28x-re checkout
+  # located via $C28X_RE_ROOT (or its built-in default path).
+  reconstructPython = python3.withPackages (ps: [ ps.pyyaml ]);
 
   reconstruct = writeShellApplication {
     name = "reconstruct_f28335";
@@ -26,8 +34,13 @@ let
       coreutils
       findutils
       gawk
+      reconstructPython
     ];
-    text = builtins.readFile ./reconstruct_f28335.sh;
+    # Bake the nix-store paths of the helper scripts into the @placeholders@.
+    text = builtins.replaceStrings
+      [ "@classify_py@" "@verify_py@" ]
+      [ "${./classify_f28335.py}" "${./verify_roundtrip.py}" ]
+      (builtins.readFile ./reconstruct_f28335.sh);
   };
 
   stitch = writeShellApplication {

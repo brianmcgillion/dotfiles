@@ -13,13 +13,21 @@ _: {
       svd2py = final.callPackage ./svd2py/default.nix { };
       uniflash = final.callPackage ./uniflash/default.nix { };
 
-      # https://github.com/NixOS/nixpkgs/pull/514737
-      saleae-logic-2 = prev.saleae-logic-2.overrideAttrs (_old: rec {
-        version = "2.4.44";
-        src = final.fetchurl {
-          url = "https://downloads2.saleae.com/logic2/Logic-${version}-linux-x64.AppImage";
-          hash = "sha256-lJp0al4tRqXwb6I8iziCav481XNAuEjASo1ZfUWdYLU=";
-        };
+      # bcompare crashes (SIGABRT) when opening any file dialog: the Qt app
+      # uses the GTK3 native file chooser, which aborts because its GSettings
+      # schema (org.gtk.Settings.FileChooser) is absent from the runtime
+      # environment. The upstream package does not wrap it with the GTK
+      # schemas. Replicate the essential part of the not-yet-merged
+      # https://github.com/NixOS/nixpkgs/pull/517240 by adding wrapGAppsHook3
+      # (puts the gtk3 schemas on XDG_DATA_DIRS) and gobject-introspection.
+      # Remove this override once that PR lands in our nixpkgs.
+      #
+      # https://github.com/NixOS/nixpkgs/pull/517240
+      bcompare = prev.bcompare.overrideAttrs (old: {
+        nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [
+          final.wrapGAppsHook3
+          final.gobject-introspection
+        ];
       });
     };
   };
