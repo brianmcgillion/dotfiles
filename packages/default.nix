@@ -29,6 +29,10 @@ _: {
           final.gobject-introspection
         ];
       });
+
+      # Convenience top-level alias so greatfet (which nixpkgs only exposes under
+      # python3Packages) is referenced as `pkgs.greatfet` like our other tools.
+      greatfet = final.python3Packages.greatfet;
     };
   };
 }

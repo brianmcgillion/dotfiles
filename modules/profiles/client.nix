@@ -56,6 +56,7 @@
     self.nixosModules.feature-emacs
     self.nixosModules.feature-emacs-ui
     self.nixosModules.feature-fail2ban
+    self.nixosModules.feature-greatfet
     self.nixosModules.feature-keyd
     self.nixosModules.feature-locale-fonts
     self.nixosModules.feature-power-management
@@ -96,6 +97,7 @@
         docker.enable = lib.mkDefault true;
         emacs.enable = lib.mkDefault true;
         emacs-ui.enable = lib.mkDefault true;
+        greatfet.enable = lib.mkDefault true;
         remarkable.enable = lib.mkDefault true;
         saleae-logic.enable = lib.mkDefault true;
       };

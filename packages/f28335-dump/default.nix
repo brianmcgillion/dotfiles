@@ -37,10 +37,11 @@ let
       reconstructPython
     ];
     # Bake the nix-store paths of the helper scripts into the @placeholders@.
-    text = builtins.replaceStrings
-      [ "@classify_py@" "@verify_py@" ]
-      [ "${./classify_f28335.py}" "${./verify_roundtrip.py}" ]
-      (builtins.readFile ./reconstruct_f28335.sh);
+    text =
+      builtins.replaceStrings
+        [ "@classify_py@" "@verify_py@" ]
+        [ "${./classify_f28335.py}" "${./verify_roundtrip.py}" ]
+        (builtins.readFile ./reconstruct_f28335.sh);
   };
 
   stitch = writeShellApplication {

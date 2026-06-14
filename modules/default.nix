@@ -24,6 +24,7 @@ _: {
     feature-docker = import ./features/development/docker.nix;
     feature-emacs = import ./features/development/emacs.nix;
     feature-emacs-ui = import ./features/development/emacs-ui.nix;
+    feature-greatfet = import ./features/development/greatfet.nix;
     feature-remarkable = import ./features/development/remarkable.nix;
     feature-saleae-logic = import ./features/development/saleae-logic.nix;
     feature-stm32cubeprog = import ./features/development/stm32cubeprog.nix;
