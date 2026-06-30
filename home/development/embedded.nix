@@ -6,6 +6,7 @@
     # keep-sorted start
     pkgs.f28335-dump
     pkgs.greatfet
+    pkgs.proploader
     pkgs.saleae-logic-2
     pkgs.socat
     pkgs.stm32cubeprogrammer
