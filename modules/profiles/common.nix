@@ -113,7 +113,19 @@
     nix = {
       # This will add each flake input as a registry
       # To make nix3 commands consistent with your flake
-      registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+      # Only register actual flake inputs (skip flake=false sources which
+      # can't be registered as flakes and may trigger unnecessary fetches)
+      registry =
+        let
+          nonFlakeInputs = [
+            "binary-ninja-source"
+            "flake-compat"
+            "tms320c28x-re"
+          ];
+        in
+        lib.mapAttrs (_: value: { flake = value; }) (
+          lib.filterAttrs (name: _: !builtins.elem name nonFlakeInputs) inputs
+        );
       # This will additionally add your inputs to the system's legacy channels
       # Making legacy nix commands consistent as well
       nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;

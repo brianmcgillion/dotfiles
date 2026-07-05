@@ -93,7 +93,7 @@
         yubikey.enable = lib.mkDefault true;
       };
       development = {
-        binaryninja.enable = lib.mkDefault true;
+        binaryninja.enable = lib.mkDefault false;
         docker.enable = lib.mkDefault true;
         emacs.enable = lib.mkDefault true;
         emacs-ui.enable = lib.mkDefault true;

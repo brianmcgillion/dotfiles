@@ -36,6 +36,9 @@
   # Enable SSH server for this laptop
   features.security.sshd.enable = true;
 
+  # Binary Ninja - only enable on hosts with the zip source available
+  features.development.binaryninja.enable = true;
+
   # STM32 development tools with udev rules
   features.development.stm32cubeprog.enable = true;
 
