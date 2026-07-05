@@ -73,6 +73,14 @@ let
       transport = "http";
       url = "http://127.0.0.1:10530";
     };
+    # Atlassian official remote MCP server (Jira/Confluence Cloud).
+    # Cloud instance: tiicrypto.atlassian.net. Requires an interactive
+    # OAuth login after activation: run `/mcp` in Claude Code, select
+    # `atlassian`, and authenticate in the browser.
+    atlassian = {
+      transport = "http";
+      url = "https://mcp.atlassian.com/v1/mcp";
+    };
   };
 
   # Build `claude mcp add` commands from the mcpServers attrset.
