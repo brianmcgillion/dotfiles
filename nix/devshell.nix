@@ -50,6 +50,14 @@
             '';
           }
           {
+            category = "development";
+            name = "sync-binaryninja";
+            help = "Re-pin the local Binary Ninja zip and stage it into the Nix store";
+            command = ''
+              exec ${pkgs.writeScriptBin "sync-binaryninja" (builtins.readFile "${self}/packages/scripts/sync-binaryninja.sh")}/bin/sync-binaryninja "$@"
+            '';
+          }
+          {
             category = "deployment";
             name = "deploy-hetzner-server";
             help = "Deploy NixOS to Hetzner servers (nubes, caelus)";

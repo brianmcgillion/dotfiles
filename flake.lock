@@ -1,17 +1,5 @@
 {
   "nodes": {
-    "binary-ninja-source": {
-      "flake": false,
-      "locked": {
-        "narHash": "sha256-WxMB8qnCaZzpmCGjZUvzv2XN39k1kFF9CFbQHCbjCDU=",
-        "type": "file",
-        "url": "file:///home/brian/projects/tools/binaryninja/binaryninja_linux_stable_ultimate.zip"
-      },
-      "original": {
-        "type": "file",
-        "url": "file:///home/brian/projects/tools/binaryninja/binaryninja_linux_stable_ultimate.zip"
-      }
-    },
     "crane": {
       "locked": {
         "lastModified": 1772560058,
@@ -99,11 +87,11 @@
         "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
-        "lastModified": 1783187605,
-        "narHash": "sha256-9naPdGfNCQHyOwCkFzozJscjeNlGwxqufi6Wdubk+ms=",
+        "lastModified": 1783223213,
+        "narHash": "sha256-LIhCiEfcpU5L2m7XOd1zy+sYXKf/uatkAlgXMLSb1Mo=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "060e968e57472764d3c4bc5f30bacb96255f84ee",
+        "rev": "092de36ee2f94fb94a9c183833e81a8c311b7529",
         "type": "github"
       },
       "original": {
@@ -310,11 +298,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783134515,
-        "narHash": "sha256-qMoZazubXlXUD9k/syJ/aiWC4X4g73mwVmZ7Z4+rdpM=",
+        "lastModified": 1783222121,
+        "narHash": "sha256-E/ElL373TO8lQ2aMvYyzN+k4xkVaUGoRqoa8AtM71tI=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b885baad531fa3d3beae2ba9a0712d22974d8016",
+        "rev": "a1645f40777620c4bd2b6d854b290c2fc354a266",
         "type": "github"
       },
       "original": {
@@ -352,11 +340,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782609069,
-        "narHash": "sha256-r9/qeS8cqr82LNUywmdHi4/qnm02zjRBYLIY/LF0zbo=",
+        "lastModified": 1783213063,
+        "narHash": "sha256-oZoi6ln22k0CaHmpW8KNzpVSPZzW0gg/pN5iYrBalyQ=",
         "owner": "jchv",
         "repo": "nix-binary-ninja",
-        "rev": "3ae70c2afef18fad11d4e7a051d0dbc5053ea6ed",
+        "rev": "6d7eeaa01026ee8389261e76e869afa8905c2c34",
         "type": "github"
       },
       "original": {
@@ -460,11 +448,11 @@
     },
     "nixpkgs-stable": {
       "locked": {
-        "lastModified": 1782999065,
-        "narHash": "sha256-5Dgj5+pIQYZKrXUGaLCk7CKfN3MmpwIhO94++WVxvng=",
+        "lastModified": 1783148766,
+        "narHash": "sha256-uslt2pqShTIXDdAHRHv2QkYLsVdY8Oqwz0EA48/RSM8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "80d591ed473cfc46329932c2aadac9b435342c7c",
+        "rev": "a50de1b7d8a586adc18d2395c19de7d6058e6030",
         "type": "github"
       },
       "original": {
@@ -476,7 +464,6 @@
     },
     "root": {
       "inputs": {
-        "binary-ninja-source": "binary-ninja-source",
         "deploy-rs": "deploy-rs",
         "devshell": "devshell",
         "disko": "disko",
@@ -496,7 +483,6 @@
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
-        "tms320c28x-re": "tms320c28x-re",
         "treefmt-nix": "treefmt-nix_2"
       }
     },
@@ -604,22 +590,6 @@
         "owner": "nix-systems",
         "repo": "default",
         "type": "github"
-      }
-    },
-    "tms320c28x-re": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1780640780,
-        "narHash": "sha256-wqC/+/Kj6zUpAJ8MlL0Xp0DUt+gWpPnZQmncRbHdIIA=",
-        "ref": "refs/heads/main",
-        "rev": "3ce4fc0f71e853dbfa73f36564064bc346a4f75d",
-        "revCount": 10,
-        "type": "git",
-        "url": "ssh://git@github.com/brianmcgillion/tms320c28x-re.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "ssh://git@github.com/brianmcgillion/tms320c28x-re.git"
       }
     },
     "treefmt-nix": {

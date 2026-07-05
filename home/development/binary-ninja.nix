@@ -8,9 +8,21 @@
   ...
 }:
 let
-  binaryninja-src = pkgs.runCommand "binaryninja_linux_dev_ultimate.zip" { } ''
-    cp ${inputs.binary-ninja-source} $out
-  '';
+  # Binary Ninja ships as an out-of-tree zip that cannot be a flake input: a
+  # missing/absent file would break `nix flake update` on every host, including
+  # those that never install Binary Ninja. requireFile keeps it out of flake
+  # evaluation entirely - it is only forced when the binaryninja feature is
+  # enabled and something builds it. Provision the zip once on hosts that need
+  # it with:
+  #   nix-store --add-fixed sha256 <path>/binaryninja_linux_dev_ultimate.zip
+  binaryninja-src = pkgs.requireFile {
+    name = "binaryninja_linux_dev_ultimate.zip";
+    sha256 = "03ivd2iv9pa5xqw703aa46fzscb5shsxwj15vqwp6f6sj5kcpvaq";
+    message = ''
+      Binary Ninja source zip is not in the Nix store. Add it with:
+        nix-store --add-fixed sha256 <path>/binaryninja_linux_dev_ultimate.zip
+    '';
+  };
 
   # Python packages required by Binary Ninja plugins
   pluginPythonDeps = with pkgs.python3Packages; [

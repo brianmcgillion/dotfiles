@@ -118,9 +118,7 @@
       registry =
         let
           nonFlakeInputs = [
-            "binary-ninja-source"
             "flake-compat"
-            "tms320c28x-re"
           ];
         in
         lib.mapAttrs (_: value: { flake = value; }) (

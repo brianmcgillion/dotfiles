@@ -2,9 +2,15 @@
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 { pkgs, ... }:
 let
+  sync-binaryninja = pkgs.writeScriptBin "sync-binaryninja" (builtins.readFile ./sync-binaryninja.sh);
   update-host = pkgs.writeScriptBin "update-host" ''
     pushd $HOME/.dotfiles
     nix flake update
+    # Re-pin the Binary Ninja zip only on hosts that actually have it; skipping
+    # keeps `update-host` working on hosts without the out-of-tree zip.
+    if [ -f "''${BINARYNINJA_ZIP:-$HOME/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip}" ]; then
+      ${sync-binaryninja}/bin/sync-binaryninja
+    fi
     popd
   '';
   rebuild-host = pkgs.writeScriptBin "rebuild-host" ''
@@ -55,6 +61,7 @@ in
     rebuild-host
     rebuild-nubes
     rebuild-x1
+    sync-binaryninja
     update-host
     #ownfile
     # keep-sorted end
