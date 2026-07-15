@@ -40,7 +40,7 @@ in
       pkgs.gnutls
       pkgs.graphviz
       pkgs.imagemagick
-      pkgs.texlive.combined.scheme-medium
+      pkgs.texliveMedium
       pkgs.wl-clipboard
       # keep-sorted end
     ];
