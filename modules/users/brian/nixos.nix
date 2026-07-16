@@ -104,6 +104,10 @@
     host bmg-vps
          user ubuntu
          hostname 35.178.208.8
+    host bmg-sh-gr
+         user ubuntu
+         hostname 3.79.116.201
+         IdentityFile ~/.ssh/builder-key
   '';
 
   sops.secrets.login-password = {
