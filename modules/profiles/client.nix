@@ -78,9 +78,14 @@
     # Ghaf project binary cache (used with nix-fast-build)
     # Priority 50 ensures cache.nixos.org (default priority 40) is checked first
     nix.settings = {
-      extra-substituters = [ "https://ghaf-dev.cachix.org?priority=50" ];
+      extra-substituters = [
+        "https://ghaf-dev.cachix.org?priority=50"
+        # AI agent tooling from numtide/llm-agents.nix (npm/bun builds land here).
+        "https://cache.numtide.com"
+      ];
       extra-trusted-public-keys = [
         "ghaf-dev.cachix.org-1:S3M8x3no8LFQPBfHw1jl6nmP8A7cVWKntoMKN3IsEQY="
+        "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       ];
     };
 
@@ -175,8 +180,11 @@
     environment.systemPackages = [
       # keep-sorted start
       pkgs.act
+      pkgs.ccstatusline
+      pkgs.ccusage
       pkgs.claude-agent-acp
       pkgs.claude-code
+      pkgs.coderabbit-cli
       pkgs.github-copilot-cli
       pkgs.keymapp
       pkgs.man-pages

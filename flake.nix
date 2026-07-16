@@ -136,6 +136,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # AI coding agents (claude-code native binary, claude-agent-acp, ccusage,
+    # ccstatusline, coderabbit-cli, ...). Updated daily upstream and pinned
+    # independently of nixos-unstable so Claude Code can be bumped on its own.
+    # Intentionally NOT following nixpkgs: keeping their pinned nixpkgs makes
+    # store paths match numtide's CI so the cache.numtide.com substituter hits.
+    llm-agents.url = "github:numtide/llm-agents.nix";
+
   };
 
   outputs =
