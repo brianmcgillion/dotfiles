@@ -2,36 +2,40 @@
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Root user SSH configuration
 #
-# Configures SSH access for the root user using YubiKey hardware keys.
-# Multiple keys are provided for redundancy and different physical devices.
+# Root is administered with brian's YubiKeys — the key list itself is his
+# (modules/users/brian/keys); this module only decides who root trusts.
 #
 # SSH keys:
-# - 7 YubiKey-based SSH keys (sk-ssh-ed25519)
-# - Hardware-backed authentication
-# - Different physical YubiKeys for backup/redundancy
+# - brian's YubiKey SSH keys (sk-ssh-ed25519), hardware-backed
+# - several physical devices, for backup/redundancy
 #
 # Security considerations:
 # - Only key-based authentication (no password)
 # - Hardware keys cannot be copied or extracted
 # - Physical key presence required for authentication
 # - Complements per-host root login policies
+# - The software-backed deploy key is NOT granted here; deploy-rs target
+#   hosts add it individually (see profile-server and hosts/argus)
 #
 # Usage:
 #   Automatically imported by profile-common
 #
 # Note: Actual root login is controlled by sshd settings.
 # These keys allow root login when PermitRootLogin is enabled.
-_: {
-  users.users.root.openssh.authorizedKeys.keys = [
-    # YubiKey SSH keys (hardware-backed authentication)
-    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIEJ9ewKwo5FLj6zE30KnTn8+nw7aKdei9SeTwaAeRdJDAAAABHNzaDo="
-    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIHVLJLvcd0WcctnIKG7zBtVRQQ385Xt+Phbk8e18fg7YAAAABHNzaDo="
-    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIKAOSIxjX+JQw8TbQLqP3lt1J5qu7XFTwaM7RKkzHmBAAAAABHNzaDo="
-    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIA8ENVVAGQeSGrf8aMGszLr08GYe1BnPYBOORy0XKL/4AAAABHNzaDo="
-    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIE6+i2wgKKghwZex+4Elps8yYs2OuOYVqbZyIPXiHA4HAAAABHNzaDo="
-    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIFDMLJQCzDC8rGZRbWaovxDibRi/iq6uFZPJvsD3ZQumAAAABHNzaDo="
-    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIA/pwHnzGNM+ZU4lANGROTRe2ZHbes7cnZn72Oeun/MCAAAABHNzaDo="
-    # Builder key for automated deployments
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILu6O3swRVWAjP7J8iYGT6st7NAa+o/XaemokmtKdpGa builder key"
-  ];
+{
+  config,
+  lib,
+  self,
+  ...
+}:
+{
+  users.users.root.openssh.authorizedKeys.keys =
+    # YubiKey SSH keys (hardware-backed authentication) — the interactive path.
+    self.lib.keys.brian.yubikeys
+    # Plus the software deploy key, but only where deploy-rs actually needs
+    # it: the node list in nix/deployments.nix is the single source of "is
+    # this a deploy target", so adding a node there grants the key with it.
+    ++ lib.optional (
+      self.deploy.nodes ? ${config.networking.hostName}
+    ) self.lib.keys.brian.builderAsRoot;
 }

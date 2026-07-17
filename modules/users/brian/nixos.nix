@@ -41,74 +41,22 @@
   nix.settings.trusted-users = [ "brian" ];
 
   # GitHub token for Nix flake operations (avoiding rate limits)
-  features.system.nix-settings = {
+  features.system.github-token = {
     enable = true;
-    githubToken = {
-      enable = true;
-      sopsFile = ./bmg-secrets.yaml;
-    };
+    sopsFile = ./bmg-secrets.yaml;
+    owner = "brian";
   };
 
-  # Remote build settings (defined in common.nix)
-  common.remoteBuild = {
+  # Remote builders (feature enabled in profile-client); the private key is
+  # provisioned from the builder-key sops secret so fresh installs build
+  # remotely without hand-copying it.
+  features.system.remote-builders = {
     sshUser = "bmg";
-    sshKey = "/home/brian/.ssh/builder-key";
+    sshKeySopsFile = ./bmg-secrets.yaml;
   };
 
-  # SSH client configuration (system-wide, but user-specific settings)
-  programs.ssh.extraConfig = ''
-    Host hetzarm
-         user bmg
-         HostName 65.21.20.242
-    Host nubes
-         Hostname 65.108.111.248
-         Port 22
-    host ghaf-net
-         user ghaf
-         IdentityFile ~/.ssh/builder-key
-         #hostname 192.168.10.108 #x1-carbon
-         hostname 192.168.10.229 #darter-pro
-         #hostname 192.168.10.34 #usb-ethernet
-    host ghaf-usb
-         user ghaf
-         IdentityFile ~/.ssh/builder-key
-         hostname 192.168.10.34 #usb-ethernet
-    host ghaf-host
-         user ghaf
-         IdentityFile ~/.ssh/builder-key
-         hostname 192.168.100.2
-         proxyjump ghaf-net
-    host ghaf-host-usb
-         user ghaf
-         IdentityFile ~/.ssh/builder-key
-         hostname 192.168.100.2
-         proxyjump ghaf-usb
-    host ghaf-ui
-         user ghaf
-         IdentityFile ~/.ssh/builder-key
-         hostname 192.168.100.3
-         proxyjump ghaf-net
-    host agx-host
-         user ghaf
-         IdentityFile ~/.ssh/builder-key
-         hostname 192.168.10.149
-    host vedenemo-builder
-         user bmg
-         hostname builder.vedenemo.dev
-         IdentityFile ~/.ssh/builder-key
-    host caelus
-         hostname 95.217.167.39
-    host uae-lab-node1
-         user bmg
-         hostname 10.161.5.196
-    host bmg-vps
-         user ubuntu
-         hostname 35.178.208.8
-    host bmg-sh-gr
-         user ubuntu
-         hostname 3.79.116.201
-         IdentityFile ~/.ssh/builder-key
-  '';
+  # Personal SSH host aliases live in home-manager
+  # (home/security/ssh-config.nix), not in /etc/ssh/ssh_config.
 
   sops.secrets.login-password = {
     neededForUsers = true;
@@ -119,25 +67,24 @@
     isNormalUser = true;
     home = "/home/brian";
     description = "Brian";
-    openssh.authorizedKeys.keys = [
-      # YubiKey SSH keys
-      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIEJ9ewKwo5FLj6zE30KnTn8+nw7aKdei9SeTwaAeRdJDAAAABHNzaDo="
-      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIA/pwHnzGNM+ZU4lANGROTRe2ZHbes7cnZn72Oeun/MCAAAABHNzaDo="
-      # Builder key for automated deployments
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILu6O3swRVWAjP7J8iYGT6st7NAa+o/XaemokmtKdpGa builder key"
-    ];
+    openssh.authorizedKeys.keys =
+      # YubiKey SSH keys (all of them — same set root accepts)
+      self.lib.keys.brian.yubikeys ++ [
+        # Builder key for automated deployments. NOTE: unrestricted here, and
+        # brian has passwordless sudo — so this key is root-equivalent on every
+        # host regardless of the restrictions applied to root's own keys.
+        self.lib.keys.brian.builder
+      ];
+    # The docker/ai feature modules are only imported on some profiles, so
+    # guard with `or false` (handles missing attrs at any depth).
     extraGroups = [
       "networkmanager"
       "wheel"
       "dialout"
       "plugdev"
     ]
-    ++ (lib.optionals (
-      config.features ? development
-      && config.features.development ? docker
-      && config.features.development.docker.enable
-    ) [ "docker" ])
-    ++ (lib.optionals (config.features ? ai && config.features.ai.enable) [ "ollama" ]);
+    ++ (lib.optionals (config.features.development.docker.enable or false) [ "docker" ])
+    ++ (lib.optionals (config.features.ai.enable or false) [ "ollama" ]);
     shell = pkgs.bash;
     uid = 1000;
     hashedPasswordFile = config.sops.secrets.login-password.path;
@@ -147,6 +94,9 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+    # Move pre-existing conflicting files aside instead of aborting the
+    # whole activation (tool-managed files get recreated at runtime).
+    backupFileExtension = "hm-bak";
     extraSpecialArgs = {
       inherit inputs self;
     };

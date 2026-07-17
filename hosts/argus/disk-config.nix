@@ -84,7 +84,9 @@
     nodev = {
       "/tmp" = {
         fsType = "tmpfs";
-        mountOptions = [ "size=200M" ];
+        # Desktop/ML workstation: 200M (copied from the server configs) was
+        # easily exhausted by archive extraction and test suites.
+        mountOptions = [ "size=50%" ];
       };
     };
   };

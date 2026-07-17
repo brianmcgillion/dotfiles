@@ -1,5 +1,17 @@
 keys:
+    # Software admin key (day-to-day editing convenience)
     - &admin_brian age1fn6c3gvsmjxpqk9hf9ye863d4rtcwqvq57wax2m7tg3t4ls84vaqtyv759
+    # Hardware-backed YubiKey admin recipients (disaster recovery — any one
+    # of these can decrypt if the software key is lost; requires
+    # age-plugin-yubikey). Kept in sync by hand with
+    # modules/users/brian/keys/age-recipients.pub (sops cannot include a file).
+    - &admin_yk_key1 age1yubikey1qttm8ts9w5cyqwmpld45yftng8hsmfdt9k42pzz2leq8a7svvya3qlu9n8r
+    - &admin_yk_key2 age1yubikey1qt0fu7u6uretapny90pzqll47hxc2edz8lduhy6ztlmgu9ffdjja2l63au9
+    - &admin_yk_key3 age1yubikey1qvlquhc759rh69usa4dptw0rkcn0m6cghrz3j2f8064nfgag7anmqlfcsf2
+    - &admin_yk_key4 age1yubikey1qwvfvqhvauv2tksrkh9yzhskeeznvk9hdtdvqmf6shlfj6k4phlqyhavea9
+    - &admin_yk_key5 age1yubikey1qthmsja6lax0khr4mjcmpk3wuck88lemx9yjjm6v89ppa6vwv44tghu0fxz
+    - &admin_yk_mini1 age1yubikey1qtnxagsj9cfp5x79kqx8hsu58pc89w34xfrx0ykyzs7elvg2f8qucf3lgq3
+    - &admin_yk_mini2 age1yubikey1q026af8ppajk7a9rc6srp6wdytdfyfydsdv33lemut8h20aq35ezshapaae
     - &host_nubes age1jwxydusswgeq8wvd8lzrlup4ttqwd39k243ev77crlkmkmf0sfqsq3q6lu
     - &host_caelus age17hk8tccd9a8sg875mqe6llw3euthjf8wlcmhlhk7lxlhmggvp92sfdstm5
     - &host_arcadia age1tvd5txsy62uywunnnyrhncdydnmgmg6prjczktw8f68wqun9kqysvuf94h
@@ -10,10 +22,24 @@ creation_rules:
       key_groups:
           - age:
                 - *admin_brian
+                - *admin_yk_key1
+                - *admin_yk_key2
+                - *admin_yk_key3
+                - *admin_yk_key4
+                - *admin_yk_key5
+                - *admin_yk_mini1
+                - *admin_yk_mini2
     - path_regex: ^modules/users/[^/]+/[^/]+\.yaml$
       key_groups:
           - age:
                 - *admin_brian
+                - *admin_yk_key1
+                - *admin_yk_key2
+                - *admin_yk_key3
+                - *admin_yk_key4
+                - *admin_yk_key5
+                - *admin_yk_mini1
+                - *admin_yk_mini2
                 - *host_nubes
                 - *host_caelus
                 - *host_arcadia
@@ -23,24 +49,59 @@ creation_rules:
       key_groups:
           - age:
                 - *admin_brian
+                - *admin_yk_key1
+                - *admin_yk_key2
+                - *admin_yk_key3
+                - *admin_yk_key4
+                - *admin_yk_key5
+                - *admin_yk_mini1
+                - *admin_yk_mini2
                 - *host_arcadia
     - path_regex: ^hosts/argus/secrets.yaml$
       key_groups:
           - age:
                 - *admin_brian
+                - *admin_yk_key1
+                - *admin_yk_key2
+                - *admin_yk_key3
+                - *admin_yk_key4
+                - *admin_yk_key5
+                - *admin_yk_mini1
+                - *admin_yk_mini2
                 - *host_argus
     - path_regex: ^hosts/caelus/secrets.yaml$
       key_groups:
           - age:
                 - *admin_brian
+                - *admin_yk_key1
+                - *admin_yk_key2
+                - *admin_yk_key3
+                - *admin_yk_key4
+                - *admin_yk_key5
+                - *admin_yk_mini1
+                - *admin_yk_mini2
                 - *host_caelus
     - path_regex: ^hosts/minerva/secrets.yaml$
       key_groups:
           - age:
                 - *admin_brian
+                - *admin_yk_key1
+                - *admin_yk_key2
+                - *admin_yk_key3
+                - *admin_yk_key4
+                - *admin_yk_key5
+                - *admin_yk_mini1
+                - *admin_yk_mini2
                 - *host_minerva
     - path_regex: ^hosts/nubes/secrets.yaml$
       key_groups:
           - age:
                 - *admin_brian
+                - *admin_yk_key1
+                - *admin_yk_key2
+                - *admin_yk_key3
+                - *admin_yk_key4
+                - *admin_yk_key5
+                - *admin_yk_mini1
+                - *admin_yk_mini2
                 - *host_nubes

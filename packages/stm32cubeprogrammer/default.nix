@@ -19,7 +19,10 @@ let
 
   desktopItem = makeDesktopItem {
     name = "STM32CubeProgrammer";
-    exec = "STM32CubeProgrammer";
+    # Must match the FHS wrapper binary name (pname of the GUI env below) —
+    # desktop Exec lookup is case-sensitive.
+    exec = "stm32cubeprogrammer";
+    tryExec = "stm32cubeprogrammer";
     desktopName = "STM32CubeProgrammer";
     categories = [ "Development" ];
     comment = "STM32 device programming tool";
@@ -230,7 +233,8 @@ let
       cd "${package}/opt/STM32CubeProgrammer/bin"
 
       # HiDPI scaling: GDK_SCALE works at the GTK level for XWayland apps
-      # Override with STM32CUBEPROG_SCALE env var (default: 3 for HiDPI displays)
+      # Override with STM32CUBEPROG_SCALE env var (default: 1; try 3 on
+      # HiDPI displays)
       export GDK_SCALE=''${STM32CUBEPROG_SCALE:-1}
       export GDK_DPI_SCALE=1
 

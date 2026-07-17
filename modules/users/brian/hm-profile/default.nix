@@ -19,11 +19,7 @@
   ...
 }:
 {
-  options.userProfile.enableEmacs = lib.mkOption {
-    type = lib.types.bool;
-    default = false;
-    description = "Enable Brian's Doom Emacs configuration";
-  };
+  options.userProfile.enableEmacs = lib.mkEnableOption "Brian's Doom Emacs configuration";
 
   imports = [
     ./git.nix
@@ -32,14 +28,9 @@
 
   config = {
     # Ensure XDG state directories exist for user applications
-    # $DRY_RUN_CMD is provided by home-manager for dry-run support
     # See: https://nix-community.github.io/home-manager/index.xhtml#sec-usage-activation
     home.activation.ensureXdgStateDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      $DRY_RUN_CMD mkdir -p "''${XDG_STATE_HOME:-$HOME/.local/state}"/{bash,less}
+      run mkdir -p "''${XDG_STATE_HOME:-$HOME/.local/state}"/{bash,less}
     '';
-
-    # MCP server configuration
-    # Shared across client machines for consistent AI assistant behavior
-    home.file.".config/.copilot/mcp-config.json".source = ./mcp-config.json;
   };
 }

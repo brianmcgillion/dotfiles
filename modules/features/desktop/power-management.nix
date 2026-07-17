@@ -43,7 +43,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    # Disable GNOME's auto-suspend — logind handles this instead
+    # Disable GNOME's auto-suspend — logind handles this instead.
+    # The keys are locked: without locks the user dconf database wins, so
+    # ever touching GNOME's power settings would silently re-enable the
+    # SSH-killing auto-suspend this module exists to prevent.
     programs.dconf.profiles.user.databases = [
       {
         settings = {
@@ -54,6 +57,12 @@ in
             sleep-inactive-battery-type = "nothing";
           };
         };
+        locks = [
+          "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-timeout"
+          "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type"
+          "/org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-timeout"
+          "/org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-type"
+        ];
       }
     ];
 

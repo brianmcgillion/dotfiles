@@ -3,7 +3,7 @@
 # Nextcloud client configuration for Hetzner Storage Share
 #
 # Provides:
-# - Nextcloud desktop client (GUI autostart via XDG .desktop file)
+# - Nextcloud desktop client (launch the GUI manually when needed)
 # - Systemd timer for periodic CLI sync (every 15 minutes)
 #
 # Synced directories:
@@ -25,7 +25,7 @@
 # 3. (Optional) Launch nextcloud GUI for interactive sync management
 #
 # Server: https://nx89231.your-storageshare.de
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
   # Wrap nextcloud-client with GTK schemas to fix file chooser crash
   nextcloud-client-wrapped = pkgs.symlinkJoin {
@@ -37,6 +37,34 @@ let
         --prefix XDG_DATA_DIRS : "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
     '';
   };
+
+  serverUrl = "https://nx89231.your-storageshare.de";
+
+  # local dir (relative to $HOME) -> remote folder
+  syncPairs = {
+    "Documents/Papers" = "/Documents/Papers";
+    "Documents/EPUB" = "/Documents/EPUB";
+    "Documents/org/remarkable/downloads" = "/Documents/remarkable/downloads";
+    "Documents/org/remarkable/notes" = "/Documents/remarkable/notes";
+  };
+
+  # Every pair is attempted; the unit fails (visible in systemctl status)
+  # if any single sync failed.
+  syncScript = pkgs.writeShellScript "nextcloud-sync" ''
+    set -u
+    rc=0
+    mkdir -p "$HOME/Documents/org/remarkable"/{downloads,outbox,notes}
+    ${lib.concatStringsSep "\n" (
+      lib.mapAttrsToList (local: remote: ''
+        mkdir -p "$HOME/${local}"
+        ${pkgs.nextcloud-client}/bin/nextcloudcmd \
+          -n --path "${remote}" --silent \
+          "$HOME/${local}" \
+          "${serverUrl}" || { echo "sync failed: ${local}" >&2; rc=1; }
+      '') syncPairs
+    )}
+    exit $rc
+  '';
 in
 {
   home.packages = [ nextcloud-client-wrapped ];
@@ -48,44 +76,17 @@ in
       };
       Service = {
         Type = "oneshot";
-        ExecStart = pkgs.writeShellScript "nextcloud-sync" ''
-          mkdir -p "$HOME/Documents/Papers" "$HOME/Documents/EPUB"
-          mkdir -p "$HOME/Documents/org/remarkable"/{downloads,outbox,notes}
-
-          # Sync academic papers
-          ${pkgs.nextcloud-client}/bin/nextcloudcmd \
-            -n --path "/Documents/Papers" --silent \
-            "$HOME/Documents/Papers" \
-            "https://nx89231.your-storageshare.de"
-
-          # Sync ebooks
-          ${pkgs.nextcloud-client}/bin/nextcloudcmd \
-            -n --path "/Documents/EPUB" --silent \
-            "$HOME/Documents/EPUB" \
-            "https://nx89231.your-storageshare.de"
-
-          # Sync reMarkable downloaded PDFs (with annotations pre-rendered)
-          ${pkgs.nextcloud-client}/bin/nextcloudcmd \
-            -n --path "/Documents/remarkable/downloads" --silent \
-            "$HOME/Documents/org/remarkable/downloads" \
-            "https://nx89231.your-storageshare.de"
-
-          # Sync reMarkable handwritten notes (converted to PDF)
-          ${pkgs.nextcloud-client}/bin/nextcloudcmd \
-            -n --path "/Documents/remarkable/notes" --silent \
-            "$HOME/Documents/org/remarkable/notes" \
-            "https://nx89231.your-storageshare.de"
-        '';
+        ExecStart = syncScript;
       };
     };
 
-    # Timer for periodic sync (every 15 minutes)
+    # Timer for periodic sync (every 15 minutes).
+    # No Persistent=: it only applies to OnCalendar= timers.
     timers.nextcloud-sync = {
       Unit.Description = "Periodic Nextcloud Sync";
       Timer = {
         OnBootSec = "5min";
         OnUnitActiveSec = "15min";
-        Persistent = true;
       };
       Install.WantedBy = [ "timers.target" ];
     };

@@ -21,7 +21,6 @@
 #   - TCP Fast Open enabled
 #   - BBR congestion control
 #   - CAKE queue discipline for bufferbloat mitigation
-# - ACME terms acceptance for TLS certificates
 #
 # Usage:
 #   features.security.hardening.enable = true;
@@ -81,7 +80,5 @@ in
       };
       kernelModules = [ "tcp_bbr" ];
     };
-
-    security.acme.acceptTerms = true;
   };
 }

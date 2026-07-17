@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 {
-  config,
   lib,
   self,
   ...
@@ -14,24 +13,23 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  sops = {
-    defaultSopsFile = ./secrets.yaml;
-    secrets = {
-      wg-privateKeyFile.owner = "root";
-      wg-presharedKeyFile.owner = "root";
-      nebula-ca.owner = config.features.networking.nebula.configOwner;
-      nebula-key.owner = config.features.networking.nebula.configOwner;
-      nebula-cert.owner = config.features.networking.nebula.configOwner;
-    };
-  };
+  sops.defaultSopsFile = ./secrets.yaml;
 
-  # Enable Nebula network
-  features.networking.nebula = {
-    enable = true;
-    isLightHouse = false;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
+  features.networking = {
+    # Enable Nebula network (secrets wired from ./secrets.yaml)
+    nebula = {
+      enable = true;
+      useSopsSecrets = true;
+    };
+
+    # Personal WireGuard VPN (wg-quick up wg0)
+    wireguard = {
+      enable = true;
+      tunnels.wg0 = {
+        network = "bmg-vps";
+        address = [ "10.7.0.4/24" ];
+      };
+    };
   };
 
   boot = {
@@ -72,32 +70,7 @@
     #cpuFreqGovernor = lib.mkDefault "ondemand";
   };
 
-  networking = {
-    interfaces.enp5s0.useDHCP = true;
-
-    #TODO Replace this with the name of the nixosConfiguration so it can be common
-    # Define your hostname
-    hostName = lib.mkDefault "arcadia";
-
-    wg-quick.interfaces = {
-      wg0 = {
-        autostart = false;
-        address = [ "10.7.0.4/24" ];
-        dns = [ "172.26.0.2" ];
-        privateKeyFile = config.sops.secrets.wg-privateKeyFile.path;
-
-        peers = [
-          {
-            publicKey = "3xZ1Ug4n8XrjZqlrrrveiIPQq3uyMtxuJXII3vCwyww=";
-            presharedKeyFile = config.sops.secrets.wg-presharedKeyFile.path;
-            allowedIPs = [ "0.0.0.0/0" ];
-            endpoint = "35.178.208.8:51820";
-            persistentKeepalive = 25;
-          }
-        ];
-      };
-    };
-  };
+  networking.interfaces.enp5s0.useDHCP = true;
 
   hardware.cpu.amd.updateMicrocode = true;
 

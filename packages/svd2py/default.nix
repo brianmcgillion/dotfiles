@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Brian McGillion
 {
+  lib,
   python3Packages,
   fetchPypi,
 }:
@@ -19,7 +20,7 @@ python3Packages.buildPythonPackage rec {
     hash = "sha256-VPs0ByjQsiyzc7v6ItEZ3Dy5xOsVgQw0jNw8bQwfJXY=";
   };
 
-  propagatedBuildInputs = with python3Packages; [
+  dependencies = with python3Packages; [
     click
     pyyaml
   ];
@@ -28,7 +29,7 @@ python3Packages.buildPythonPackage rec {
 
   meta = {
     description = "Convert CMSIS SVD files to Python data structures";
-    homepage = "https://github.com/nicklausw/svd2py";
-    inherit (python3Packages.python.meta) license;
+    homepage = "https://github.com/gembcior/svd2py";
+    license = lib.licenses.mit;
   };
 }

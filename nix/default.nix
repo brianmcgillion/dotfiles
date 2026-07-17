@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 #
 # Flake-parts modules for flake infrastructure:

@@ -1,54 +1,82 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
+# Helper scripts (writeShellApplication: shebang + set -euo pipefail +
+# build-time shellcheck; a failed cd aborts instead of running nix commands
+# against the wrong directory).
 { pkgs, ... }:
 let
-  sync-binaryninja = pkgs.writeScriptBin "sync-binaryninja" (builtins.readFile ./sync-binaryninja.sh);
-  update-host = pkgs.writeScriptBin "update-host" ''
-    pushd $HOME/.dotfiles
-    nix flake update
-    # Re-pin the Binary Ninja zip only on hosts that actually have it; skipping
-    # keeps `update-host` working on hosts without the out-of-tree zip.
-    if [ -f "''${BINARYNINJA_ZIP:-$HOME/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip}" ]; then
-      ${sync-binaryninja}/bin/sync-binaryninja
-    fi
-    popd
-  '';
-  rebuild-host = pkgs.writeScriptBin "rebuild-host" ''
-    pushd $HOME/.dotfiles
-    sudo nixos-rebuild switch --flake .#$HOSTNAME "$@"
-    popd
-  '';
-  rebuild-nubes = pkgs.writeScriptBin "rebuild-nubes" ''
-    pushd $HOME/.dotfiles
-    nixos-rebuild switch --flake .#nubes --target-host "root@nubes" "$@"
-    popd
-  '';
-  rebuild-caelus = pkgs.writeScriptBin "rebuild-caelus" ''
-    pushd $HOME/.dotfiles
-    nixos-rebuild switch --flake .#caelus --target-host "root@caelus" "$@"
-    popd
-  '';
-  rebuild-x1 = pkgs.writeScriptBin "rebuild-x1" ''
-    nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
-  '';
-  rebuild-alien = pkgs.writeScriptBin "rebuild-alien" ''
-    nixos-rebuild --flake .#alienware-m18-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
-  '';
-  rebuild-agx = pkgs.writeScriptBin "rebuild-agx" ''
-    nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --no-reexec boot "$@"
-  '';
-  rebuild-darter = pkgs.writeScriptBin "rebuild-darter" ''
-    nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
-  '';
-  rebuild-darter-usb = pkgs.writeScriptBin "rebuild-darter-usb" ''
-    nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host-usb" --no-reexec boot "$@"
-  '';
-  deploy-hetzner-server = pkgs.writeScriptBin "deploy-hetzner-server" (
-    builtins.readFile ./deploy-hetzner-server.sh
-  );
+  sync-binaryninja = pkgs.writeShellApplication {
+    name = "sync-binaryninja";
+    text = builtins.readFile ./sync-binaryninja.sh;
+  };
+  update-host = pkgs.writeShellApplication {
+    name = "update-host";
+    text = ''
+      cd "$HOME/.dotfiles"
+      nix flake update
+      # Re-pin the Binary Ninja zip only on hosts that actually have it; skipping
+      # keeps `update-host` working on hosts without the out-of-tree zip.
+      if [ -f "''${BINARYNINJA_ZIP:-$HOME/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip}" ]; then
+        ${sync-binaryninja}/bin/sync-binaryninja
+      fi
+    '';
+  };
+  rebuild-host = pkgs.writeShellApplication {
+    name = "rebuild-host";
+    text = ''
+      cd "$HOME/.dotfiles"
+      sudo nixos-rebuild switch --flake ".#$HOSTNAME" "$@"
+    '';
+  };
+  rebuild-nubes = pkgs.writeShellApplication {
+    name = "rebuild-nubes";
+    text = ''
+      cd "$HOME/.dotfiles"
+      nixos-rebuild switch --flake .#nubes --target-host "root@nubes" "$@"
+    '';
+  };
+  rebuild-caelus = pkgs.writeShellApplication {
+    name = "rebuild-caelus";
+    text = ''
+      cd "$HOME/.dotfiles"
+      nixos-rebuild switch --flake .#caelus --target-host "root@caelus" "$@"
+    '';
+  };
+  rebuild-x1 = pkgs.writeShellApplication {
+    name = "rebuild-x1";
+    text = ''
+      nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
+    '';
+  };
+  rebuild-alien = pkgs.writeShellApplication {
+    name = "rebuild-alien";
+    text = ''
+      nixos-rebuild --flake .#alienware-m18-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
+    '';
+  };
+  rebuild-agx = pkgs.writeShellApplication {
+    name = "rebuild-agx";
+    text = ''
+      nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --no-reexec boot "$@"
+    '';
+  };
+  rebuild-darter = pkgs.writeShellApplication {
+    name = "rebuild-darter";
+    text = ''
+      nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
+    '';
+  };
+  rebuild-darter-usb = pkgs.writeShellApplication {
+    name = "rebuild-darter-usb";
+    text = ''
+      nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host-usb" --no-reexec boot "$@"
+    '';
+  };
+  deploy-hetzner-server = pkgs.writeShellApplication {
+    name = "deploy-hetzner-server";
+    text = builtins.readFile ./deploy-hetzner-server.sh;
+  };
 in
-#https://discourse.nixos.org/t/install-shell-script-on-nixos/6849/10
-#ownfile = pkgs.callPackage ./ownfile.nix {};
 {
   environment.systemPackages = [
     # keep-sorted start
@@ -63,7 +91,6 @@ in
     rebuild-x1
     sync-binaryninja
     update-host
-    #ownfile
     # keep-sorted end
   ];
 }

@@ -1,7 +1,6 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 {
-  lib,
   inputs,
   self,
   ...
@@ -16,8 +15,5 @@
         config.allowUnfree = true;
         overlays = [ self.overlays.own-pkgs-overlay ];
       };
-
-      # make custom top-level lib available to all `perSystem` functions
-      _module.args.lib = lib;
     };
 }

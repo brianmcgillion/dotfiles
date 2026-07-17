@@ -4,66 +4,59 @@ This NixOS configuration uses a modular architecture for better maintainability,
 
 ## Directory Structure
 
+The tree below shows the layout with representative examples; per-category
+file lists are not exhaustive (see the directories themselves for the
+authoritative contents).
+
 ```
 .
 ├── flake.nix              # Main flake entry point
 ├── modules/               # NixOS system modules
-│   ├── default.nix       # Module exports
+│   ├── default.nix       # Module exports (paths, one per profile/feature)
 │   ├── profiles/         # High-level system profiles
-│   │   ├── common.nix    # Base configuration (nix settings, SSH config, etc.)
+│   │   ├── common.nix    # Base configuration (nix settings, SSH known hosts, sops, ...)
 │   │   ├── client.nix    # Desktop/laptop profile
 │   │   └── server.nix    # Server/headless profile
 │   ├── features/         # Feature modules with explicit enable options
-│   │   ├── ai/           # AI/ML tooling
-│   │   │   └── default.nix
-│   │   ├── desktop/      # Desktop environment features
-│   │   │   ├── audio.nix
-│   │   │   ├── desktop-manager.nix
-│   │   │   └── yubikey.nix
-│   │   ├── development/  # Development tools
-│   │   │   ├── emacs.nix
-│   │   │   └── emacs-ui.nix
-│   │   ├── networking/   # Network features
-│   │   │   └── nebula.nix
-│   │   ├── security/     # Security features
-│   │   │   ├── hardening.nix
-│   │   │   ├── fail2ban.nix
-│   │   │   └── sshd.nix
-│   │   └── system/       # System-level features
-│   │       ├── locale-fonts.nix
-│   │       ├── packages.nix
-│   │       └── xdg.nix
+│   │   ├── ai/           # AI/ML tooling (ollama)
+│   │   ├── desktop/      # audio, desktop-manager, keyd, power-management, yubikey
+│   │   ├── development/  # emacs, docker, binaryninja, embedded/RE toolchains, ...
+│   │   ├── networking/   # nebula, wireguard
+│   │   ├── security/     # hardening, fail2ban, sshd
+│   │   └── system/       # locale-fonts, packages, xdg, github-token, remote-builders
 │   ├── hardware/         # Hardware-specific configurations
 │   │   └── nvidia.nix
 │   └── users/            # User management
 │       ├── brian/
-│       │   ├── default.nix    # NixOS user config
+│       │   ├── default.nix    # flake-parts module exporting user-brian + hm profile
+│       │   ├── nixos.nix      # NixOS user config (account, keys, home-manager wiring)
 │       │   ├── bmg-secrets.yaml
-│       │   └── hm-profile/    # Home-manager profile
-│       │       ├── default.nix
-│       │       ├── git.nix
-│       │       └── emacs.nix
+│       │   └── hm-profile/    # Personal home-manager profile (git identity, doom emacs)
 │       ├── root.nix
 │       └── groups.nix
 ├── hosts/                # Host-specific configurations
-│   ├── arcadia/          # Desktop with NVIDIA
-│   ├── argus/            # ML desktop with NVIDIA RTX 5080
-│   ├── minerva/          # Laptop with SSH
-│   ├── nubes/          # Hetzner server
+│   ├── arcadia/          # Desktop with NVIDIA (AMD CPU)
+│   ├── argus/            # ML desktop with NVIDIA RTX 5080 (AMD CPU)
+│   ├── minerva/          # Laptop (ThinkPad X1)
+│   ├── nubes/            # Hetzner dedicated server
 │   └── caelus/           # Hetzner cloud (Nebula lighthouse)
 ├── home/                 # Home-manager configurations
+│   ├── default.nix       # flake-parts module exporting the home profiles
+│   ├── home.nix          # Shared base (stateVersion, xdg)
 │   ├── profiles/
-│   │   ├── client.nix    # Desktop user environment
-│   │   └── server.nix    # Minimal server user environment
-│   └── features/         # Home-manager feature modules
-│       ├── apps/
-│       ├── browsers/
-│       ├── development/
-│       ├── security/
-│       └── shell/
+│   │   ├── client.nix    # Desktop user environment (imports the dirs below)
+│   │   └── server.nix    # Minimal server user environment (basic shell, fzf, tmux)
+│   ├── apps/             # chat, nextcloud, remarkable
+│   ├── browsers/         # google-chrome
+│   ├── development/      # base-system, embedded, claude, copilot, mcp-servers catalog
+│   ├── security/         # ssh-agent + personal ssh aliases
+│   └── shell/            # bash, fzf, kitty, ghostty, tmux
 ├── packages/             # Custom packages and overlays
-│   ├── rebiber/
-│   └── scripts/
+│   ├── default.nix       # own-pkgs-overlay + perSystem package exports
+│   ├── remarkable-sync/  # shared reMarkable sync CLI
+│   ├── scripts/          # helper scripts (deploy, rebuild-*, ...)
+│   └── ...               # rebiber, svd2py, proploader, uniflash, stm32cubeprogrammer, f28335-dump
+├── scripts/              # Repo-level utility scripts (nebula-add-device.sh)
 └── nix/                  # Flake infrastructure
     ├── checks.nix
     ├── deployments.nix
@@ -89,7 +82,7 @@ features = {
 ### 2. Profile System
 Profiles are high-level configurations that enable sensible defaults for different system types:
 
-- **`profile-common`**: Base configuration for all systems (nix settings, SSH config, build machines)
+- **`profile-common`**: Base configuration for all systems (nix settings, SSH known hosts, sops, hardening)
 - **`profile-client`**: Desktop/laptop systems (GNOME, audio, development tools, home-manager)
 - **`profile-server`**: Headless servers (SSH, fail2ban, minimal packages, home-manager)
 
@@ -128,17 +121,17 @@ Host configurations are minimal and declarative:
     self.nixosModules.hardware-nvidia
   ];
 
+  sops.defaultSopsFile = ./secrets.yaml;
+
   features.networking.nebula = {
     enable = true;
-    ca = config.sops.secrets.nebula-ca.path;
-    # ...
+    useSopsSecrets = true; # ca/key/cert wired from sops.secrets.nebula-*
   };
 
   # Hardware-specific config
   hardware.cpu.amd.updateMicrocode = true;
 
-  # Network interfaces
-  networking.hostName = "arcadia";
+  # networking.hostName defaults to the nixosConfigurations attribute name
 
   system.stateVersion = "22.05";
 }
@@ -157,8 +150,8 @@ Host configurations are minimal and declarative:
 #### argus
 - **Type**: ML Desktop
 - **Profile**: client
-- **Hardware**: Intel CPU, NVIDIA RTX 5080 GPU
-- **Features**: GNOME, audio, Emacs, Nebula network, AI/ML (Ollama + Goose)
+- **Hardware**: AMD CPU, NVIDIA RTX 5080 GPU
+- **Features**: GNOME, audio, Emacs, Nebula network, AI/ML (Ollama)
 
 #### minerva
 - **Type**: Laptop (Lenovo ThinkPad X1 9th Gen)
@@ -212,21 +205,20 @@ Host configurations are minimal and declarative:
 }
 ```
 
-3. Add to `hosts/default.nix`:
+3. Add to `hosts/default.nix` — export the host module and append the name
+   to the `genAttrs` host list (the hostname is derived from that name):
 
 ```nix
 flake.nixosModules = {
   # ...
-  host-newhostname = import ./newhostname;
+  host-newhostname = ./newhostname;
 };
 
-flake.nixosConfigurations = {
+# ...
+lib.genAttrs [
   # ...
-  newhostname = lib.nixosSystem {
-    inherit specialArgs;
-    modules = [ self.nixosModules.host-newhostname ];
-  };
-};
+  "newhostname"
+] (name: lib.nixosSystem (mkHost name));
 ```
 
 ## Adding a New Feature
@@ -255,12 +247,13 @@ in
 }
 ```
 
-3. Export in `modules/default.nix`:
+3. Export in `modules/default.nix` (as a path, so the module system can
+   deduplicate imports):
 
 ```nix
 flake.nixosModules = {
   # ...
-  feature-<name> = import ./features/<category>/<feature>.nix;
+  feature-<name> = ./features/<category>/<feature>.nix;
 };
 ```
 
@@ -303,8 +296,9 @@ config = {
 
 All hosts have been verified to build successfully:
 ```bash
-nix flake check
+nix flake check   # also runs deploy-rs checks for argus/caelus/nubes
 nixos-rebuild build --flake .#arcadia
+nixos-rebuild build --flake .#argus
 nixos-rebuild build --flake .#minerva
 nixos-rebuild build --flake .#nubes
 nixos-rebuild build --flake .#caelus
@@ -314,3 +308,21 @@ To apply on current system:
 ```bash
 rebuild-host  # or: sudo nixos-rebuild switch --flake .#$HOSTNAME
 ```
+
+## Security Posture Notes
+
+Deliberate trade-offs, documented so they are not "fixed" by accident:
+
+- **Passwordless wheel sudo** (`modules/profiles/common.nix`): accepted
+  fleet-wide; SSH access is hardware-key-only and interactive logins are
+  already strongly authenticated.
+- **Nix-managed authorized keys only**: the srvos modules force
+  `authorizedKeysFiles` to `/etc/ssh/authorized_keys.d/%u`, so
+  `~/.ssh/authorized_keys` is ignored on every host. New keys must be added
+  through the users modules — remember this during recovery.
+- **Unencrypted disks on arcadia/argus**: stationary machines; they hold
+  nebula/wireguard credentials and the host age identity, so physical theft
+  implies overlay-credential rotation (minerva uses LUKS).
+- **fail2ban ignores the nebula overlay** (`10.99.99.0/24`) so a typo'd
+  password can never lock out overlay SSH — the escalating bans apply to
+  everyone else.

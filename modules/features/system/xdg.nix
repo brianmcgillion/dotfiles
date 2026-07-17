@@ -47,6 +47,10 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # NOTE: /etc/set-environment exports these alphabetically, so a variable
+    # must never reference another ${XDG_*} variable — the reference would
+    # expand to an empty string for names sorting before "X" (an empty PATH
+    # element even puts $PWD on the search path). Use $HOME literals only.
     environment = {
       sessionVariables = {
         XDG_CACHE_HOME = "$HOME/.cache";
@@ -55,25 +59,19 @@ in
         XDG_STATE_HOME = "$HOME/.local/state";
         XDG_BIN_HOME = "$HOME/.local/bin";
         CLAUDE_CONFIG_DIR = "$HOME/.config/claude";
-        PATH = [ "\${XDG_BIN_HOME}" ];
+        PATH = [ "$HOME/.local/bin" ];
       };
       variables = {
         ASPELL_CONF = ''
-          per-conf $XDG_CONFIG_HOME/aspell/aspell.conf;
-          personal $XDG_CONFIG_HOME/aspell/aspell.en.pws;
-          repl $XDG_CONFIG_HOME/aspell/en.prepl;
+          per-conf $HOME/.config/aspell/aspell.conf;
+          personal $HOME/.config/aspell/aspell.en.pws;
+          repl $HOME/.config/aspell/en.prepl;
         '';
-        LESSHISTFILE = "\${XDG_STATE_HOME}/less/history";
-        WGETRC = "\${XDG_CONFIG_HOME}/wgetrc";
-        HISTFILE = "\${XDG_STATE_HOME}/bash/history";
-        INPUTRC = "\${XDG_CONFIG_HOME}/inputrc";
+        LESSHISTFILE = "$HOME/.local/state/less/history";
+        WGETRC = "$HOME/.config/wgetrc";
+        HISTFILE = "$HOME/.local/state/bash/history";
+        INPUTRC = "$HOME/.config/inputrc";
       };
     };
-
-    # Ensure XDG state directories exist system-wide
-    # Note: User-specific directories (bash, less) are created in home-manager
-    systemd.tmpfiles.rules = [
-      "d %h/.local/state 0700 - - -"
-    ];
   };
 }

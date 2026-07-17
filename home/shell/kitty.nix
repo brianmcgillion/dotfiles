@@ -18,7 +18,6 @@
         "ctrl+alt+g" = "goto_layout grid";
         "ctrl+alt+x" = "goto_layout stack";
       };
-      extraConfig = "";
     };
   };
 

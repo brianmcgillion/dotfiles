@@ -22,18 +22,14 @@
 # Usage:
 #   imports = [ self.nixosModules.profile-client ];
 #
-# Enabled features by default:
-#   - features.desktop.audio
-#   - features.desktop.desktop-manager
-#   - features.desktop.power-management
-#   - features.desktop.yubikey
-#   - features.development.docker
-#   - features.development.emacs
-#   - features.development.emacs-ui
-#   - features.system.locale-fonts
+# Enabled features by default (see the features block below — it is the
+# authoritative list): audio, desktop-manager, power-management, yubikey,
+# sshd (hardened), docker, emacs, emacs-ui, greatfet, remarkable,
+# saleae-logic, locale-fonts, remote-builders
 #
-# Note: SSH and fail2ban are available but not enabled by default.
-# Enable SSH per-host with: features.security.sshd.enable = true;
+# Note: SSH is enabled by default via the hardened features.security.sshd
+# module (key-only auth, fail2ban). Disable per-host with:
+#   features.security.sshd.enable = false;
 {
   self,
   lib,
@@ -65,6 +61,7 @@
     self.nixosModules.feature-sshd
     self.nixosModules.feature-stm32cubeprog
     self.nixosModules.feature-uniflash
+    self.nixosModules.feature-wireguard
     self.nixosModules.feature-yubikey
     self.nixosModules.scripts
     self.nixosModules.user-root
@@ -106,16 +103,47 @@
         remarkable.enable = lib.mkDefault true;
         saleae-logic.enable = lib.mkDefault true;
       };
+      security = {
+        # Hardened SSH (key-only auth + fail2ban) — same feature module the
+        # servers use, so clients never run sshd with stock settings.
+        sshd.enable = lib.mkDefault true;
+      };
       system = {
         locale-fonts.enable = lib.mkDefault true;
+        # Development machines build via the work builders
+        remote-builders.enable = lib.mkDefault true;
       };
     };
 
     # Enable gp-gui
     programs.gp-gui.enable = lib.mkDefault true;
 
-    # Add gp-gui overlay to provide gp-gui-wrapper and gpclient-wrapper
-    nixpkgs.overlays = [ inputs.gp-gui.overlays.default ];
+    nixpkgs = {
+      overlays = [
+        # gp-gui overlay provides gp-gui-wrapper and gpclient-wrapper
+        inputs.gp-gui.overlays.default
+        # emacs-git and friends (only clients run the emacs feature)
+        inputs.emacs-overlay.overlays.default
+      ];
+      # Waivers for client applications only
+      config.permittedInsecurePackages = [
+        "qtwebengine-5.15.19" # needed for globalprotect-vpn
+        "jitsi-meet-1.0.8792"
+      ];
+    };
+
+    nix.settings = {
+      # Keep build-time dependencies and derivations around on dev machines
+      # (they blunt GC on servers for no benefit)
+      keep-outputs = true;
+      keep-derivations = true;
+    };
+
+    # Cross-building/emulation for development work
+    boot.binfmt.emulatedSystems = [
+      "riscv64-linux"
+      "aarch64-linux"
+    ];
 
     # Bootloader configuration for UEFI systems
     boot.loader = {
@@ -135,19 +163,10 @@
         # Use systemd-resolved for DNS (required for Nebula split-horizon DNS)
         dns = "systemd-resolved";
       };
-      firewall = {
-        allowedTCPPorts = [
-          8080
-          8147
-        ];
-        allowedUDPPorts = [ 8080 ];
-      };
     };
 
     # Services
     services = {
-      openssh.enable = true;
-      openssh.startWhenNeeded = false;
       fwupd.enable = true;
       # Enable systemd-resolved for split-horizon DNS
       # This allows per-interface DNS configuration via resolvectl
@@ -168,13 +187,24 @@
       };
     };
 
-    # Disable ModemManager - not needed and interferes with serial consoles
-    # Both services must be disabled to prevent D-Bus activation on reboot
-    # See: https://github.com/NixOS/nixpkgs/issues/41055
-    systemd.services.ModemManager.enable = false;
+    systemd.services = {
+      # Disable ModemManager - not needed and interferes with serial consoles
+      # Both services must be disabled to prevent D-Bus activation on reboot
+      # See: https://github.com/NixOS/nixpkgs/issues/41055
+      ModemManager.enable = false;
+      # https://github.com/NixOS/nixpkgs/issues/180175
+      NetworkManager-wait-online.enable = false;
+    };
 
-    # Enable Bluetooth hardware support
-    hardware.bluetooth.enable = true;
+    hardware = {
+      # Enable Bluetooth hardware support
+      bluetooth.enable = true;
+      # Clients get the full (unfree) firmware set for wifi/bt/peripherals;
+      # servers make do with the redistributable set from profile-common.
+      enableAllFirmware = true;
+      # ZSA keyboard support (Ergodox, Moonlander, Voyager)
+      keyboard.zsa.enable = true;
+    };
 
     # Client-specific packages
     environment.systemPackages = [
@@ -200,8 +230,6 @@
       inputs.nix-ai.packages."${pkgs.stdenv.hostPlatform.system}".default
       #inputs.globalprotect-openconnect.packages."${pkgs.stdenv.hostPlatform.system}".default
     ];
-
-    hardware.keyboard.zsa.enable = true;
 
     # Developer documentation
     documentation = {

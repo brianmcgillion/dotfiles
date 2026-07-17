@@ -218,14 +218,24 @@ case "$ARCH" in
     ;;
 esac
 
-NEBULA_VERSION="$(curl -fsSL https://api.github.com/repos/slackhq/nebula/releases/latest | grep '"tag_name"' | sed 's/.*"v\(.*\)".*/\1/')"
+# Pinned version, verified against the release's checksum file — this
+# installer runs as root, so never execute an unpinned, unverified download.
+# Bump deliberately (checksums: https://github.com/slackhq/nebula/releases).
+NEBULA_VERSION="${NEBULA_VERSION:-1.9.7}"
 NEBULA_URL="https://github.com/slackhq/nebula/releases/download/v${NEBULA_VERSION}/nebula-${NEBULA_ARCH}.tar.gz"
+NEBULA_SHASUM_URL="https://github.com/slackhq/nebula/releases/download/v${NEBULA_VERSION}/SHASUM256.txt"
 
 log_info "Downloading Nebula v${NEBULA_VERSION} for ${NEBULA_ARCH}..."
-curl -fsSL "$NEBULA_URL" -o /tmp/nebula.tar.gz
-tar -xzf /tmp/nebula.tar.gz -C /usr/local/bin nebula nebula-cert
+curl -fsSL "$NEBULA_URL" -o "/tmp/nebula-${NEBULA_ARCH}.tar.gz"
+curl -fsSL "$NEBULA_SHASUM_URL" -o /tmp/nebula-shasum.txt
+if ! (cd /tmp && grep " nebula-${NEBULA_ARCH}.tar.gz\$" nebula-shasum.txt | sha256sum -c -); then
+  log_error "Checksum verification failed for nebula-${NEBULA_ARCH}.tar.gz"
+  rm -f "/tmp/nebula-${NEBULA_ARCH}.tar.gz" /tmp/nebula-shasum.txt
+  exit 1
+fi
+tar -xzf "/tmp/nebula-${NEBULA_ARCH}.tar.gz" -C /usr/local/bin nebula nebula-cert
 chmod 755 /usr/local/bin/nebula /usr/local/bin/nebula-cert
-rm -f /tmp/nebula.tar.gz
+rm -f "/tmp/nebula-${NEBULA_ARCH}.tar.gz" /tmp/nebula-shasum.txt
 
 log_info "Nebula v${NEBULA_VERSION} installed to /usr/local/bin/"
 

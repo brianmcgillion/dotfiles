@@ -5,9 +5,8 @@
 # This profile provides the foundation for all NixOS systems in this configuration.
 # It includes:
 # - Nix daemon configuration with flakes and experimental features
-# - Distributed build machines setup
 # - Garbage collection and store optimization
-# - SSH client configuration with known hosts
+# - SSH client configuration with known hosts for the fleet
 # - SOPS secrets management
 # - Disko disk management support
 # - Basic security hardening
@@ -38,9 +37,10 @@
     inputs.sops-nix.nixosModules.sops
     inputs.srvos.nixosModules.mixins-nix-experimental
     inputs.srvos.nixosModules.mixins-trusted-nix-caches
+    self.nixosModules.feature-github-token
     self.nixosModules.feature-hardening
     self.nixosModules.feature-nebula
-    self.nixosModules.feature-nix-settings
+    self.nixosModules.feature-remote-builders
     self.nixosModules.feature-system-packages
     self.nixosModules.feature-xdg
     self.nixosModules.user-brian
@@ -62,28 +62,6 @@
         Set automatically by importing profile-client or profile-server.
       '';
     };
-
-    common.remoteBuild = {
-      sshUser = lib.mkOption {
-        type = lib.types.str;
-        example = "builder";
-        description = ''
-          SSH username for connecting to remote Nix build machines.
-          This user must have permission to run Nix builds on the remote system.
-          Used by both deploy-rs and nix.buildMachines configuration.
-        '';
-      };
-
-      sshKey = lib.mkOption {
-        type = lib.types.path;
-        example = "/home/user/.ssh/builder-key";
-        description = ''
-          Path to SSH private key for authenticating to remote build machines.
-          The corresponding public key must be in the authorized_keys of the remote builder user.
-          Should have restrictive permissions (0600) for security.
-        '';
-      };
-    };
   };
 
   config = {
@@ -97,17 +75,8 @@
     };
 
     nixpkgs = {
-      config = {
-        allowUnfree = true;
-        permittedInsecurePackages = [
-          "qtwebengine-5.15.19" # needed for globalprotect-vpn
-          "jitsi-meet-1.0.8792"
-        ];
-      };
-      overlays = [
-        inputs.emacs-overlay.overlays.default
-        self.overlays.own-pkgs-overlay
-      ];
+      config.allowUnfree = true;
+      overlays = [ self.overlays.own-pkgs-overlay ];
     };
 
     nix = {
@@ -140,57 +109,20 @@
         builders-use-substitutes = true;
         build-users-group = "nixbld";
         trusted-users = [ "root" ];
-        auto-optimise-store = true; # Optimise syslinks
-        keep-outputs = true; # Keep outputs of derivations
-        keep-derivations = true; # Keep derivations
 
-        # Enable cgroups for auto-allocate-uids to work properly
-        # This allows Nix to dynamically allocate UIDs for builds instead of
-        # using pre-created nixbld users
+        # Run builds in their own cgroups (better isolation/accounting;
+        # also a prerequisite if auto-allocate-uids is ever enabled)
         use-cgroups = true;
       };
 
-      # Garbage collection
+      # Store optimisation via the periodic timer (auto-optimise-store is
+      # redundant with it and historically lock-contention-prone)
       optimise.automatic = true;
       gc = {
         automatic = true;
         dates = lib.mkDefault "weekly";
         options = lib.mkDefault "--delete-older-than 7d";
       };
-
-      # https://nixos.wiki/wiki/Distributed_build#NixOS
-      buildMachines = [
-        {
-          hostName = "hetzarm";
-          system = "aarch64-linux";
-          maxJobs = 16;
-          speedFactor = 1;
-          supportedFeatures = [
-            "nixos-test"
-            "benchmark"
-            "big-parallel"
-            "kvm"
-          ];
-          inherit (config.common.remoteBuild) sshUser;
-          inherit (config.common.remoteBuild) sshKey;
-        }
-        {
-          hostName = "vedenemo-builder";
-          system = "x86_64-linux";
-          maxJobs = 16;
-          speedFactor = 1;
-          supportedFeatures = [
-            "nixos-test"
-            "benchmark"
-            "big-parallel"
-            "kvm"
-          ];
-          inherit (config.common.remoteBuild) sshUser;
-          inherit (config.common.remoteBuild) sshKey;
-        }
-      ];
-
-      distributedBuilds = true;
     };
 
     # Only available when dirty
@@ -198,14 +130,9 @@
 
     security.sudo.wheelNeedsPassword = false;
 
-    systemd.services = {
-      # Sometimes it fails if a store path is still in use.
-      # This should fix intermediate issues.
-      nix-gc.serviceConfig.Restart = "on-failure";
-
-      # https://github.com/NixOS/nixpkgs/issues/180175
-      NetworkManager-wait-online.enable = false;
-    };
+    # Sometimes nix-gc fails if a store path is still in use.
+    # This should fix intermediate issues.
+    systemd.services.nix-gc.serviceConfig.Restart = "on-failure";
 
     # Common network configuration
     # The global useDHCP flag is deprecated, therefore explicitly set to false
@@ -213,7 +140,9 @@
     # generated config replicates the default behaviour.
     networking = {
       useDHCP = false;
-      enableIPv6 = false;
+      # Clients default to IPv4-only; servers with native IPv6 (Hetzner)
+      # override this per-host.
+      enableIPv6 = lib.mkDefault false;
       # Open ports in the firewall?
       firewall.enable = true;
       nftables.enable = true;
@@ -221,19 +150,11 @@
 
     programs = {
       ssh = {
-        # SSH known hosts (system-wide, needed for build machines and all users)
+        # SSH known hosts (system-wide; the fleet plus personal infra)
         knownHosts = {
           bmg-sh-gr = {
             hostNames = [ "3.79.116.201" ];
             publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBiWERbqSD3oSXSAs8VbnKLjCPZZIsAcKWcyI2/lW45K";
-          };
-          hetzarm = {
-            hostNames = [ "65.21.20.242" ];
-            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILx4zU4gIkTY/1oKEOkf9gTJChdx/jR3lDgZ7p/c7LEK";
-          };
-          vedenemo-builder = {
-            hostNames = [ "builder.vedenemo.dev" ];
-            publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG68NdmOw3mhiBZwDv81dXitePoc1w//p/LpsHHA8QRp";
           };
           nubes = {
             hostNames = [
@@ -280,9 +201,6 @@
         };
       };
       command-not-found.enable = false;
-    };
-
-    programs = {
       nix-index-database.comma.enable = true;
       nix-ld.enable = true;
     };
@@ -298,24 +216,12 @@
     };
 
     # Hardware
-    hardware = {
-      enableRedistributableFirmware = true;
-      enableAllFirmware = true;
-    };
+    hardware.enableRedistributableFirmware = lib.mkDefault true;
 
     # Boot configuration
-    boot = {
-      # Use the bleeding edge kernel
-      #kernelPackages = pkgs.linuxPackages_latest;
-      binfmt.emulatedSystems = [
-        "riscv64-linux"
-        "aarch64-linux"
-      ];
-
-      # Use systemd-based initrd (scripted initrd is deprecated in 26.05,
-      # removed in 26.11)
-      initrd.systemd.enable = true;
-    };
+    # Use systemd-based initrd (scripted initrd is deprecated in 26.05,
+    # removed in 26.11)
+    boot.initrd.systemd.enable = true;
 
     # Tie the sops module to the system's ssh keys
     sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];

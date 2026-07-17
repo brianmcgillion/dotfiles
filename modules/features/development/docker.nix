@@ -2,12 +2,9 @@
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Docker containerization platform
 #
-# Enables Docker daemon and configures user access for container development.
-#
-# Features:
-# - Docker daemon with rootless mode support
-# - User automatically added to docker group
-# - Container networking and storage configuration
+# Enables the (rootful) Docker daemon with weekly auto-prune and installs
+# docker-compose. Group membership for the user is granted in
+# modules/users/brian/nixos.nix (gated on this feature being enabled).
 #
 # Usage:
 #   features.development.docker.enable = true;

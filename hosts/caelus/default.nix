@@ -4,7 +4,6 @@
   lib,
   self,
   inputs,
-  config,
   ...
 }:
 {
@@ -20,28 +19,20 @@
     efiInstallAsRemovable = true;
   };
 
-  sops = {
-    defaultSopsFile = ./secrets.yaml;
-    secrets = {
-      nebula-ca.owner = config.features.networking.nebula.configOwner;
-      nebula-key.owner = config.features.networking.nebula.configOwner;
-      nebula-cert.owner = config.features.networking.nebula.configOwner;
-    };
-  };
+  sops.defaultSopsFile = ./secrets.yaml;
 
+  # Nebula lighthouse for the pantheon overlay (secrets wired from
+  # ./secrets.yaml)
   features.networking.nebula = {
     enable = true;
-    isLightHouse = true;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
+    isLighthouse = true;
+    useSopsSecrets = true;
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  networking = {
-    hostName = lib.mkDefault "caelus";
-  };
+  # Hetzner cloud provides native IPv6; keep it enabled on servers.
+  networking.enableIPv6 = true;
 
   system.stateVersion = "24.05";
 }

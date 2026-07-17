@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 {
   inputs,
@@ -12,7 +12,6 @@
     {
       config,
       pkgs,
-      inputs',
       ...
     }:
     {
@@ -23,8 +22,9 @@
           packages = [
             # keep-sorted start
             config.treefmt.build.wrapper
-            inputs'.deploy-rs.packages.default
             pkgs.cachix
+            pkgs.deploy-rs
+            pkgs.nebula # nebula-cert, used by scripts/nebula-add-device.sh
             pkgs.nix-eval-jobs
             pkgs.nix-fast-build
             pkgs.nix-output-monitor
@@ -70,7 +70,7 @@
             name = "deploy-rs";
             help = "Deploy with deploy-rs to configured nodes";
             command = ''
-              ${inputs'.deploy-rs.packages.default}/bin/deploy "$@"
+              ${pkgs.deploy-rs}/bin/deploy "$@"
             '';
           }
           {
@@ -78,7 +78,7 @@
             name = "deploy-argus";
             help = "Deploy to argus (skips flake checks)";
             command = ''
-              ${inputs'.deploy-rs.packages.default}/bin/deploy --skip-checks .#argus "$@"
+              ${pkgs.deploy-rs}/bin/deploy --skip-checks .#argus "$@"
             '';
           }
           {
@@ -86,7 +86,7 @@
             name = "deploy-caelus";
             help = "Deploy to caelus server (skips flake checks)";
             command = ''
-              ${inputs'.deploy-rs.packages.default}/bin/deploy --skip-checks .#caelus "$@"
+              ${pkgs.deploy-rs}/bin/deploy --skip-checks .#caelus "$@"
             '';
           }
           {
@@ -94,7 +94,7 @@
             name = "deploy-nubes";
             help = "Deploy to nubes server (skips flake checks)";
             command = ''
-              ${inputs'.deploy-rs.packages.default}/bin/deploy --skip-checks .#nubes "$@"
+              ${pkgs.deploy-rs}/bin/deploy --skip-checks .#nubes "$@"
             '';
           }
         ];

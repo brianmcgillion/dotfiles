@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 {
-  config,
   lib,
   pkgs,
   self,
@@ -18,16 +17,16 @@
 
   time.timeZone = "Asia/Dubai";
 
-  sops = {
-    defaultSopsFile = ./secrets.yaml;
-    secrets = {
-      wg-privateKeyFile.owner = "root";
-      wg-presharedKeyFile.owner = "root";
-      nebula-ca.owner = config.features.networking.nebula.configOwner;
-      nebula-key.owner = config.features.networking.nebula.configOwner;
-      nebula-cert.owner = config.features.networking.nebula.configOwner;
-    };
+  # ollama-cuda is not on cache.nixos.org (unfree CUDA); without this cache
+  # every nixpkgs bump triggers a long local CUDA rebuild.
+  nix.settings = {
+    extra-substituters = [ "https://cuda-maintainers.cachix.org" ];
+    extra-trusted-public-keys = [
+      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+    ];
   };
+
+  sops.defaultSopsFile = ./secrets.yaml;
 
   # Enable AI features (CUDA auto-detected from hardware-nvidia)
   # Note: Qwen3-Coder-480B-A35B is the best Qwen coding model but requires a cluster of GPUs
@@ -40,13 +39,25 @@
     ];
   };
 
-  # Enable Nebula network
-  features.networking.nebula = {
-    enable = true;
-    isLightHouse = false;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
+  features.networking = {
+    # Enable Nebula network (secrets wired from ./secrets.yaml)
+    nebula = {
+      enable = true;
+      useSopsSecrets = true;
+    };
+
+    # Personal WireGuard VPN (wg-quick up wg0)
+    wireguard = {
+      enable = true;
+      tunnels.wg0 = {
+        network = "bmg-vps";
+        address = [ "10.7.0.11/24" ];
+        # TODO: intentional? The other clients use the VPN-internal resolver
+        # (172.26.0.2, from the bmg-vps network); with 8.8.8.8 internal names
+        # will not resolve while the tunnel is up.
+        dns = [ "8.8.8.8" ];
+      };
+    };
   };
 
   boot = {
@@ -79,32 +90,7 @@
     #cpuFreqGovernor = lib.mkDefault "ondemand";
   };
 
-  networking = {
-    interfaces.enp173s0.useDHCP = true;
-
-    #TODO Replace this with the name of the nixosConfiguration so it can be common
-    # Define your hostname
-    hostName = lib.mkDefault "argus";
-
-    wg-quick.interfaces = {
-      wg0 = {
-        autostart = false;
-        address = [ "10.7.0.11/24" ];
-        dns = [ "8.8.8.8" ];
-        privateKeyFile = config.sops.secrets.wg-privateKeyFile.path;
-
-        peers = [
-          {
-            publicKey = "3xZ1Ug4n8XrjZqlrrrveiIPQq3uyMtxuJXII3vCwyww=";
-            presharedKeyFile = config.sops.secrets.wg-presharedKeyFile.path;
-            allowedIPs = [ "0.0.0.0/0" ];
-            endpoint = "35.178.208.8:51820";
-            persistentKeepalive = 25;
-          }
-        ];
-      };
-    };
-  };
+  networking.interfaces.enp173s0.useDHCP = true;
 
   # RTX 5080 (Blackwell/GB203) requires open kernel modules
   hardware.nvidia.open = true;
@@ -112,7 +98,9 @@
   # the old 6.12 pin is no longer needed. linuxPackages_latest is a moving
   # target - if a future nixpkgs bump outruns nvidia-open, pin a series instead
   # (e.g. linuxPackages_7_1).
-  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
+  # Plain assignment (no mkForce) so a future module pinning a kernel for a
+  # hardware reason surfaces as a conflict instead of being silently overridden.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   hardware.cpu.amd.updateMicrocode = true;
 
   system.stateVersion = "25.11";

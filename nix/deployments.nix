@@ -1,22 +1,16 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 { self, inputs, ... }:
 let
   inherit (inputs) deploy-rs;
 
-  # Use impure evaluation to get HOME, or fallback to config value
-  sshKeyPath =
-    let
-      home = builtins.getEnv "HOME";
-      # Get SSH key from system configuration (using caelus as reference)
-      configKey = self.nixosConfigurations.arcadia.config.common.remoteBuild.sshKey or null;
-    in
-    if home != "" then
-      "${home}/.ssh/builder-key"
-    else if configKey != null then
-      configKey
-    else
-      throw "Cannot determine SSH key path for deployment. Set HOME environment variable or configure common.remoteBuild.sshKey.";
+  # SSH key of the operator running deploy-rs — the same builder key the
+  # target hosts authorize for root, provisioned from sops by
+  # features.system.remote-builders (hence /run/secrets, not ~/.ssh).
+  # A constant, because pure evaluation (nix flake check, deploy-rs) cannot
+  # read $HOME, and reading it out of a host's config would force a full
+  # nixosConfiguration eval just to obtain one string.
+  sshKeyPath = "/run/secrets/builder-key";
 
   mkDeployment = arch: hostname: {
     inherit hostname;
@@ -33,21 +27,16 @@ let
     };
   };
 
-  x86-nodes = {
+  nodes = {
     argus = mkDeployment "x86_64-linux" "argus";
     caelus = mkDeployment "x86_64-linux" "caelus";
     nubes = mkDeployment "x86_64-linux" "nubes";
   };
-
-  aarch64-nodes = { };
 in
 {
   flake = {
-    deploy.nodes = x86-nodes // aarch64-nodes;
+    deploy.nodes = nodes;
 
-    checks = {
-      x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks { nodes = x86-nodes; };
-      aarch64-linux = deploy-rs.lib.aarch64-linux.deployChecks { nodes = aarch64-nodes; };
-    };
+    checks.x86_64-linux = deploy-rs.lib.x86_64-linux.deployChecks { inherit nodes; };
   };
 }

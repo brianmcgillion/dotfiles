@@ -16,6 +16,8 @@
 # Power management:
 # - Enables nvidia-suspend/resume/hibernate systemd services
 # - Sets NVreg_PreserveVideoMemoryAllocations=1 to save VRAM on suspend
+# - VRAM spill goes to /var/tmp (disk-backed): the driver default is /tmp,
+#   which is tmpfs here (hardening profile) and cannot absorb 16GB of VRAM
 # - Required for working S3 suspend/resume with proprietary driver
 # - Fine-grained power management disabled (runtime D3, laptops only)
 #
@@ -28,7 +30,7 @@
 # Usage:
 #   imports = [ self.nixosModules.hardware-nvidia ];
 #
-# Used by: arcadia (AMD + NVIDIA desktop), argus (Intel + NVIDIA desktop)
+# Used by: arcadia (AMD + NVIDIA desktop), argus (AMD + NVIDIA desktop)
 #
 # Note: Requires compatible GPU. Check supported GPUs at:
 # https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
@@ -51,4 +53,8 @@
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
+
+  # With PreserveVideoMemoryAllocations the driver dumps VRAM to disk on
+  # suspend; the default path /tmp is RAM-backed tmpfs (hardening profile).
+  boot.kernelParams = [ "nvidia.NVreg_TemporaryFilePath=/var/tmp" ];
 }

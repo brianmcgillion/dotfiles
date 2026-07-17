@@ -6,6 +6,7 @@
   # Building plugins
   # providing plugins (nodejs)
   #
+  # nodejs comes from the emacs feature module system-wide on clients.
   home.packages = [
     # keep-sorted start
     pkgs.bear
@@ -20,8 +21,8 @@
     pkgs.nix-update
     pkgs.nixos-generators
     pkgs.nixpkgs-review
-    pkgs.nodejs
     pkgs.optinix
+    pkgs.ripgrep-all # search inside PDFs, archives, ... (client-only: pulls ffmpeg/pandoc/poppler)
     pkgs.uv
     pkgs.xxd
     # keep-sorted end

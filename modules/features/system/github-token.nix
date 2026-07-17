@@ -1,23 +1,19 @@
 # SPDX-FileCopyrightText: 2024 Brian McGillion
 # SPDX-License-Identifier: MIT
-# Nix daemon settings with GitHub authentication
+# GitHub API token for Nix flake operations
 #
-# Configures Nix access tokens for GitHub API authentication to avoid
+# Configures a Nix access token for GitHub API authentication to avoid
 # rate limiting when performing flake operations that query the GitHub API.
 #
 # Features:
 # - GitHub Personal Access Token configuration for Nix
 # - Per-user token support via SOPS encryption
 # - Automatic service ordering (SOPS → Nix daemon)
-# - Secure token storage with restrictive permissions
 #
 # Configuration:
-#   features.system.nix-settings = {
+#   features.system.github-token = {
 #     enable = true;
-#     githubToken = {
-#       enable = true;
-#       sopsFile = ./path-to-secrets.yaml;
-#     };
+#     sopsFile = ./path-to-secrets.yaml;
 #   };
 #
 # The SOPS file must contain a 'github-token-ratelimit' secret with your
@@ -32,8 +28,9 @@
 # Enabled by default in: None (must be explicitly enabled per-user)
 #
 # Security notes:
-# - Token stored as /run/secrets/github-token-ratelimit (mode 0440)
-# - Only readable by root and keys group
+# - Raw token secret: /run/secrets/github-token-ratelimit (mode 0440, root:keys)
+# - Rendered access-tokens file: mode 0400, owned by the configured owner
+#   (the nix daemon runs as root and can always read it)
 # - No GitHub scopes required (increases unauthenticated rate limits only)
 # - Per-user SOPS files allow each user their own token
 #
@@ -53,46 +50,57 @@
   ...
 }:
 let
-  cfg = config.features.system.nix-settings;
+  cfg = config.features.system.github-token;
 in
 {
-  options.features.system.nix-settings = {
-    enable = lib.mkEnableOption "Enhanced Nix settings with GitHub authentication";
+  options.features.system.github-token = {
+    enable = lib.mkEnableOption "GitHub API token for avoiding rate limits";
 
-    githubToken = {
-      enable = lib.mkEnableOption "GitHub API token for avoiding rate limits";
+    sopsFile = lib.mkOption {
+      type = lib.types.path;
+      description = ''
+        Path to the SOPS file containing the github-token-ratelimit secret.
+        This allows per-user token configuration.
+      '';
+    };
 
-      sopsFile = lib.mkOption {
-        type = lib.types.path;
-        description = ''
-          Path to the SOPS file containing the github-token-ratelimit secret.
-          This allows per-user token configuration.
-        '';
-      };
+    owner = lib.mkOption {
+      type = lib.types.str;
+      default = "root";
+      example = "brian";
+      description = ''
+        User that owns the rendered access-tokens file. The file is !include'd
+        from nix.conf, which nix *clients* parse too — set this to the user
+        who runs nix commands so their evaluations can use the token.
+      '';
     };
   };
 
   config = lib.mkIf cfg.enable {
     # Configure GitHub access token for Nix to avoid rate limiting
-    sops.secrets.github-token-ratelimit = lib.mkIf cfg.githubToken.enable {
-      inherit (cfg.githubToken) sopsFile;
+    sops.secrets.github-token-ratelimit = {
+      inherit (cfg) sopsFile;
       mode = "0440";
       group = config.users.groups.keys.name;
     };
 
-    nix.extraOptions = lib.mkIf cfg.githubToken.enable ''
+    nix.extraOptions = ''
       !include ${config.sops.templates."nix-access-tokens".path}
     '';
 
-    sops.templates."nix-access-tokens" = lib.mkIf cfg.githubToken.enable {
+    sops.templates."nix-access-tokens" = {
       content = ''
         access-tokens = github.com=${config.sops.placeholder."github-token-ratelimit"}
       '';
-      mode = "0444";
+      # Readable by the owning user (nix client) only; the root-run nix
+      # daemon reads it regardless. Never 0444 — that leaks the token to
+      # every local user.
+      inherit (cfg) owner;
+      mode = "0400";
     };
 
     # Ensure the secret file is read before Nix daemon starts
-    systemd.services.nix-daemon = lib.mkIf cfg.githubToken.enable {
+    systemd.services.nix-daemon = {
       after = [ "sops-nix.service" ];
       wants = [ "sops-nix.service" ];
     };

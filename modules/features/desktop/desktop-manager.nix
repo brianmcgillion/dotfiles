@@ -38,31 +38,31 @@ in
       desktopManager.gnome.enable = true;
     };
 
-    # Fix GDM permission errors for session data directories
-    # GDM and gdm-greeter users need these directories for session management, ICC profiles, ibus, gnome-shell, and keyring
-    # Use 0775 for directories where gdm-greeter (in gdm group) needs write access
+    # Fix GDM permission errors for session data directories (the greeter
+    # runs as the gdm user on NixOS) — ICC profiles, ibus, gnome-shell and
+    # keyring want these to exist.
+    # /run/gdm/.config is NOT listed: the upstream GDM module already
+    # declares it and a second rule for the same path only produces
+    # systemd-tmpfiles duplicate-line warnings.
     systemd.tmpfiles.rules = [
-      "d /run/gdm/.local 0775 gdm gdm -"
-      "d /run/gdm/.local/share 0775 gdm gdm -"
-      "d /run/gdm/.local/share/icc 0775 gdm gdm -"
-      "d /run/gdm/.local/share/gnome-shell 0775 gdm gdm -"
-      "d /run/gdm/.local/share/keyrings 0770 gdm gdm -"
-      "d /run/gdm/.cache 0775 gdm gdm -"
-      "d /run/gdm/.cache/ibus 0775 gdm gdm -"
-      "d /run/gdm/.config 0775 gdm gdm -"
-      "d /run/gdm/.config/ibus 0775 gdm gdm -"
+      "d /run/gdm/.local 0755 gdm gdm -"
+      "d /run/gdm/.local/share 0755 gdm gdm -"
+      "d /run/gdm/.local/share/icc 0755 gdm gdm -"
+      "d /run/gdm/.local/share/gnome-shell 0755 gdm gdm -"
+      "d /run/gdm/.local/share/keyrings 0700 gdm gdm -"
+      "d /run/gdm/.cache 0755 gdm gdm -"
+      "d /run/gdm/.cache/ibus 0755 gdm gdm -"
+      "d /run/gdm/.config/ibus 0755 gdm gdm -"
     ];
 
+    # Only packages GNOME actually installs by default belong here —
+    # excluding anything else (evolution, cheese, ...) filters nothing.
     environment.gnome.excludePackages = [
       pkgs.gnome-tour
       pkgs.epiphany
-      pkgs.evolution
-      pkgs.evolutionWithPlugins
-      pkgs.evolution-data-server
       pkgs.geary
       pkgs.gnome-music
       pkgs.gnome-contacts
-      pkgs.cheese
     ];
   };
 }

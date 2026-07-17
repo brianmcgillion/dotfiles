@@ -1,14 +1,10 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 {
-  # Ensure XDG state directories exist for bash history
-  # HISTFILE is set to $XDG_STATE_HOME/bash/history in modules/features/system/xdg.nix
-  xdg.stateHome = "${config.home.homeDirectory}/.local/state";
   home = {
     packages = [
       # keep-sorted start
-      (pkgs.ripgrep.override { withPCRE2 = true; })
       pkgs.cheat
       pkgs.curlie
       pkgs.delta
@@ -16,23 +12,22 @@
       pkgs.duf # df replacement
       pkgs.dust # du replacement
       pkgs.fd # faster projectile indexing
-      pkgs.file
       pkgs.httpie
       pkgs.jq # sed for json
       pkgs.psmisc
-      pkgs.ripgrep-all # search inside PDFs, archives, etc.
+      pkgs.ripgrep # PCRE2 support is the nixpkgs default
       pkgs.shellcheck
       pkgs.shfmt
       pkgs.tldr # simplified man pages
-      pkgs.tree
       pkgs.xh
       # keep-sorted end
     ];
-
-    # Ensure bash state directory exists for history
-    # This avoids issues where bash cannot write to history file if directory is missing
-    file.".local/state/bash/.keep".text = "";
   };
+
+  # Ensure bash state directory exists for history (HISTFILE is set to
+  # $XDG_STATE_HOME/bash/history in modules/features/system/xdg.nix).
+  # xdg.stateFile anchors under the real stateHome automatically.
+  xdg.stateFile."bash/.keep".text = "";
 
   programs = {
     bat = {
@@ -41,8 +36,6 @@
         theme = "Dracula";
       };
     };
-
-    htop.enable = true; # TODO enable the correct layout
 
     starship.enable = true;
 
@@ -75,8 +68,6 @@
         # Copilot sets GITHUB_COPILOT_CLI=1 when running commands
         if [[ -n "$GITHUB_COPILOT_CLI" ]]; then
           unset HISTFILE
-          # Disable PROMPT_COMMAND to prevent history operations
-          unset PROMPT_COMMAND
         else
           # Bash history synchronization across terminals (only for interactive sessions)
           # - history -a: Append new commands to history file

@@ -46,7 +46,10 @@ in
     services.fail2ban = {
       enable = true;
       maxretry = 3;
-      ignoreIP = [ ];
+      # Never ban the Nebula overlay: fail2ban's chain runs before nixos-fw,
+      # so a ban on an overlay IP would also cut SSH-over-nebula — the only
+      # remote recovery path besides the provider console.
+      ignoreIP = [ "10.99.99.0/24" ];
       bantime = "24h";
       bantime-increment = {
         enable = true;

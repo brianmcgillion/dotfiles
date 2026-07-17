@@ -9,9 +9,11 @@
 # - OpenSSH server with hardened configuration
 # - fail2ban intrusion prevention
 # - Minimal package set (no graphical environment)
-# - GRUB bootloader (legacy BIOS/MBR by default)
 # - Home-manager integration for minimal user environment
 # - srvos server optimizations
+#
+# Note: the bootloader is configured per-host (the Hetzner hosts use GRUB
+# installed as removable EFI media).
 #
 # Usage:
 #   imports = [ self.nixosModules.profile-server ];
@@ -35,20 +37,19 @@
   imports = [
     # keep-sorted start
     ./common.nix
-    inputs.srvos.nixosModules.mixins-mdns
     inputs.srvos.nixosModules.mixins-terminfo
     inputs.srvos.nixosModules.roles-nix-remote-builder
     inputs.srvos.nixosModules.server
     self.nixosModules.feature-fail2ban
     self.nixosModules.feature-sshd
-    self.nixosModules.scripts
     self.nixosModules.user-root
     # keep-sorted end
     {
-      # TODO: set the key programmatically
-      roles.nix-remote-builder.schedulerPublicKeys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILu6O3swRVWAjP7J8iYGT6st7NAa+o/XaemokmtKdpGa builder key"
-      ];
+      # Who may use this server as a nix remote builder. srvos locks the key
+      # down to `restrict,command="nix-daemon --stdio"` on its own user.
+      # NOTE: no host currently lists nubes/caelus in nix.buildMachines, so
+      # this grant is presently unused.
+      roles.nix-remote-builder.schedulerPublicKeys = [ self.lib.keys.brian.builder ];
     }
   ];
 

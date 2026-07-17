@@ -8,7 +8,9 @@
 
 let
   pname = "rebiber";
-  version = "1.3.0";
+  # Upstream HEAD declares 1.2.0 in pyproject.toml; no release tag exists
+  # for it, so use the untagged-commit version convention.
+  version = "1.2.0-unstable-2025-05-22";
 in
 python3Packages.buildPythonPackage {
   inherit pname version;
@@ -35,11 +37,9 @@ python3Packages.buildPythonPackage {
   pythonImportsCheck = [ "rebiber" ];
 
   meta = {
-    description = "A tool for normalizing bibtex with official info.";
+    description = "Tool for normalizing bibtex entries with official publication info";
     homepage = "https://github.com/yuchenlin/rebiber";
-    changelog = "https://github.com/yuchenlin/rebiber/releases/tag/v${version}";
     license = lib.licenses.mit;
-    #maintainers = with lib.maintainers; [ yuchenlin ];
-    platforms = lib.platforms.linux;
+    platforms = lib.platforms.all;
   };
 }

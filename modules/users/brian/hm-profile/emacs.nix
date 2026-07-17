@@ -23,24 +23,33 @@
 }:
 {
   config = lib.mkIf config.userProfile.enableEmacs {
-    # Clone Doom Emacs and user config before emacs.service starts
+    # Clone Doom Emacs and user config before emacs.service starts.
+    # network-online.target does not exist in the systemd *user* manager, so
+    # the script retries instead of ordering on it — on first login of a
+    # fresh install the network may not be up yet.
     systemd.user.services.install-doom-emacs = {
       Unit = {
         Description = "Clone Doom Emacs and user configuration";
-        After = [ "network-online.target" ];
-        Wants = [ "network-online.target" ];
         Before = [ "emacs.service" ];
       };
       Service = {
         Type = "oneshot";
         RemainAfterExit = true;
         ExecStart = pkgs.writeShellScript "install-doom-emacs" ''
-          if [ ! -d "$HOME/.config/emacs" ]; then
-            ${pkgs.git}/bin/git clone https://github.com/doomemacs/doomemacs.git "$HOME/.config/emacs"
-          fi
-          if [ ! -d "$HOME/.config/doom" ]; then
-            ${pkgs.git}/bin/git clone https://github.com/brianmcgillion/doomd.git "$HOME/.config/doom"
-          fi
+          clone_with_retry() {
+            url="$1"
+            dest="$2"
+            [ -d "$dest" ] && return 0
+            for delay in 5 15 30 60; do
+              ${pkgs.git}/bin/git clone "$url" "$dest" && return 0
+              rm -rf "$dest"
+              echo "clone of $url failed, retrying in $delay s" >&2
+              sleep "$delay"
+            done
+            ${pkgs.git}/bin/git clone "$url" "$dest"
+          }
+          clone_with_retry https://github.com/doomemacs/doomemacs.git "$HOME/.config/emacs"
+          clone_with_retry https://github.com/brianmcgillion/doomd.git "$HOME/.config/doom"
         '';
       };
       Install = {

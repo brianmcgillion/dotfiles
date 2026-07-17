@@ -10,7 +10,8 @@
 # - age-plugin-yubikey for age encryption
 # - Touch detector for notification when YubiKey interaction is needed
 # - PCSCD smartcard daemon
-# - Udev rules for YubiKey device access
+# - Udev rules for YubiKey device access (yubikey-personalization; ykman
+#   itself ships no udev rules)
 #
 # Usage:
 #   features.desktop.yubikey.enable = true;
@@ -47,6 +48,8 @@ in
     ];
 
     services.pcscd.enable = true;
-    services.udev.packages = [ pkgs.yubikey-manager ];
+    # yubikey-manager installs nothing under lib/udev/rules.d — the actual
+    # rules (69/70-yubikey.rules) come from yubikey-personalization.
+    services.udev.packages = [ pkgs.yubikey-personalization ];
   };
 }

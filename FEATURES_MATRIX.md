@@ -2,18 +2,20 @@
 
 Overview of which features are enabled on each host.
 
+> Maintained by hand — when adding a feature or host, update this file
+> (`modules/profiles/*.nix` and `hosts/*/default.nix` are the source of truth).
+
 ## Legend
 - ✓ Enabled by default (from profile)
 - ✗ Explicitly enabled in host config
 - ○ Available but not enabled
-- ― Not applicable
+- ― Not applicable (module not imported)
 
 ## AI Features
 
 | Feature | arcadia | minerva | argus | nubes | caelus |
 |---------|---------|---------|-------|-------|--------|
 | Ollama (LLM inference) | ○ | ○ | ✗ | ― | ― |
-| Goose CLI (AI coding) | ○ | ○ | ✗ | ― | ― |
 
 ## Desktop Features
 
@@ -21,6 +23,8 @@ Overview of which features are enabled on each host.
 |---------|---------|---------|-------|-------|--------|
 | Audio (PipeWire) | ✓ | ✓ | ✓ | ― | ― |
 | Desktop Manager (GNOME) | ✓ | ✓ | ✓ | ― | ― |
+| Power Management (SSH-aware) | ✓ | ✓ | ✓ | ― | ― |
+| keyd (per-device remapping) | ○ | ✗ | ○ | ― | ― |
 | YubiKey Support | ✓ | ✓ | ✓ | ― | ― |
 
 ## Development Features
@@ -29,21 +33,31 @@ Overview of which features are enabled on each host.
 |---------|---------|---------|-------|-------|--------|
 | Emacs (Doom) | ✓ | ✓ | ✓ | ― | ― |
 | Emacs UI Tools | ✓ | ✓ | ✓ | ― | ― |
+| Docker | ✓ | ✓ | ✓ | ― | ― |
+| Binary Ninja | ○ | ✗ | ○ | ― | ― |
+| GreatFET | ✓ | ✓ | ✓ | ― | ― |
+| reMarkable sync | ✓ | ✓ | ✓ | ― | ― |
+| Saleae Logic | ✓ | ✓ | ✓ | ― | ― |
+| STM32CubeProgrammer | ○ | ✗ | ○ | ― | ― |
+| UniFlash (TI) | ○ | ✗ | ○ | ― | ― |
+| C2000 codegen tools (TI) | ○ | ✗ | ○ | ― | ― |
 
 ## Networking Features
 
 | Feature | arcadia | minerva | argus | nubes | caelus |
 |---------|---------|---------|-------|-------|--------|
 | Nebula Network | ✗ | ✗ | ✗ | ✗ | ✗ (lighthouse) |
-| WireGuard | ✗ | ✗ | ✗ | ○ | ○ |
+| WireGuard (wg0 → bmg-vps) | ✗ | ✗ | ✗ | ― | ― |
 
 ## Security Features
 
 | Feature | arcadia | minerva | argus | nubes | caelus |
 |---------|---------|---------|-------|-------|--------|
 | System Hardening | ✓ | ✓ | ✓ | ✓ | ✓ |
-| SSH Server | ✓ | ✗ | ✓ | ✓ | ✓ |
-| Fail2ban | ○ | ○ | ○ | ✓ | ✓ |
+| SSH Server (hardened sshd) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Fail2ban | ✓ | ✓ | ✓ | ✓ | ✓ |
+
+Fail2ban is auto-enabled by the sshd feature on every host that runs SSH.
 
 ## System Features
 
@@ -52,24 +66,23 @@ Overview of which features are enabled on each host.
 | System Packages | ✓ | ✓ | ✓ | ✓ | ✓ |
 | XDG Compliance | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Locale & Fonts | ✓ | ✓ | ✓ | ― | ― |
+| GitHub token (nix rate limits) | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Remote builders | ✓ | ✓ | ✓ | ○ | ○ |
 
 ## Hardware
 
 | Feature | arcadia | minerva | argus | nubes | caelus |
 |---------|---------|---------|-------|-------|--------|
 | NVIDIA GPU | ✗ | ― | ✗ | ― | ― |
-| Intel CPU | ― | ✓ | ✓ | ― | ✓ |
-| AMD CPU | ✓ | ― | ― | ✓ | ― |
-| Disk Encryption | ― | ✓ | ― | ― | ― |
-| Disko Management | ― | ― | ✓ | ✓ | ✓ |
+| CPU | AMD | Intel | AMD | AMD | Intel (virt.) |
 
 ## Profiles
 
 | Host | Profile | Type |
 |------|---------|------|
-| arcadia | client | Desktop workstation |
+| arcadia | client | Desktop |
+| argus | client | ML Desktop |
 | minerva | client | Laptop |
-| argus | client | ML desktop (NVIDIA RTX 5080) |
 | nubes | server | Dedicated server |
 | caelus | server | Cloud server |
 
@@ -79,7 +92,9 @@ Overview of which features are enabled on each host.
 Features marked with ✓ are enabled by default through the profile import:
 ```nix
 imports = [ self.nixosModules.profile-client ];
-# Automatically enables: audio, desktop-manager, emacs, yubikey, locale-fonts
+# Automatically enables: audio, desktop-manager, power-management, yubikey,
+# sshd, docker, emacs, emacs-ui, greatfet, remarkable, saleae-logic,
+# locale-fonts, remote-builders
 ```
 
 ### Explicit Enable
@@ -87,7 +102,7 @@ Features marked with ✗ require explicit configuration:
 ```nix
 features.networking.nebula = {
   enable = true;
-  # ... configuration
+  useSopsSecrets = true;
 };
 ```
 

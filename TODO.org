@@ -4,7 +4,8 @@
 [ ] Complete the TODOs in code
 [ ] VM creation for testing
 [ ] Nix setup for non-NixOS systems
-[ ] Nix installer with nixos-anywhere for laptops
+[ ] Extend the nixos-anywhere flow (packages/scripts/deploy-hetzner-server.sh
+    already covers servers) to laptop/desktop installs
    - maybe based on srvos documentation
 
 

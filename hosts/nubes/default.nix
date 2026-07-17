@@ -4,7 +4,6 @@
   lib,
   self,
   inputs,
-  config,
   ...
 }:
 {
@@ -14,46 +13,33 @@
     ./disk-config.nix
   ];
 
-  # Use GRUB instead of systemd-boot (more reliable for Hetzner)
-  boot.loader = {
-    systemd-boot.enable = lib.mkForce false;
-    grub = {
-      enable = true;
-      efiSupport = true;
-      efiInstallAsRemovable = true;
-    };
+  # GRUB instead of systemd-boot: installs as removable EFI media, which
+  # survives Hetzner's rescue system and NVRAM resets.
+  boot.loader.grub = {
+    enable = true;
+    efiSupport = true;
+    efiInstallAsRemovable = true;
   };
 
-  sops = {
-    defaultSopsFile = ./secrets.yaml;
-    secrets = {
-      nebula-ca.owner = config.features.networking.nebula.configOwner;
-      nebula-key.owner = config.features.networking.nebula.configOwner;
-      nebula-cert.owner = config.features.networking.nebula.configOwner;
-    };
-  };
+  sops.defaultSopsFile = ./secrets.yaml;
 
+  # Enable Nebula network (secrets wired from ./secrets.yaml)
   features.networking.nebula = {
     enable = true;
-    isLightHouse = false;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
+    useSopsSecrets = true;
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
-  networking = {
-    hostName = lib.mkDefault "nubes";
-  };
+  # Hetzner assigns a static IPv6 block; without this the 2a01:... address
+  # below is dead config (the fleet default disables IPv6).
+  networking.enableIPv6 = true;
 
-  systemd.network = {
-    enable = true;
-    networks."10-uplink".networkConfig.Address = [
-      "2a01:4f9:6b:2345::1/64" # IPv6
-      "65.108.111.248/32" # IPv4
-    ];
-  };
+  # networkd itself is enabled by the srvos hetzner-online module.
+  systemd.network.networks."10-uplink".networkConfig.Address = [
+    "2a01:4f9:6b:2345::1/64" # IPv6
+    "65.108.111.248/32" # IPv4
+  ];
 
   system.stateVersion = "25.11";
 }

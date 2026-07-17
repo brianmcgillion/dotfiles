@@ -4,7 +4,6 @@
   self,
   lib,
   inputs,
-  config,
   ...
 }:
 {
@@ -13,41 +12,52 @@
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x1-9th-gen
   ];
 
-  sops = {
-    defaultSopsFile = ./secrets.yaml;
-    secrets = {
-      wg-privateKeyFile.owner = "root";
-      wg-presharedKeyFile.owner = "root";
-      nebula-ca.owner = config.features.networking.nebula.configOwner;
-      nebula-key.owner = config.features.networking.nebula.configOwner;
-      nebula-cert.owner = config.features.networking.nebula.configOwner;
+  sops.defaultSopsFile = ./secrets.yaml;
+
+  features = {
+    networking = {
+      # Enable Nebula network (secrets wired from ./secrets.yaml)
+      nebula = {
+        enable = true;
+        useSopsSecrets = true;
+      };
+
+      # Personal WireGuard VPN (wg-quick up wg0)
+      wireguard = {
+        enable = true;
+        tunnels.wg0 = {
+          network = "bmg-vps";
+          address = [ "10.7.0.7/24" ];
+        };
+      };
+    };
+
+    development = {
+      # Binary Ninja - only enable on hosts with the zip source available
+      binaryninja.enable = true;
+      # STM32 development tools with udev rules
+      stm32cubeprog.enable = true;
+      # TI DSP development tools (UniFlash + XDS200 JTAG)
+      uniflash.enable = true;
+      # TI C2000 code generation toolchain (cl2000/lnk2000/ar2000) for
+      # TMS320F28xxx firmware audit / reverse-engineering work.
+      c2000-cgt.enable = true;
+    };
+
+    # Per-device keyboard remapping — swap caps/ctrl only on the internal
+    # keyboard. The ZSA Voyager is programmable and handles its own layout.
+    # Find device IDs with: sudo keyd monitor
+    desktop.keyd = {
+      enable = true;
+      keyboards.internal = {
+        ids = [ "0001:0001" ];
+        settings.main = {
+          capslock = "leftcontrol";
+          leftcontrol = "capslock";
+        };
+      };
     };
   };
-
-  # Enable Nebula network
-  features.networking.nebula = {
-    enable = true;
-    isLightHouse = false;
-    ca = config.sops.secrets.nebula-ca.path;
-    key = config.sops.secrets.nebula-key.path;
-    cert = config.sops.secrets.nebula-cert.path;
-  };
-
-  # Enable SSH server for this laptop
-  features.security.sshd.enable = true;
-
-  # Binary Ninja - only enable on hosts with the zip source available
-  features.development.binaryninja.enable = true;
-
-  # STM32 development tools with udev rules
-  features.development.stm32cubeprog.enable = true;
-
-  # TI DSP development tools (UniFlash + XDS200 JTAG)
-  features.development.uniflash.enable = true;
-
-  # TI C2000 code generation toolchain (cl2000/lnk2000/ar2000) for TMS320F28xxx
-  # firmware audit / reverse-engineering work.
-  features.development.c2000-cgt.enable = true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
@@ -95,46 +105,7 @@
   # The global useDHCP flag is deprecated, therefore explicitly set to false
   # here. Per-interface useDHCP will be mandatory in the future, so this
   # generated config replicates the default behaviour.
-  networking = {
-    interfaces.wlp0s20f3.useDHCP = true;
-
-    #TODO Replace this with the name of the nixosConfiguration so it can be common
-    # Define your hostname
-    hostName = lib.mkDefault "minerva";
-
-    wg-quick.interfaces = {
-      wg0 = {
-        autostart = false;
-        address = [ "10.7.0.7/24" ];
-        dns = [ "172.26.0.2" ];
-        privateKeyFile = config.sops.secrets.wg-privateKeyFile.path;
-
-        peers = [
-          {
-            publicKey = "3xZ1Ug4n8XrjZqlrrrveiIPQq3uyMtxuJXII3vCwyww=";
-            presharedKeyFile = config.sops.secrets.wg-presharedKeyFile.path;
-            allowedIPs = [ "0.0.0.0/0" ];
-            endpoint = "35.178.208.8:51820";
-            persistentKeepalive = 25;
-          }
-        ];
-      };
-    };
-  };
-
-  # Per-device keyboard remapping — swap caps/ctrl only on the internal keyboard.
-  # The ZSA Voyager is programmable and handles its own layout.
-  # Find device IDs with: sudo keyd monitor
-  features.desktop.keyd = {
-    enable = true;
-    keyboards.internal = {
-      ids = [ "0001:0001" ];
-      settings.main = {
-        capslock = "leftcontrol";
-        leftcontrol = "capslock";
-      };
-    };
-  };
+  networking.interfaces.wlp0s20f3.useDHCP = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.05";

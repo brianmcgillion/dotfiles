@@ -2,26 +2,13 @@
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # System-wide utility packages
 #
-# Installs essential command-line tools and utilities available system-wide.
-# These are tools commonly needed for system administration and development.
+# Essential command-line tools for system administration and development,
+# available on every host (clients and servers). See the keep-sorted list
+# below for the authoritative set — this header deliberately does not
+# repeat it.
 #
-# Included packages:
-# - nixfmt-rfc-style: Nix code formatter
-# - cachix: Binary cache management
-# - wget, curl: HTTP clients
-# - git: Version control
-# - htop: Interactive process viewer
-# - nix-info: System information for Nix debugging
-# - wireguard-tools: VPN management (wg, wg-quick)
-# - tree: Directory tree visualization
-# - file: File type identification
-# - binutils: Binary utilities (objdump, nm, etc.)
-# - lsof: List open files
-# - dnsutils: DNS tools (dig, nslookup)
-# - netcat: Network swiss army knife
-# - nix-tree: Visualize Nix store dependencies
-# - zellij: Terminal multiplexer
-# - devenv: Development environment manager
+# wireguard-tools lives in the wireguard feature (client-only); dig comes
+# from dnsutils here.
 #
 # Usage:
 #   features.system.packages.enable = true;
@@ -60,7 +47,6 @@ in
       pkgs.nixfmt
       pkgs.tree
       pkgs.wget
-      pkgs.wireguard-tools
       pkgs.zellij
       # keep-sorted end
     ];

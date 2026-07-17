@@ -1,8 +1,24 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
-{ pkgs, lib, ... }:
 {
-  home.file.".ssh/allowed_signers".text = "${builtins.readFile ./keys/ssh-keys.txt}";
+  pkgs,
+  lib,
+  self,
+  ...
+}:
+let
+  signingIdentity = "bmg.avoin@gmail.com";
+in
+{
+  # Trust every YubiKey to sign, from the same list that authorizes them for
+  # login (../keys).
+  #
+  # The ALLOWED SIGNERS format requires a principal (identity) as the first
+  # token of every line; bare public keys make `git verify-commit` fail with
+  # "No principal matched".
+  home.file.".ssh/allowed_signers".text = lib.concatMapStrings (
+    key: "${signingIdentity} ${key}\n"
+  ) self.lib.keys.brian.yubikeys;
 
   programs = {
     git = {
@@ -28,14 +44,10 @@
         checkout.defaultRemote = "origin";
         #credential.helper = "store --file ~/.git-credentials";
         format.signoff = true;
-        commit.gpgsign = true;
-        tag.gpgSign = true;
-        gpg.format = lib.mkDefault "ssh";
-        user.signingkey = "~/.ssh/id_ed25519_sk.pub";
         gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
         init.defaultBranch = "main";
         #protocol.keybase.allow = "always";
-        pull.rebase = "true";
+        pull.rebase = true;
         push.default = "current";
         github.user = "brianmcgillion";
         gitlab.user = "bmg";
@@ -48,9 +60,12 @@
         ".worktrees/"
       ];
 
+      # signing.* generates commit.gpgsign, tag.gpgSign, gpg.format and
+      # user.signingkey — do not restate them under settings.
       signing = {
         format = "ssh";
         signByDefault = true;
+        key = "~/.ssh/id_ed25519_sk.pub";
       };
     };
 

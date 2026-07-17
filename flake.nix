@@ -83,11 +83,6 @@
     nixd = {
       url = "github:nix-community/nixd";
       #url = "git+file:///home/brian/projects/code/github.com/nix-community/nixd";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    fast-flake-update = {
-      url = "github:Mic92/fast-flake-update";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
@@ -150,6 +145,9 @@
     flake-parts.lib.mkFlake
       {
         inherit inputs;
+        # Deliberate: guarantee flake-parts modules see the full nixpkgs
+        # flake lib (including lib.nixosSystem) rather than whatever
+        # nixpkgs-lib resolves to.
         specialArgs = {
           inherit (nixpkgs) lib;
         };
@@ -168,7 +166,5 @@
           ./nix
           ./packages
         ];
-
-        debug = true;
       };
 }

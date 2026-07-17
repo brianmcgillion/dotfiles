@@ -9,6 +9,9 @@ input=$(cat)
 model=$(echo "$input" | jq -r '.model.display_name // "Claude"')
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd')
 remaining=$(echo "$input" | jq -r '.context_window.remaining_percentage // empty')
+# Integer bucket for threshold comparisons (bash can't compare floats, and
+# depending on bc would silently break the coloring when it is missing)
+remaining_int=$(echo "$input" | jq -r '(.context_window.remaining_percentage // empty) | floor')
 
 # Shorten directory path (replace home with ~)
 short_cwd="${cwd/#$HOME/\~}"
@@ -26,9 +29,9 @@ fi
 context_info=""
 if [ -n "$remaining" ]; then
   # Color code based on remaining percentage
-  if (($(echo "$remaining < 20" | bc -l 2>/dev/null || echo 0))); then
+  if [ "$remaining_int" -lt 20 ]; then
     context_color='\033[0;31m' # Red for low
-  elif (($(echo "$remaining < 50" | bc -l 2>/dev/null || echo 0))); then
+  elif [ "$remaining_int" -lt 50 ]; then
     context_color='\033[0;33m' # Yellow for medium
   else
     context_color='\033[0;32m' # Green for plenty

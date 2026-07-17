@@ -35,8 +35,12 @@ log_step() { echo -e "${BLUE}[STEP]${NC} $*"; }
 # Configuration
 HOST="${1:?Usage: $0 <hostname> [--skip-kexec]}"
 SKIP_KEXEC="${2:-}"
-SSH_KEY="${SSH_KEY:-$HOME/.ssh/builder-key}"
-KEXEC_TARBALL="https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/nixos-kexec-installer-noninteractive-x86_64-linux.tar.gz"
+# Builder key, provisioned from sops by features.system.remote-builders.
+SSH_KEY="${SSH_KEY:-/run/secrets/builder-key}"
+# Overridable so a specific (pinned) release can be used; when KEXEC_SHA256
+# is set the download is checksum-verified on the target before unpacking.
+KEXEC_TARBALL="${KEXEC_TARBALL:-https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/nixos-kexec-installer-noninteractive-x86_64-linux.tar.gz}"
+KEXEC_SHA256="${KEXEC_SHA256:-}"
 
 # Banner
 echo "======================================================================"
@@ -47,20 +51,27 @@ echo ""
 # Validate SSH key exists
 if [ ! -f "$SSH_KEY" ]; then
   log_error "SSH key not found: $SSH_KEY"
-  log_info "Set SSH_KEY environment variable or ensure ~/.ssh/builder-key exists"
+  log_info "Set SSH_KEY environment variable, or check that sops provisioned /run/secrets/builder-key"
   exit 1
 fi
 
 # Get host IP from configuration
 get_host_ip() {
   local ip
-  # Get the address - extract only the JSON array, ignore warnings
+  # Select the IPv4 entry explicitly (no ':') — the Address array's order
+  # is not guaranteed, and some hosts define no 10-uplink network at all.
   ip=$(nix eval --json ".#nixosConfigurations.$HOST.config.systemd.network.networks.\"10-uplink\".networkConfig.Address" 2>&1 |
-    grep -E '^\[' | jq -r '.[1]' | cut -d'/' -f1 2>/dev/null)
+    grep -E '^\[' | jq -r '[.[] | select(test(":") | not)][0]' | cut -d'/' -f1 2>/dev/null)
+
+  # Fallback: resolve the hostname via DNS/ssh-config for hosts without a
+  # static 10-uplink Address array (e.g. DHCP cloud instances).
+  if [ -z "$ip" ] || [ "$ip" == "null" ]; then
+    ip=$(getent ahostsv4 "$HOST" 2>/dev/null | awk 'NR==1 {print $1}')
+  fi
 
   if [ -z "$ip" ] || [ "$ip" == "null" ]; then
     log_error "Could not determine IP for host $HOST"
-    log_info "Make sure the host configuration exists in flake.nix"
+    log_info "Make sure the host configuration exists in flake.nix (or that \"$HOST\" resolves)"
     exit 1
   fi
   echo "$ip"
@@ -68,7 +79,7 @@ get_host_ip() {
 
 # Check if server is already in kexec installer
 check_if_kexec() {
-  if ssh -i "$SSH_KEY" -o ConnectTimeout=5 -o StrictHostKeyChecking=no \
+  if ssh -i "$SSH_KEY" -o ConnectTimeout=5 -o StrictHostKeyChecking=accept-new \
     root@"$1" "test -d /mnt-root" 2>/dev/null; then
     return 0 # Already in kexec
   fi
@@ -83,7 +94,7 @@ wait_for_ssh() {
   log_info "Waiting for SSH to become available..."
   local attempt
   for attempt in $(seq 1 "$max_attempts"); do
-    if ssh -i "$SSH_KEY" -o ConnectTimeout=5 -o StrictHostKeyChecking=no \
+    if ssh -i "$SSH_KEY" -o ConnectTimeout=5 -o StrictHostKeyChecking=accept-new \
       root@"$host" "echo 'Ready'" >/dev/null 2>&1; then
       log_info "SSH is ready!"
       return 0
@@ -120,8 +131,13 @@ if [ "$SKIP_KEXEC" != "--skip-kexec" ]; then
   log_step "Step 1: Loading NixOS kexec installer"
   log_info "Connecting to $HOST_IP..."
 
-  if ssh -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new root@"$HOST_IP" \
-    "curl -L $KEXEC_TARBALL | tar -xzf- -C /root && /root/kexec/run"; then
+  if [ -n "$KEXEC_SHA256" ]; then
+    KEXEC_CMD="curl -fL $KEXEC_TARBALL -o /root/kexec.tar.gz && echo '$KEXEC_SHA256  /root/kexec.tar.gz' | sha256sum -c - && tar -xzf /root/kexec.tar.gz -C /root && /root/kexec/run"
+  else
+    log_warn "KEXEC_SHA256 not set - kexec image will be executed unverified"
+    KEXEC_CMD="curl -fL $KEXEC_TARBALL | tar -xzf- -C /root && /root/kexec/run"
+  fi
+  if ssh -i "$SSH_KEY" -o StrictHostKeyChecking=accept-new root@"$HOST_IP" "$KEXEC_CMD"; then
     log_info "Kexec installer loaded successfully"
   else
     log_error "Failed to load kexec installer"
@@ -174,6 +190,19 @@ if [ "$OLD_AGE_KEY" != "$NEW_AGE_KEY" ]; then
   cp .sops.yaml .sops.yaml.backup
   log_info "Created backup: .sops.yaml.backup"
 
+  # Files already re-encrypted this run; on failure they are rolled back
+  # against the restored .sops.yaml so secrets and config stay consistent.
+  UPDATED_FILES=()
+  rollback_sops() {
+    log_warn "Rolling back .sops.yaml and re-encrypting already-updated files"
+    mv .sops.yaml.backup .sops.yaml
+    local f
+    for f in "${UPDATED_FILES[@]}"; do
+      echo "y" | sops updatekeys "$f" >/dev/null 2>&1 ||
+        log_error "Rollback failed for $f - fix manually before re-running"
+    done
+  }
+
   # Update .sops.yaml using a more robust approach
   # Using awk to avoid sed delimiter issues with long strings
   awk -v old="$OLD_AGE_KEY" -v new="$NEW_AGE_KEY" '{gsub(old,new)}1' .sops.yaml >.sops.yaml.tmp
@@ -192,9 +221,10 @@ if [ "$OLD_AGE_KEY" != "$NEW_AGE_KEY" ]; then
           log_info "Updating $secret_file..."
           if echo "y" | sops updatekeys "$secret_file" 2>&1 | grep -q "synced with new keys"; then
             log_info "✓ $secret_file updated"
+            UPDATED_FILES+=("$secret_file")
           else
             log_error "Failed to update $secret_file"
-            mv .sops.yaml.backup .sops.yaml
+            rollback_sops
             exit 1
           fi
         fi
@@ -207,9 +237,10 @@ if [ "$OLD_AGE_KEY" != "$NEW_AGE_KEY" ]; then
     log_info "Updating hosts/$HOST/secrets.yaml..."
     if echo "y" | sops updatekeys "hosts/$HOST/secrets.yaml" 2>&1 | grep -q "synced with new keys"; then
       log_info "✓ hosts/$HOST/secrets.yaml updated"
+      UPDATED_FILES+=("hosts/$HOST/secrets.yaml")
     else
       log_error "Failed to update hosts/$HOST/secrets.yaml"
-      mv .sops.yaml.backup .sops.yaml
+      rollback_sops
       exit 1
     fi
   fi

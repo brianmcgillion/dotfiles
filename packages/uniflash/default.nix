@@ -62,8 +62,9 @@ let
       chmod +x $out/opt/uniflash/deskdb/content/TICloudAgent/linux/ccs_base/DebugServer/bin/DSLite
 
       # Fix broken absolute symlinks created by installer
-      # The installer creates absolute symlinks to $TMPDIR paths for shared fonts
-      find $out -type l -lname '/build/*' -delete
+      # The installer creates absolute symlinks to $TMPDIR paths for shared
+      # fonts ($TMPDIR is /build in the default sandbox, but not guaranteed)
+      find $out -type l -lname "$TMPDIR/*" -delete
 
       # Re-create the font links as relative symlinks
       local fontsDir="$out/opt/uniflash/uniflash/public/fonts"

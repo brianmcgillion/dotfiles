@@ -16,8 +16,8 @@
 # Usage:
 #   features.security.sshd.enable = true;
 #
-# Enabled by default in: profile-server
-# Available but not enabled in: profile-client
+# Enabled by default in: profile-server and profile-client
+# (disable per-host with features.security.sshd.enable = false)
 #
 # Security notes:
 # - Only SSH key authentication is allowed

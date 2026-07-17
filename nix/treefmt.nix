@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 { inputs, lib, ... }:
 {
@@ -31,11 +31,16 @@
 
         settings.formatter = {
           statix-check = {
-            # Statix doesn't support multiple file targets, so we wrap it
+            # Statix doesn't support multiple file targets, so we wrap it.
+            # Accumulate the exit status: a bare loop would return only the
+            # last file's status, silently swallowing findings in every
+            # other file of the batch.
             command = pkgs.writeShellScriptBin "statix-check" ''
+              rc=0
               for file in "''$@"; do
-                ${lib.getExe pkgs.statix} check "$file"
+                ${lib.getExe pkgs.statix} check "$file" || rc=1
               done
+              exit $rc
             '';
             options = [ ];
             includes = [ "*.nix" ];
@@ -50,7 +55,5 @@
           };
         };
       };
-
-      formatter = config.treefmt.build.wrapper;
     };
 }

@@ -10,15 +10,20 @@
 # Plugin/skill management (nix is the source of truth for what is *available*):
 # - `thirdPartyMarketplaces` are registered on activation.
 # - `availablePlugins` are all installed on activation (idempotent), so every
-#   skill collection is on disk and ready to enable — but they cost ZERO context
-#   while disabled.
-# - `enabledBaseline` is the only set seeded ON by default. Everything else is
-#   installed-but-off (on-demand).
+#   skill collection is on disk — a disabled plugin costs ZERO context.
+# - Every available plugin is seeded ON except the few listed in
+#   `disabledByDefault` (heavy or rarely-relevant outliers, enabled on-demand
+#   via `/plugin`).
 # - settings.json is seeded/merged (not symlinked) so `claude plugin enable
 #   --scope user` (the `/plugin` UI) can flip skills on globally at runtime and
 #   have it persist. Nix owns the static keys and the install list; the user
 #   owns runtime enablement (their toggles survive rebuilds).
-{ pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 let
   # Marketplace-id helpers (right-hand side is the marketplace's *internal* name
   # from its .claude-plugin/marketplace.json, which plugin ids reference).
@@ -50,8 +55,8 @@ let
     "co-researcher@co-researcher-marketplace" # heavy; enable on-demand for research
   ];
 
-  # Official-marketplace plugins to keep available (installed). Baseline ones are
-  # seeded on; the rest are installed-but-off.
+  # Official-marketplace plugins to keep available (installed and, unless in
+  # disabledByDefault, enabled).
   officialAvailable = map official [
     "context7"
     "serena"
@@ -114,8 +119,8 @@ let
     "zeroize-audit"
   ];
 
-  # Everything installed on activation (available on disk for instant on-demand
-  # enable). Only members of enabledBaseline are seeded ON.
+  # Everything installed on activation (available on disk for instant
+  # on-demand enable).
   availablePlugins =
     officialAvailable
     ++ [
@@ -149,76 +154,22 @@ let
   staticSettingsFile = pkgs.writeText "claude-settings-static.json" (builtins.toJSON staticSettings);
   enabledSeedFile = pkgs.writeText "claude-enabled-seed.json" (builtins.toJSON enabledPluginsSeed);
 
-  # User-scope MCP servers managed by nix.
-  # Each entry maps server name to its CLI args for `claude mcp add --scope user`.
-  # For HTTP servers, set transport = "http" and url instead of command/args.
-  mcpServers = {
-    binary-ninja-mcp = {
-      command = "npx";
-      args = [
-        "-y"
-        "binary-ninja-mcp"
-        "--host"
-        "localhost"
-        "--port"
-        "9009"
-      ];
-    };
-    mcp-nixos = {
-      command = "uvx";
-      args = [ "mcp-nixos" ];
-    };
-    filesystem = {
-      command = "npx";
-      args = [
-        "-y"
-        "@modelcontextprotocol/server-filesystem"
-        "/home/brian/projects"
-        "/home/brian/.dotfiles"
-      ];
-    };
-    sequential-thinking = {
-      command = "npx";
-      args = [
-        "-y"
-        "@modelcontextprotocol/server-sequential-thinking"
-      ];
-    };
-    mcp-dblp = {
-      command = "uvx";
-      args = [ "mcp-dblp" ];
-    };
-    arxiv-mcp-server = {
-      command = "uv";
-      args = [
-        "tool"
-        "run"
-        "arxiv-mcp-server"
-        "--storage-path"
-        "/path/to/your/paper/storage"
-      ];
-    };
-    logic2 = {
-      transport = "http";
-      url = "http://127.0.0.1:10530";
-    };
-    # Atlassian official remote MCP server (Jira/Confluence Cloud).
-    # Cloud instance: tiicrypto.atlassian.net. Requires an interactive
-    # OAuth login after activation: run `/mcp` in Claude Code, select
-    # `atlassian`, and authenticate in the browser.
-    atlassian = {
-      transport = "http";
-      url = "https://mcp.atlassian.com/v1/mcp";
-    };
-  };
+  # User-scope MCP servers managed by nix, from the shared catalog
+  # (../mcp-servers.nix) so Claude Code and Copilot CLI cannot drift.
+  mcpServers = lib.filterAttrs (_: server: server.claude or true) (
+    import ../mcp-servers.nix { inherit (config.home) homeDirectory; }
+  );
 
   # Build `claude mcp add` commands from the mcpServers attrset.
   mcpAddCommands = lib.concatStringsSep "\n" (
     lib.mapAttrsToList (
       name: cfg:
+      # `claude mcp list` prints one "name: command ..." line per server;
+      # anchor on that so one server name being a substring of another's
+      # output can never skip a registration.
       if cfg ? transport && cfg.transport == "http" then
         ''
-          if ! claude mcp list 2>/dev/null | grep -q ${lib.escapeShellArg name}; then
+          if ! claude mcp list 2>/dev/null | grep -q "^${name}:"; then
             claude mcp add --scope user --transport http ${lib.escapeShellArg name} ${lib.escapeShellArg cfg.url} 2>/dev/null || true
           fi
         ''
@@ -227,7 +178,7 @@ let
           args = lib.concatStringsSep " " (map lib.escapeShellArg cfg.args);
         in
         ''
-          if ! claude mcp list 2>/dev/null | grep -q ${lib.escapeShellArg name}; then
+          if ! claude mcp list 2>/dev/null | grep -q "^${name}:"; then
             claude mcp add --scope user ${lib.escapeShellArg name} -- ${lib.escapeShellArg cfg.command} ${args} 2>/dev/null || true
           fi
         ''
@@ -243,8 +194,13 @@ let
       pkgs.coreutils
     ];
     text = ''
-      target="$HOME/.config/claude/settings.json"
-      marker="$HOME/.config/claude/.nix-plugins-seeded"
+      # Activation runs without login-shell sessionVariables, so pin the
+      # config dir explicitly — otherwise the claude CLI operates on
+      # ~/.claude/ while this script writes ~/.config/claude/ (split-brain).
+      export CLAUDE_CONFIG_DIR="$HOME/.config/claude"
+
+      target="$CLAUDE_CONFIG_DIR/settings.json"
+      marker="$CLAUDE_CONFIG_DIR/.nix-plugins-seeded"
       mkdir -p "$(dirname "$target")"
 
       # Replace the legacy read-only nix symlink with a writable file.
@@ -324,7 +280,7 @@ in
   # Sync on activation: seed settings.json, register marketplaces, install
   # available plugins, register MCP servers.
   home.activation.claudePluginSync = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    $DRY_RUN_CMD ${lib.getExe pluginSyncScript}
+    run ${lib.getExe pluginSyncScript}
   '';
 
   # Clean up ~/.claude.json.backup.* files that Claude Code hardcodes to $HOME.

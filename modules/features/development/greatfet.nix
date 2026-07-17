@@ -21,11 +21,14 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # No TAG+="uaccess": extraRules land in 99-local.rules, after systemd
+    # applies uaccess ACLs in 73-seat-late.rules, so the tag would be dead
+    # config. Access is granted via MODE/GROUP (plugdev) instead.
     services.udev.extraRules = ''
       # GreatFET One (normal operation)
-      SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="60e6", MODE="0660", GROUP="plugdev", TAG+="uaccess", SYMLINK+="greatfet-one%k"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="60e6", MODE="0660", GROUP="plugdev", SYMLINK+="greatfet-one%k"
       # NXP LPC DFU bootloader (firmware flash / recovery)
-      SUBSYSTEM=="usb", ATTR{idVendor}=="1fc9", ATTR{idProduct}=="000c", MODE="0660", GROUP="plugdev", TAG+="uaccess", SYMLINK+="nxp-dfu-%k"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="1fc9", ATTR{idProduct}=="000c", MODE="0660", GROUP="plugdev", SYMLINK+="nxp-dfu-%k"
     '';
   };
 }

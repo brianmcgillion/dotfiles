@@ -1,21 +1,20 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
-# AI/ML tooling with Ollama and Goose
+# AI/ML tooling with Ollama
 #
-# Provides local LLM inference via Ollama with optional GPU acceleration
-# and AI coding tools via goose-cli.
+# Provides local LLM inference via Ollama with optional GPU acceleration.
 #
 # Features:
 # - Ollama LLM inference server (systemd service)
 # - GPU acceleration (CUDA for NVIDIA, ROCm for AMD)
 # - Model preloading configuration
-# - Goose CLI AI coding agent
 #
 # Usage:
 #   features.ai.enable = true;
 #   features.ai.ollama.models = [ "llama3.2:3b" ];
 #
-# GPU acceleration is auto-detected from hardware.nvidia.modesetting.enable.
+# GPU acceleration is auto-detected from the NVIDIA driver being loaded
+# (services.xserver.videoDrivers, set by modules/hardware/nvidia.nix).
 # Override with: features.ai.ollama.acceleration = "cuda" / "rocm" / "cpu";
 #
 # Used by: argus (NVIDIA RTX 5080 desktop)
@@ -30,7 +29,7 @@ let
 in
 {
   options.features.ai = {
-    enable = lib.mkEnableOption "AI/ML tooling with Ollama and Goose";
+    enable = lib.mkEnableOption "AI/ML tooling with Ollama";
 
     ollama = {
       acceleration = lib.mkOption {
@@ -39,14 +38,17 @@ in
           "rocm"
           "cpu"
         ];
-        default = if config.hardware.nvidia.modesetting.enable or false then "cuda" else "cpu";
+        # hardware.nvidia.modesetting.enable is unsuitable for detection:
+        # its default is version-derived and effectively true on every host.
+        # The videoDrivers entry is only present when hardware-nvidia is used.
+        default = if lib.elem "nvidia" (config.services.xserver.videoDrivers or [ ]) then "cuda" else "cpu";
         defaultText = lib.literalExpression ''
-          if config.hardware.nvidia.modesetting.enable or false then "cuda" else "cpu"
+          if lib.elem "nvidia" (config.services.xserver.videoDrivers or [ ]) then "cuda" else "cpu"
         '';
         description = ''
           GPU acceleration backend for Ollama. Selects the appropriate
           ollama package variant (ollama-cuda, ollama-rocm, ollama-cpu).
-          Auto-detects NVIDIA via hardware.nvidia.modesetting.enable.
+          Auto-detects NVIDIA via services.xserver.videoDrivers.
         '';
       };
 
@@ -76,22 +78,16 @@ in
       user = "ollama";
       group = "ollama";
       environmentVariables = {
-        OLLAMA_NUM_CTX = "131072";
+        # Server-wide default context length (OLLAMA_NUM_CTX is not a
+        # recognized server variable; num_ctx is per-request only).
+        OLLAMA_CONTEXT_LENGTH = "131072";
       };
     };
 
     systemd.services.ollama.serviceConfig.UMask = lib.mkForce "0027";
 
     environment.systemPackages = [
-      #pkgs.goose-cli
       pkgs.nvtopPackages.full
     ];
-
-    environment.sessionVariables = {
-      OLLAMA_HOST = "http://127.0.0.1:11434";
-      OLLAMA_MODELS = "/var/lib/ollama/models";
-      OLLAMA_NUM_CTX = "131072";
-    };
-
   };
 }

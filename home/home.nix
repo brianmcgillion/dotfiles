@@ -11,6 +11,4 @@ _: {
   programs = {
     home-manager.enable = true;
   };
-
-  systemd.user.sessionVariables.SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/ssh-auth.sock";
 }

@@ -1,55 +1,62 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
 # Main module entry point - exports all modules
+#
+# Modules are exported as paths (not imported values) so the module system
+# can deduplicate them when the same module is reachable via two routes
+# (e.g. profile-common exported here and imported relatively by
+# profile-client/profile-server).
 _: {
   flake.nixosModules = {
     # Profiles
-    profile-common = import ./profiles/common.nix;
-    profile-client = import ./profiles/client.nix;
-    profile-server = import ./profiles/server.nix;
+    profile-common = ./profiles/common.nix;
+    profile-client = ./profiles/client.nix;
+    profile-server = ./profiles/server.nix;
 
     # AI features
-    feature-ai = import ./features/ai;
+    feature-ai = ./features/ai;
 
     # Desktop features
-    feature-audio = import ./features/desktop/audio.nix;
-    feature-desktop-manager = import ./features/desktop/desktop-manager.nix;
-    feature-keyd = import ./features/desktop/keyd.nix;
-    feature-power-management = import ./features/desktop/power-management.nix;
-    feature-yubikey = import ./features/desktop/yubikey.nix;
+    feature-audio = ./features/desktop/audio.nix;
+    feature-desktop-manager = ./features/desktop/desktop-manager.nix;
+    feature-keyd = ./features/desktop/keyd.nix;
+    feature-power-management = ./features/desktop/power-management.nix;
+    feature-yubikey = ./features/desktop/yubikey.nix;
 
     # Development features
-    feature-binaryninja = import ./features/development/binaryninja.nix;
-    feature-c2000-cgt = import ./features/development/c2000-cgt.nix;
-    feature-docker = import ./features/development/docker.nix;
-    feature-emacs = import ./features/development/emacs.nix;
-    feature-emacs-ui = import ./features/development/emacs-ui.nix;
-    feature-greatfet = import ./features/development/greatfet.nix;
-    feature-remarkable = import ./features/development/remarkable.nix;
-    feature-saleae-logic = import ./features/development/saleae-logic.nix;
-    feature-stm32cubeprog = import ./features/development/stm32cubeprog.nix;
-    feature-uniflash = import ./features/development/uniflash.nix;
+    feature-binaryninja = ./features/development/binaryninja.nix;
+    feature-c2000-cgt = ./features/development/c2000-cgt.nix;
+    feature-docker = ./features/development/docker.nix;
+    feature-emacs = ./features/development/emacs.nix;
+    feature-emacs-ui = ./features/development/emacs-ui.nix;
+    feature-greatfet = ./features/development/greatfet.nix;
+    feature-remarkable = ./features/development/remarkable.nix;
+    feature-saleae-logic = ./features/development/saleae-logic.nix;
+    feature-stm32cubeprog = ./features/development/stm32cubeprog.nix;
+    feature-uniflash = ./features/development/uniflash.nix;
 
     # Networking features
-    feature-nebula = import ./features/networking/nebula.nix;
+    feature-nebula = ./features/networking/nebula.nix;
+    feature-wireguard = ./features/networking/wireguard.nix;
 
     # Security features
-    feature-hardening = import ./features/security/hardening.nix;
-    feature-fail2ban = import ./features/security/fail2ban.nix;
-    feature-sshd = import ./features/security/sshd.nix;
+    feature-hardening = ./features/security/hardening.nix;
+    feature-fail2ban = ./features/security/fail2ban.nix;
+    feature-sshd = ./features/security/sshd.nix;
 
     # System features
-    feature-locale-fonts = import ./features/system/locale-fonts.nix;
-    feature-xdg = import ./features/system/xdg.nix;
-    feature-system-packages = import ./features/system/packages.nix;
-    feature-nix-settings = import ./features/system/nix-settings.nix;
+    feature-locale-fonts = ./features/system/locale-fonts.nix;
+    feature-xdg = ./features/system/xdg.nix;
+    feature-system-packages = ./features/system/packages.nix;
+    feature-github-token = ./features/system/github-token.nix;
+    feature-remote-builders = ./features/system/remote-builders.nix;
 
     # Hardware
-    hardware-nvidia = import ./hardware/nvidia.nix;
+    hardware-nvidia = ./hardware/nvidia.nix;
 
     # Users (non-flake-parts modules)
-    user-root = import ./users/root.nix;
-    user-groups = import ./users/groups.nix;
+    user-root = ./users/root.nix;
+    user-groups = ./users/groups.nix;
   };
 
   # Import brian user as flake-parts module (exports both nixosModules and homeModules)

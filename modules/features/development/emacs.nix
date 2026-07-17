@@ -63,17 +63,20 @@ in
 
   config = lib.mkIf cfg.enable {
     services = {
+      # enable=true already implies install and adds the package to
+      # systemPackages — no separate install/systemPackages entry needed.
       emacs = {
         enable = true;
-        install = true;
         package = emacs;
         defaultEditor = true;
       };
       languagetool.enable = true;
     };
 
+    # $HOME literal, not ${XDG_CONFIG_HOME}: /etc/set-environment exports
+    # variables alphabetically, so PATH would expand XDG_CONFIG_HOME to "".
     environment.sessionVariables = {
-      PATH = lib.mkAfter [ "\${XDG_CONFIG_HOME}/emacs/bin" ];
+      PATH = lib.mkAfter [ "$HOME/.config/emacs/bin" ];
     };
 
     environment.systemPackages = [
@@ -85,7 +88,6 @@ in
         ds.en-science
         # keep-sorted end
       ]))
-      emacs
       pkgs.bash-language-server
       pkgs.binutils
       pkgs.copilot-language-server

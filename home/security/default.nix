@@ -1,7 +1,4 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
-# home based installation of linux shell enhancing tools
-#
-#
-#
-_: { imports = [ ./ssh_config.nix ]; }
+# User security configuration: ssh-agent and personal SSH host aliases
+_: { imports = [ ./ssh-config.nix ]; }

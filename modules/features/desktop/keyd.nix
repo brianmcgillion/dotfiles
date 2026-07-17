@@ -30,7 +30,9 @@ in
     enable = lib.mkEnableOption "per-device keyboard remapping via keyd";
 
     keyboards = lib.mkOption {
-      type = lib.types.attrs;
+      # attrsOf anything (unlike bare attrs) deep-merges and surfaces
+      # conflicts when two modules configure the same keyboard.
+      type = lib.types.attrsOf lib.types.anything;
       default = { };
       description = "Keyboard configs passed to services.keyd.keyboards. Use `sudo keyd monitor` to find device IDs.";
     };

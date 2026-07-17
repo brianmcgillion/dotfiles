@@ -1,5 +1,3 @@
-eval "$(ssh-agent -s)"
-
 _fzf_git_fzf() {
     fzf --height=50% \
         --layout=reverse --multi --min-height=20 --border \

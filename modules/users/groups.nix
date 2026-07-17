@@ -14,7 +14,7 @@
 #   Automatically imported by profile-common
 #
 # Users in plugdev:
-# - brian (configured in brian.nix)
+# - brian (configured in modules/users/brian/nixos.nix)
 _: {
   users.groups.plugdev = { };
 }

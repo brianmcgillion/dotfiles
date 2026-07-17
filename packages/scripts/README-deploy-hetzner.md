@@ -37,7 +37,7 @@ deploy-hetzner-server caelus
 ./packages/scripts/deploy-hetzner-server.sh <hostname>
 
 # With custom SSH key
-SSH_KEY=~/.ssh/builder-key ./packages/scripts/deploy-hetzner-server.sh <hostname>
+SSH_KEY=~/.ssh/some-other-key ./packages/scripts/deploy-hetzner-server.sh <hostname>
 
 # Skip kexec (if already in installer)
 ./packages/scripts/deploy-hetzner-server.sh <hostname> --skip-kexec
@@ -80,7 +80,7 @@ deploy-hetzner-server nubes --skip-kexec
 
 ### Custom SSH Key
 
-Default: `~/.ssh/builder-key`
+Default: `/run/secrets/builder-key` (provisioned from SOPS by `features.system.remote-builders`)
 
 To use a different key:
 
@@ -104,7 +104,7 @@ Required tools (provided by devshell):
 - ✅ SSH access to target server
 
 Additional requirements:
-- SSH key file (default: `~/.ssh/builder-key`)
+- SSH key file (default: `/run/secrets/builder-key`)
 - Host configuration in `hosts/<hostname>/`
 - Host SOPS rules in `.sops.yaml`
 
