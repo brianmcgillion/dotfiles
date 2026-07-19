@@ -8,6 +8,27 @@
 }:
 let
   signingIdentity = "bmg.avoin@gmail.com";
+
+  # Run git's ssh tooling with the agent hidden, so it uses the on-disk FIDO2
+  # key handle (~/.ssh/id_ed25519_sk) directly. That routes the PIN and touch
+  # prompts through git's subprocess, where magit intercepts them in the
+  # minibuffer — instead of through the agent, which has no pinentry and
+  # refuses outright (see [[fido-keys-agent-constraint]]).
+  #
+  # Two wrappers, because git uses two different binaries:
+  # - gpg.ssh.program  -> ssh-keygen, for commit/tag signing
+  # - core.sshCommand  -> ssh,        for the push/pull/fetch transport
+  # Both are agent-independent, so signing and transport keep working even if
+  # the key ever gets loaded into the agent. This does NOT affect interactive
+  # ssh (login, ProxyJump), which still uses the agent normally.
+  sshKeygenNoAgent = pkgs.writeShellScript "ssh-keygen-no-agent" ''
+    exec ${lib.getExe' pkgs.coreutils "env"} -u SSH_AUTH_SOCK \
+      ${lib.getExe' pkgs.openssh "ssh-keygen"} "$@"
+  '';
+  sshNoAgent = pkgs.writeShellScript "git-ssh-no-agent" ''
+    exec ${lib.getExe' pkgs.coreutils "env"} -u SSH_AUTH_SOCK \
+      ${lib.getExe' pkgs.openssh "ssh"} "$@"
+  '';
 in
 {
   # Trust every YubiKey to sign, from the same list that authorizes them for
@@ -45,6 +66,8 @@ in
         #credential.helper = "store --file ~/.git-credentials";
         format.signoff = true;
         gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+        gpg.ssh.program = "${sshKeygenNoAgent}";
+        core.sshCommand = "${sshNoAgent}";
         init.defaultBranch = "main";
         #protocol.keybase.allow = "always";
         pull.rebase = true;

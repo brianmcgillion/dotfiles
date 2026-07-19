@@ -34,9 +34,13 @@ in
         # the remote host. ProxyJump (used by the ghaf-* hosts) is the safe
         # alternative.
         ForwardAgent = false;
-        # Load keys into ssh-agent on first use so repeat connections and
-        # ProxyJump second hops reuse them without re-reading the key file.
-        AddKeysToAgent = "yes";
+        # Deliberately NOT "yes". The primary keys are PIN-protected
+        # (verify-required) FIDO2 tokens, and the ssh-agent has no way to
+        # prompt for the PIN. Loading them into the agent makes ssh (and git
+        # signing) route through it and fail with "agent refused operation".
+        # Left off so ssh uses the key files directly, where the PIN/touch
+        # prompt works. ControlMaster below already gives connection reuse.
+        AddKeysToAgent = "no";
         Compression = false;
         # Detect dead connections (roaming laptop, lab boxes over VPN) after
         # ~3 missed 60s probes instead of hanging until the TCP timeout.
