@@ -167,6 +167,12 @@
 
     # Services
     services = {
+      # FUSE filesystem that resolves /bin/* and /usr/bin/* shebangs against
+      # the caller's PATH. Fixes third-party tools that hardcode #!/bin/bash
+      # etc. — notably Claude Code marketplace plugin hooks, which we can't
+      # patch (the marketplace overwrites them on update).
+      envfs.enable = true;
+
       fwupd.enable = true;
       # Enable systemd-resolved for split-horizon DNS
       # This allows per-interface DNS configuration via resolvectl
