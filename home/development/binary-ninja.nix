@@ -17,7 +17,7 @@ let
   #   nix-store --add-fixed sha256 <path>/binaryninja_linux_dev_ultimate.zip
   binaryninja-src = pkgs.requireFile {
     name = "binaryninja_linux_dev_ultimate.zip";
-    sha256 = "1bbg49n6976z44qrdkw3j5yv73vvfa9yc3djbw82pd8ng8vdf9bs";
+    sha256 = "03ivd2iv9pa5xqw703aa46fzscb5shsxwj15vqwp6f6sj5kcpvaq";
     message = ''
       Binary Ninja source zip is not in the Nix store. Add it with:
         nix-store --add-fixed sha256 <path>/binaryninja_linux_dev_ultimate.zip
