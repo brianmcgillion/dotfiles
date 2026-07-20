@@ -82,6 +82,7 @@
       "wheel"
       "dialout"
       "plugdev"
+      "disk"
     ]
     ++ (lib.optionals (config.features.development.docker.enable or false) [ "docker" ])
     ++ (lib.optionals (config.features.ai.enable or false) [ "ollama" ]);
