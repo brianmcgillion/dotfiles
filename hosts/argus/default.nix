@@ -28,36 +28,44 @@
 
   sops.defaultSopsFile = ./secrets.yaml;
 
-  # Enable AI features (CUDA auto-detected from hardware-nvidia)
-  # Note: Qwen3-Coder-480B-A35B is the best Qwen coding model but requires a cluster of GPUs
-  features.ai = {
-    enable = true;
-    ollama.models = [
-      "llama3.2:3b"
-      "qwen3-coder-next" # 80B MoE, 3B active — best local coding model (needs ~52GB RAM+VRAM)
-      "qwen3:30b-a3b" # 30B MoE, 3.3B active — fits fully in GPU VRAM
-    ];
-  };
-
-  features.networking = {
-    # Enable Nebula network (secrets wired from ./secrets.yaml)
-    nebula = {
+  features = {
+    # Enable AI features (CUDA auto-detected from hardware-nvidia)
+    # Note: Qwen3-Coder-480B-A35B is the best Qwen coding model but requires a cluster of GPUs
+    ai = {
       enable = true;
-      useSopsSecrets = true;
+      ollama.models = [
+        "llama3.2:3b"
+        "qwen3-coder-next" # 80B MoE, 3B active — best local coding model (needs ~52GB RAM+VRAM)
+        "qwen3:30b-a3b" # 30B MoE, 3.3B active — fits fully in GPU VRAM
+      ];
     };
 
-    # Personal WireGuard VPN (wg-quick up wg0)
-    wireguard = {
-      enable = true;
-      tunnels.wg0 = {
-        network = "bmg-vps";
-        address = [ "10.7.0.11/24" ];
-        # TODO: intentional? The other clients use the VPN-internal resolver
-        # (172.26.0.2, from the bmg-vps network); with 8.8.8.8 internal names
-        # will not resolve while the tunnel is up.
-        dns = [ "8.8.8.8" ];
+    networking = {
+      # Enable Nebula network (secrets wired from ./secrets.yaml)
+      nebula = {
+        enable = true;
+        useSopsSecrets = true;
+      };
+
+      # Personal WireGuard VPN (wg-quick up wg0)
+      wireguard = {
+        enable = true;
+        tunnels.wg0 = {
+          network = "bmg-vps";
+          address = [ "10.7.0.11/24" ];
+          # TODO: intentional? The other clients use the VPN-internal resolver
+          # (172.26.0.2, from the bmg-vps network); with 8.8.8.8 internal names
+          # will not resolve while the tunnel is up.
+          dns = [ "8.8.8.8" ];
+        };
       };
     };
+
+    # logind's idle timer only tracks input activity, not load, so long
+    # unattended builds and ollama runs were being suspended out from under
+    # themselves after ~35 min (GNOME's 5 min idle-delay + logind's 30 min
+    # IdleActionSec). This is a mains-powered workstation — never auto-suspend.
+    desktop.power-management.idleAction = "ignore";
   };
 
   boot = {

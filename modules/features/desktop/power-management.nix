@@ -19,6 +19,11 @@
 # tmux/screen processes persist. Long-running jobs should use
 # systemd-inhibit or systemd-run --scope for protection.
 #
+# Caveat: logind's idle timer only watches session input activity (keyboard,
+# mouse, tty), never CPU or GPU load. A local build pinning every core is
+# still "idle" and will be suspended out from under itself. Hosts that must
+# never auto-suspend should set idleAction = "ignore".
+#
 # Usage:
 #   features.desktop.power-management.enable = true;
 #
@@ -34,6 +39,26 @@ in
 {
   options.features.desktop.power-management = {
     enable = lib.mkEnableOption "SSH-aware power management for GNOME desktops";
+
+    idleAction = lib.mkOption {
+      type = lib.types.enum [
+        "ignore"
+        "suspend"
+        "hibernate"
+        "hybrid-sleep"
+        "suspend-then-hibernate"
+        "sleep"
+        "lock"
+        "poweroff"
+      ];
+      default = "suspend";
+      description = ''
+        Action logind takes once every session is idle. Set to "ignore" on hosts
+        that must never auto-suspend (e.g. build/ML machines) — logind's idle
+        timer only watches input activity, not CPU or GPU load, so a busy
+        unattended build still counts as idle.
+      '';
+    };
 
     idleActionSec = lib.mkOption {
       type = lib.types.str;
@@ -68,7 +93,7 @@ in
 
     # Let logind handle suspend — it sees all sessions including SSH
     services.logind.settings.Login = {
-      IdleAction = "suspend";
+      IdleAction = cfg.idleAction;
       IdleActionSec = cfg.idleActionSec;
     };
 
