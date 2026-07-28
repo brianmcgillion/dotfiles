@@ -115,11 +115,18 @@ in
           # Name resolution for the builder aliases used above; the nix
           # daemon connects as root, so these must be system-wide (not
           # home-manager) config.
+          #
+
+          # set the server keep alive such that we will see a hung session within about 3 minutes
           extraConfig = ''
             Host hetzarm
                  HostName 65.21.20.242
+                 ServerAliveInterval 60
+                 ServerAliveCountMax 3
             Host vedenemo-builder
                  HostName builder.vedenemo.dev
+                 ServerAliveInterval 60
+                 ServerAliveCountMax 3
           '';
 
           knownHosts = {
