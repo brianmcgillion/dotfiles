@@ -44,9 +44,6 @@ let
     (epkgs.treesit-grammars.with-grammars (
       grammars: builtins.attrValues (removeAttrs grammars [ "tree-sitter-quint" ])
     ))
-    epkgs.acp
-    epkgs.agent-shell
-    epkgs.claude-code
     epkgs.djvu
     epkgs.nov
     epkgs.org-pdftools

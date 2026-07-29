@@ -71,6 +71,7 @@ let
     "plugin-dev"
     "claude-code-setup"
     "security-guidance"
+    "claude-security"
     "coderabbit"
     "skill-creator"
   ];
@@ -223,6 +224,11 @@ let
         for repo in ${lib.concatStringsSep " " thirdPartyMarketplaces}; do
           claude plugin marketplace add "$repo" 2>/dev/null || true
         done
+        # `marketplace add` is a no-op once a marketplace is on disk — it does
+        # NOT refresh the catalog. Without this pull, a plugin newly published
+        # to an already-registered marketplace (including the built-in official
+        # one) stays invisible and `plugin install` fails forever.
+        claude plugin marketplace update 2>/dev/null || true
         for plugin in ${lib.concatStringsSep " " availablePlugins}; do
           if ! claude plugin list 2>/dev/null | grep -q "$plugin"; then
             claude plugin install "$plugin" 2>/dev/null || true
