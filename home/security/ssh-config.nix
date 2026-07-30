@@ -76,12 +76,13 @@ in
         User = "ghaf";
         IdentityFile = builderKey;
         # alternates: 192.168.10.108 (x1-carbon), 192.168.10.34 (usb-ethernet)
-        HostName = "192.168.10.229"; # darter-pro
+        HostName = "192.168.10.108"; # x1-carbon
+        #HostName = "192.168.10.229"; # darter-pro
       };
       ghaf-usb = {
         User = "ghaf";
         IdentityFile = builderKey;
-        HostName = "192.168.10.34"; # usb-ethernet
+        HostName = "192.168.10.135"; # usb-ethernet
       };
       ghaf-host = {
         User = "ghaf";

@@ -3,7 +3,7 @@
 # Helper scripts (writeShellApplication: shebang + set -euo pipefail +
 # build-time shellcheck; a failed cd aborts instead of running nix commands
 # against the wrong directory).
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 let
   sync-binaryninja = pkgs.writeShellApplication {
     name = "sync-binaryninja";
@@ -42,36 +42,54 @@ let
       nixos-rebuild switch --flake .#caelus --target-host "root@caelus" "$@"
     '';
   };
-  rebuild-x1 = pkgs.writeShellApplication {
-    name = "rebuild-x1";
-    text = ''
-      nixos-rebuild --flake .#lenovo-x1-carbon-gen11-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
-    '';
+  # Ghaf board rebuilds: `nixos-rebuild boot` over SSH against a running
+  # ghaf-host. Deliberately no `cd` — unlike rebuild-host/-nubes/-caelus these
+  # act on the ghaf checkout you are standing in, not on ~/.dotfiles.
+  #
+  # GHAF_HOST overrides the target host at runtime (a differently-named or
+  # bare-IP host no longer needs its own wrapper), GHAF_ACTION the rebuild
+  # action (`boot` is hardcoded before "$@" otherwise, so `switch` would be
+  # rejected as an unknown positional).
+  mkGhafRebuild =
+    name: flake: host:
+    pkgs.writeShellApplication {
+      inherit name;
+      text = ''
+        nixos-rebuild --flake ".#${flake}" \
+          --target-host "root@''${GHAF_HOST:-${host}}" \
+          --no-reexec "''${GHAF_ACTION:-boot}" "$@"
+      '';
+    };
+
+  # Every board gets both wrappers: rebuild-<board> against <host> and
+  # rebuild-<board>-usb against <host>-usb, for boards booted off external
+  # media.
+  mkGhafRebuilds =
+    name:
+    {
+      flake,
+      host ? "ghaf-host",
+    }:
+    [
+      (mkGhafRebuild "rebuild-${name}" flake host)
+      (mkGhafRebuild "rebuild-${name}-usb" flake "${host}-usb")
+    ];
+
+  ghafTargets = {
+    # keep-sorted start block=yes
+    agx = {
+      flake = "nvidia-jetson-orin-agx-debug-from-x86_64";
+      host = "agx-host";
+    };
+    alien.flake = "alienware-m18-debug";
+    darter.flake = "system76-darp11-b-debug";
+    ghaf.flake = "intel-laptop-debug";
+    x1.flake = "lenovo-x1-carbon-gen11-debug";
+    # keep-sorted end
   };
-  rebuild-alien = pkgs.writeShellApplication {
-    name = "rebuild-alien";
-    text = ''
-      nixos-rebuild --flake .#alienware-m18-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
-    '';
-  };
-  rebuild-agx = pkgs.writeShellApplication {
-    name = "rebuild-agx";
-    text = ''
-      nixos-rebuild --flake .#nvidia-jetson-orin-agx-debug-from-x86_64 --target-host "root@agx-host" --no-reexec boot "$@"
-    '';
-  };
-  rebuild-darter = pkgs.writeShellApplication {
-    name = "rebuild-darter";
-    text = ''
-      nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host" --no-reexec boot "$@"
-    '';
-  };
-  rebuild-darter-usb = pkgs.writeShellApplication {
-    name = "rebuild-darter-usb";
-    text = ''
-      nixos-rebuild --flake .#system76-darp11-b-debug --target-host "root@ghaf-host-usb" --no-reexec boot "$@"
-    '';
-  };
+
+  ghafRebuilds = lib.concatLists (lib.mapAttrsToList mkGhafRebuilds ghafTargets);
+
   deploy-hetzner-server = pkgs.writeShellApplication {
     name = "deploy-hetzner-server";
     text = builtins.readFile ./deploy-hetzner-server.sh;
@@ -81,16 +99,13 @@ in
   environment.systemPackages = [
     # keep-sorted start
     deploy-hetzner-server
-    rebuild-agx
-    rebuild-alien
     rebuild-caelus
-    rebuild-darter
-    rebuild-darter-usb
     rebuild-host
     rebuild-nubes
-    rebuild-x1
     sync-binaryninja
     update-host
     # keep-sorted end
-  ];
+  ]
+  # rebuild-{agx,alien,darter,ghaf,x1} plus a -usb variant of each
+  ++ ghafRebuilds;
 }
