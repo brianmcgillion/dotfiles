@@ -28,6 +28,26 @@ in
     enableDefaultConfig = false;
 
     settings = {
+      # Safety net for anything that reaches the lab devices by address rather
+      # than by alias. ssh matches Host blocks on the name as written on the
+      # command line, never the resolved address, so a bare IP matches only
+      # "*" -- which carries no IdentityFile -- and drops through to the
+      # default ~/.ssh/id_* list, including the verify-required FIDO2 keys.
+      #
+      # ProxyJump is the case that actually bites: it spawns a separate ssh
+      # that re-reads this file by name and does NOT inherit -i or -o from the
+      # parent command line, so `ssh -o ProxyJump=root@<ip> -i builderKey ...`
+      # puts builderKey on the final hop only and leaves the jump hop asking
+      # for a touch. Naming an alias is still the right habit; this only makes
+      # the failure mode cheap when some tool does not.
+      #
+      # Covers net-vm over ethernet and USB, the Orin, and the whole internal
+      # 192.168.100.0/24 (ghaf-host, sysvms and appvms), which have no aliases.
+      "192.168.10.108 192.168.10.135 192.168.10.149 192.168.100.*" = {
+        IdentityFile = builderKey;
+        IdentitiesOnly = true;
+      };
+
       # Global defaults (enableDefaultConfig is off, so these are set here).
       "*" = {
         # Never forward the agent globally — it exposes the agent socket to
@@ -72,9 +92,16 @@ in
         HostName = "builder.vedenemo.dev";
         IdentityFile = builderKey;
       };
+      # IdentitiesOnly on the ghaf devices: without it ssh offers every agent
+      # identity and every default ~/.ssh/id_* before falling back to the
+      # IdentityFile named here. The FIDO2 keys are verify-required, so each
+      # such attempt costs a touch and a PIN even though builderKey is the one
+      # that actually authenticates. Deliberately not applied to
+      # vedenemo-builder / bmg-sh-gr, which are outside this problem.
       ghaf-net = {
         User = "ghaf";
         IdentityFile = builderKey;
+        IdentitiesOnly = true;
         # alternates: 192.168.10.108 (x1-carbon), 192.168.10.34 (usb-ethernet)
         HostName = "192.168.10.108"; # x1-carbon
         #HostName = "192.168.10.229"; # darter-pro
@@ -82,29 +109,34 @@ in
       ghaf-usb = {
         User = "ghaf";
         IdentityFile = builderKey;
+        IdentitiesOnly = true;
         HostName = "192.168.10.135"; # usb-ethernet
       };
       ghaf-host = {
         User = "ghaf";
         IdentityFile = builderKey;
+        IdentitiesOnly = true;
         HostName = "192.168.100.2";
         ProxyJump = "ghaf-net";
       };
       ghaf-host-usb = {
         User = "ghaf";
         IdentityFile = builderKey;
+        IdentitiesOnly = true;
         HostName = "192.168.100.2";
         ProxyJump = "ghaf-usb";
       };
       ghaf-ui = {
         User = "ghaf";
         IdentityFile = builderKey;
+        IdentitiesOnly = true;
         HostName = "192.168.100.3";
         ProxyJump = "ghaf-net";
       };
       agx-host = {
         User = "ghaf";
         IdentityFile = builderKey;
+        IdentitiesOnly = true;
         HostName = "192.168.10.149";
       };
       uae-lab-node1 = {
