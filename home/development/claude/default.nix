@@ -39,6 +39,7 @@ let
     "anthropics/skills" # -> anthropic-agent-skills
     "mattpocock/skills" # -> mattpocock
     "sjungling/claude-plugins" # -> sjungling-plugins
+    "xenodium/emacs-skills" # -> xenodium-emacs-skills
   ];
 
   # Plugins are ENABLED by default now — a well-written skill costs only its
@@ -130,6 +131,11 @@ let
       "document-skills@anthropic-agent-skills" # bundles xlsx/docx/pptx/pdf
       "mattpocock-skills@mattpocock" # bundles handoff + more
       "technical-writer@sjungling-plugins"
+      # Drives the running Emacs from the agent over emacsclient: /open, /dired,
+      # /select, /highlight, /describe. Skills `load' their own elisp helpers at
+      # call time, so no config.org change is needed. Bundles 5 macOS-only Xcode
+      # skills that are inert on Linux.
+      "emacs-skills@xenodium-emacs-skills"
     ]
     ++ trailofbitsPlugins;
 
