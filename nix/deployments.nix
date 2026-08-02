@@ -28,7 +28,7 @@ let
   };
 
   nodes = {
-    argus = mkDeployment "x86_64-linux" "argus";
+    #argus = mkDeployment "x86_64-linux" "argus";
     caelus = mkDeployment "x86_64-linux" "caelus";
     nubes = mkDeployment "x86_64-linux" "nubes";
   };

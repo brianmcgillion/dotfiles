@@ -7,6 +7,7 @@
     ../home.nix
     ../apps
     ../browsers
+    ../desktop
     ../development
     ../security
     ../shell
