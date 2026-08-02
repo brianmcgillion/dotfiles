@@ -41,9 +41,12 @@ in
       # for a touch. Naming an alias is still the right habit; this only makes
       # the failure mode cheap when some tool does not.
       #
-      # Covers net-vm over ethernet and USB, the Orin, and the whole internal
-      # 192.168.100.0/24 (ghaf-host, sysvms and appvms), which have no aliases.
-      "192.168.10.108 192.168.10.135 192.168.10.149 192.168.100.*" = {
+      # Covers the whole lab subnet rather than named addresses: the Orin takes
+      # a DHCP lease over wifi, so its address moves and an enumerated list goes
+      # stale silently (it was reachable at .136, not the .149 agx-host assumes).
+      # Also the internal 192.168.100.0/24 -- ghaf-host, sysvms and appvms, which
+      # have no aliases at all.
+      "192.168.10.* 192.168.100.*" = {
         IdentityFile = builderKey;
         IdentitiesOnly = true;
       };
@@ -138,6 +141,12 @@ in
         IdentityFile = builderKey;
         IdentitiesOnly = true;
         HostName = "192.168.10.149";
+      };
+      agx-wifi = {
+        User = "ghaf";
+        IdentityFile = builderKey;
+        IdentitiesOnly = true;
+        HostName = "192.168.10.136";
       };
       uae-lab-node1 = {
         User = "bmg";
