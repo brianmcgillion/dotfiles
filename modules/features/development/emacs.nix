@@ -8,7 +8,7 @@
 # Features:
 # - Emacs unstable with native compilation
 # - Tree-sitter grammars for all languages
-# - vterm terminal emulator
+# - ghostel terminal emulator (installed by Doom; see note below)
 # - PDF viewing with pdf-tools
 # - Spell checking with aspell
 # - Language servers (LSP) for multiple languages:
@@ -49,7 +49,6 @@ let
     epkgs.org-pdftools
     epkgs.pdf-tools
     epkgs.tree-sitter-langs
-    epkgs.vterm
     # keep-sorted end
   ]);
 in
