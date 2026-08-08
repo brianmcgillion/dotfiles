@@ -105,8 +105,9 @@ in
         User = "ghaf";
         IdentityFile = builderKey;
         IdentitiesOnly = true;
-        # alternates: 192.168.10.108 (x1-carbon), 192.168.10.34 (usb-ethernet)
-        HostName = "192.168.10.108"; # x1-carbon
+        # alternates: 192.168.10.34 (usb-ethernet)
+        HostName = "192.168.10.238"; # dell-ra13250
+        #HostName = "192.168.10.108"; # x1-carbon
         #HostName = "192.168.10.229"; # darter-pro
       };
       ghaf-usb = {
