@@ -45,6 +45,8 @@ let
       grammars: builtins.attrValues (removeAttrs grammars [ "tree-sitter-quint" ])
     ))
     epkgs.djvu
+    # Spell checking; links libenchant, which reads the aspell dicts below.
+    epkgs.jinx
     epkgs.nov
     epkgs.org-pdftools
     epkgs.pdf-tools
@@ -91,6 +93,7 @@ in
       pkgs.dockfmt
       pkgs.editorconfig-core-c
       pkgs.github-mcp-server
+      pkgs.harper
       pkgs.libxml2
       pkgs.neocmakelsp
       pkgs.nodejs

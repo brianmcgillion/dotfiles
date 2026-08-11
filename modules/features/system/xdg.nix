@@ -62,11 +62,11 @@ in
         PATH = [ "$HOME/.local/bin" ];
       };
       variables = {
-        ASPELL_CONF = ''
-          per-conf $HOME/.config/aspell/aspell.conf;
-          personal $HOME/.config/aspell/aspell.en.pws;
-          repl $HOME/.config/aspell/en.prepl;
-        '';
+        # One line: aspell separates entries on ";" only, so the multi-line form
+        # made the second key parse as "\npersonal" and aborted the whole file.
+        # dict-dir is required by enchant's aspell provider (used by jinx in
+        # Emacs), which otherwise looks inside plain pkgs.aspell -- no dicts.
+        ASPELL_CONF = "dict-dir /run/current-system/sw/lib/aspell;per-conf $HOME/.config/aspell/aspell.conf;personal $HOME/.config/aspell/aspell.en.pws;repl $HOME/.config/aspell/en.prepl";
         LESSHISTFILE = "$HOME/.local/state/less/history";
         WGETRC = "$HOME/.config/wgetrc";
         HISTFILE = "$HOME/.local/state/bash/history";
