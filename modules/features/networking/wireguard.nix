@@ -46,6 +46,10 @@
 #
 # Tunnels do not autostart by default; bring one up with: wg-quick up wg0
 #
+# Tunnel interfaces are handed to wg-quick alone: NetworkManager is told to
+# leave them unmanaged, so it cannot adopt one into an autoconnect profile and
+# then race wg-quick across a rebuild.
+#
 # Enabled by default in: none (opt-in per host; module imported by profile-client)
 {
   config,
@@ -267,6 +271,13 @@ in
     sops.secrets = lib.genAttrs secretNames (_: {
       owner = "root";
     });
+
+    # Without this NetworkManager adopts the interface wg-quick creates and
+    # captures it into an autoconnect profile, leaving two owners for the same
+    # device.
+    networking.networkmanager.unmanaged = map (name: "interface-name:${name}") (
+      lib.attrNames cfg.tunnels
+    );
 
     networking.wg-quick.interfaces = lib.mapAttrs (_: tunnel: {
       inherit (tunnel) autostart address;
