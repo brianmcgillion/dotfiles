@@ -212,7 +212,12 @@
 
     # Enable userborn to take care of managing the default users and groups
     services = {
-      userborn.enable = true;
+      userborn = {
+        enable = true;
+        # Every host has been on userborn for a long time, the one-shot import of
+        # update-users-groups.pl state can never fire. Keep it out of the closure.
+        importLegacyState = false;
+      };
     };
 
     # Hardware
