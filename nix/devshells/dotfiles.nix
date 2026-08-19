@@ -1,13 +1,14 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2022-2025 Brian McGillion
+#
+# devShells.default - the environment for working *on* this repository.
+# Portable per-language shells live alongside this file; see ./names.nix.
 {
-  inputs,
   lib,
   self,
   ...
 }:
 {
-  imports = [ inputs.devshell.flakeModule ];
   perSystem =
     {
       config,
@@ -41,6 +42,21 @@
         devshell.startup.pre-commit-hooks.text = config.pre-commit.installationScript;
 
         commands = [
+          {
+            category = "development";
+            name = "build-devshells";
+            help = "Build every portable devshell (c-cpp, embedded, go, python, reverse-engineering, rust)";
+            # Deliberately not wired into `nix flake check`: that runs on every
+            # push and in the normal local workflow, and building ghidra + a
+            # Rust toolchain + an ARM cross-compiler there would dwarf the
+            # existing dry-run-only CI. Build them on demand instead.
+            # --no-link: without it nix-fast-build litters the repo root with a
+            # result-<shell> symlink per devshell.
+            command = ''
+              ${pkgs.nix-fast-build}/bin/nix-fast-build --no-link \
+                --flake ".#devShells.${pkgs.stdenv.hostPlatform.system}" "$@"
+            '';
+          }
           {
             category = "setup";
             name = "setup-netrc";

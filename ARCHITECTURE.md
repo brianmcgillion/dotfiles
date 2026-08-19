@@ -60,7 +60,9 @@ authoritative contents).
 └── nix/                  # Flake infrastructure
     ├── checks.nix
     ├── deployments.nix
-    ├── devshell.nix
+    ├── devshells/        # dotfiles.nix (devShells.default) + portable per-language shells
+    │   ├── names.nix     # source of truth for the portable shell names
+    │   └── ...           # c-cpp, embedded, go, python, reverse-engineering, rust
     ├── nixpkgs.nix
     └── treefmt.nix
 ```

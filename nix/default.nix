@@ -4,14 +4,14 @@
 # Flake-parts modules for flake infrastructure:
 # - checks: Pre-commit hooks and code quality checks
 # - deployments: Deploy-rs configuration for remote hosts
-# - devshell: Development shell with tools and utilities
+# - devshells: Repo devshell plus portable per-language shells
 # - nixpkgs: Nixpkgs import configuration with overlays
 # - treefmt: Code formatting configuration
 {
   imports = [
     ./checks.nix
     ./deployments.nix
-    ./devshell.nix
+    ./devshells
     ./nixpkgs.nix
     ./treefmt.nix
   ];

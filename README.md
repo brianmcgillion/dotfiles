@@ -3,6 +3,19 @@
 
 Flake based nixos configuration. Intended as a private config, so it is not abstracted to bootstrap any other system than my own.
 
+## Development shells
+
+`dev` is on `$PATH` on every host and works from any directory, not just this checkout:
+
+```sh
+dev list          # c-cpp, embedded, go, python, reverse-engineering, rust
+dev rust          # enter one
+dev init rust     # or drop an .envrc so direnv loads it on cd
+```
+
+Shells are defined in `nix/devshells/` and each is kept in its own Nix profile, so it survives
+garbage collection and re-entry is instant. See CLAUDE.md for the full command set.
+
 ## Setup
 
 ### Servers (Hetzner)

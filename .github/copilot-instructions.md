@@ -122,7 +122,7 @@ The configuration uses a modular architecture:
 - **`hosts/`** - Host-specific configurations
 - **`home/`** - Home-manager configurations
 - **`packages/`** - Custom packages and overlays
-- **`nix/`** - Flake infrastructure (checks, deployments, devshell, treefmt)
+- **`nix/`** - Flake infrastructure (checks, deployments, devshells, treefmt)
 
 Features are explicitly enabled using the `features` namespace:
 ```nix

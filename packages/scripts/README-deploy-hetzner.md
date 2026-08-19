@@ -212,19 +212,26 @@ If configuration doesn't build:
 
 ### Add to Devshell
 
-Add to `nix/devshell.nix`:
+Already wired up in `nix/devshells/dotfiles.nix` as the `deploy-hetzner-server` command. The
+entry reads the script into the Nix store rather than referencing it by path, so the command
+works from any directory inside the shell:
 
 ```nix
 commands = [
   {
-    name = "deploy-hetzner";
-    help = "Deploy to Hetzner server";
-    command = "$PRJ_ROOT/packages/scripts/deploy-hetzner-server.sh $@";
+    category = "deployment";
+    name = "deploy-hetzner-server";
+    help = "Deploy NixOS to Hetzner servers (nubes, caelus)";
+    command = ''
+      exec ${pkgs.writeScriptBin "deploy-hetzner-server" (
+        builtins.readFile "${self}/packages/scripts/deploy-hetzner-server.sh"
+      )}/bin/deploy-hetzner-server "$@"
+    '';
   }
 ];
 ```
 
-Then use: `deploy-hetzner nubes`
+Then use: `nix develop -c deploy-hetzner-server nubes`
 
 ### Makefile
 

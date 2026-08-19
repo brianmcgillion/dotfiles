@@ -9,14 +9,11 @@
   # nodejs comes from the emacs feature module system-wide on clients.
   home.packages = [
     # keep-sorted start
-    pkgs.bear
     #pkgs.bibtool # broken upstream
     pkgs.clang-tools
-    pkgs.cmake
     pkgs.coreutils
     pkgs.gcc
     pkgs.gnumake
-    pkgs.llvm
     pkgs.nix-fast-build
     pkgs.nix-update
     pkgs.nixos-generators

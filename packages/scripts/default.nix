@@ -3,8 +3,57 @@
 # Helper scripts (writeShellApplication: shebang + set -euo pipefail +
 # build-time shellcheck; a failed cd aborts instead of running nix commands
 # against the wrong directory).
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  self,
+  ...
+}:
 let
+  # Portable devshell names. Imported as a parse-time relative path on purpose:
+  # reading them off self.devShells.<system> instead would drag the whole
+  # flake-parts perSystem evaluation (treefmt, git-hooks, devshell module) into
+  # every nixos-rebuild just to list five strings.
+  devShellNames = import ../../nix/devshells/names.nix;
+
+  dev-unwrapped = pkgs.writeShellApplication {
+    name = "dev";
+    text = ''
+      DEV_SHELLS="${lib.concatStringsSep " " devShellNames}"
+      DEV_FLAKE_FALLBACK="${self}"
+      export DEV_SHELLS DEV_FLAKE_FALLBACK
+    ''
+    + builtins.readFile ./dev.sh;
+  };
+
+  dev-completion = pkgs.writeTextFile {
+    name = "dev-bash-completion";
+    destination = "/share/bash-completion/completions/dev";
+    text = ''
+      complete -W "${
+        lib.concatStringsSep " " (
+          devShellNames
+          ++ [
+            "list"
+            "init"
+            "forget"
+            "update"
+          ]
+        )
+      }" dev
+    '';
+  };
+
+  # Ship the completion in the same derivation as the binary so the two can
+  # never drift apart in environment.systemPackages.
+  dev = pkgs.symlinkJoin {
+    name = "dev";
+    paths = [
+      dev-unwrapped
+      dev-completion
+    ];
+  };
+
   sync-binaryninja = pkgs.writeShellApplication {
     name = "sync-binaryninja";
     text = builtins.readFile ./sync-binaryninja.sh;
@@ -99,6 +148,7 @@ in
   environment.systemPackages = [
     # keep-sorted start
     deploy-hetzner-server
+    dev
     rebuild-caelus
     rebuild-host
     rebuild-nubes

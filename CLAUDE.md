@@ -12,6 +12,17 @@ NixOS flake-based configuration managing multiple systems (desktops, laptops, se
 # Development environment (provides all tools: cachix, sops, treefmt, etc.)
 nix develop
 
+# Portable devshells - usable from ANY directory, not just this repo.
+# Defined in nix/devshells/, listed in nix/devshells/names.nix.
+dev list                          # Show shells and which are already built
+dev rust                          # Enter a shell (c-cpp, embedded, go, python, reverse-engineering, rust)
+dev rust -c cargo build           # Run one command inside it
+dev rust --fast                   # Re-enter from the built profile, skipping evaluation
+dev init rust                     # Write .envrc in $PWD so direnv loads the shell on cd
+dev update --all                  # Build/refresh every shell
+dev forget rust                   # Drop its GC root and free the closure
+nix develop -c build-devshells    # Build them all from inside the repo
+
 # Build and deploy
 nixos-rebuild build --flake .#<hostname>    # Build without switching
 sudo nixos-rebuild switch --flake .#$HOSTNAME  # Deploy locally
@@ -46,7 +57,14 @@ features.security.sshd.enable = true;
 - `hosts/` - Minimal host configs that import profiles and enable features
 - `home/` - Home-manager user environment configurations
 - `packages/` - Custom packages and overlays
-- `nix/` - Flake infrastructure (checks, deployments, devshell, treefmt)
+- `nix/` - Flake infrastructure (checks, deployments, devshells, treefmt)
+
+**Adding a portable devshell**: create `nix/devshells/<name>.nix` defining
+`perSystem.devshells.<name>`, then add `"<name>"` to `nix/devshells/names.nix`. The filename,
+the `devshells.<attr>` and the `names.nix` entry must match — `nix/devshells/default.nix` builds
+its import list from that file, and `packages/scripts/default.nix` reads it to generate `dev`'s
+shell list and bash completion. `git add` the new file before `dev` can see it (Nix only reads
+git-tracked files from the live checkout).
 
 **Feature Module Template**:
 ```nix
