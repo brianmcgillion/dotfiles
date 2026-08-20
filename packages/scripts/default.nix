@@ -36,6 +36,7 @@ let
           ++ [
             "list"
             "init"
+            "tmp"
             "forget"
             "update"
           ]

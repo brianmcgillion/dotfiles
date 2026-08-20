@@ -18,7 +18,10 @@ dev list                          # Show shells and which are already built
 dev rust                          # Enter a shell (c-cpp, embedded, go, python, reverse-engineering, rust)
 dev rust -c cargo build           # Run one command inside it
 dev rust --fast                   # Re-enter from the built profile, skipping evaluation
+dev c-cpp,reverse-engineering     # Stack shells: layered, later entries win on PATH
 dev init rust                     # Write .envrc in $PWD so direnv loads the shell on cd
+dev tmp rust                      # Ephemeral .envrc - lets Emacs see the toolchain,
+                                  # removed when the spawned shell exits
 dev update --all                  # Build/refresh every shell
 dev forget rust                   # Drop its GC root and free the closure
 nix develop -c build-devshells    # Build them all from inside the repo
