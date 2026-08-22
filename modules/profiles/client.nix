@@ -79,6 +79,7 @@
         "https://ghaf-dev.cachix.org?priority=50"
         # AI agent tooling from numtide/llm-agents.nix (npm/bun builds land here).
         "https://cache.numtide.com"
+        "https://nix-community.cachix.org"
       ];
       extra-trusted-public-keys = [
         "ghaf-dev.cachix.org-1:S3M8x3no8LFQPBfHw1jl6nmP8A7cVWKntoMKN3IsEQY="

@@ -39,7 +39,8 @@
 }:
 let
   cfg = config.features.development.emacs;
-  emacsPkgs = pkgs.emacsPackagesFor pkgs.emacs-git;
+
+  emacsPkgs = pkgs.emacsPackagesFor pkgs.emacs-git-pgtk;
   emacs = emacsPkgs.emacsWithPackages (epkgs: [
     # keep-sorted start
     (epkgs.treesit-grammars.with-grammars (
