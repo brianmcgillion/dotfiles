@@ -39,7 +39,8 @@
 }:
 let
   cfg = config.features.development.emacs;
-  emacs = (pkgs.emacsPackagesFor pkgs.emacs-git).emacsWithPackages (epkgs: [
+  emacsPkgs = pkgs.emacsPackagesFor pkgs.emacs-git;
+  emacs = emacsPkgs.emacsWithPackages (epkgs: [
     # keep-sorted start
     (epkgs.treesit-grammars.with-grammars (
       grammars: builtins.attrValues (removeAttrs grammars [ "tree-sitter-quint" ])
@@ -53,6 +54,14 @@ let
     epkgs.tree-sitter-langs
     # keep-sorted end
   ]);
+  # pdf-tools ships its epdfinfo server under share/emacs/site-lisp/elpa/,
+  # never in bin/, so nothing puts it on PATH.
+  epdfinfo = pkgs.runCommand "epdfinfo" { } ''
+    mkdir -p "$out/bin"
+    src=$(echo ${emacsPkgs.pdf-tools}/share/emacs/site-lisp/elpa/pdf-tools-*/epdfinfo)
+    test -x "$src" || { echo "epdfinfo not found in ${emacsPkgs.pdf-tools}" >&2; exit 1; }
+    ln -s "$src" "$out/bin/epdfinfo"
+  '';
 in
 {
   options.features.development.emacs = {
@@ -86,6 +95,7 @@ in
         ds.en-science
         # keep-sorted end
       ]))
+      epdfinfo
       pkgs.bash-language-server
       pkgs.binutils
       pkgs.copilot-language-server
