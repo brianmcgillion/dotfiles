@@ -7,6 +7,10 @@
 # optionally provisions the SSH private key from sops so fresh installs
 # build remotely without hand-copying a key.
 #
+# offloadSystems selects which of them are actually used: a workstation that
+# is faster than the x86 builder drops "x86_64-linux" and keeps the aarch64
+# offload, since building aarch64 locally means qemu emulation.
+#
 # The nix daemon (root) performs the SSH connections; the key is also the
 # identity used by deploy-rs and the personal ssh aliases, so it is owned by
 # sshKeyOwner and left at its /run/secrets path (see sshKey's description for
@@ -17,6 +21,7 @@
 #     enable = true;
 #     sshUser = "bmg";
 #     sshKeySopsFile = ./secrets.yaml;  # must contain a builder-key entry
+#     offloadSystems = [ "aarch64-linux" ];  # build x86 locally
 #   };
 #
 # Enabled by default in: profile-client (servers build locally)
@@ -28,22 +33,54 @@
 let
   cfg = config.features.system.remote-builders;
 
-  mkBuilder = hostName: system: {
-    inherit hostName system;
-    maxJobs = 16;
-    speedFactor = 1;
-    supportedFeatures = [
-      "nixos-test"
-      "benchmark"
-      "big-parallel"
-      "kvm"
-    ];
-    inherit (cfg) sshUser sshKey;
-  };
+  # Every builder we have access to; offloadSystems picks which are used.
+  allBuilders = [
+    {
+      hostName = "hetzarm";
+      system = "aarch64-linux";
+    }
+    {
+      hostName = "vedenemo-builder";
+      system = "x86_64-linux";
+    }
+  ];
+
+  mkBuilder =
+    { hostName, system }:
+    {
+      inherit hostName system;
+      maxJobs = 16;
+      speedFactor = 1;
+      supportedFeatures = [
+        "nixos-test"
+        "benchmark"
+        "big-parallel"
+        "kvm"
+      ];
+      inherit (cfg) sshUser sshKey;
+    };
 in
 {
   options.features.system.remote-builders = {
     enable = lib.mkEnableOption "distributed builds on external builder machines";
+
+    offloadSystems = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [
+        "aarch64-linux"
+        "x86_64-linux"
+      ];
+      example = [ "aarch64-linux" ];
+      description = ''
+        Which target systems are offloaded to the remote builders. Builders
+        for systems not listed here are dropped from nix.buildMachines, so
+        those derivations build locally.
+
+        Only affects the default routing: the ssh aliases and host keys are
+        configured for every builder either way, so an occasional remote
+        build still works via `nix build --builders 'ssh://...'`.
+      '';
+    };
 
     sshUser = lib.mkOption {
       type = lib.types.str;
@@ -103,12 +140,9 @@ in
     lib.mkMerge [
       {
         nix = {
-          distributedBuilds = true;
+          distributedBuilds = cfg.offloadSystems != [ ];
           # https://nixos.wiki/wiki/Distributed_build#NixOS
-          buildMachines = [
-            (mkBuilder "hetzarm" "aarch64-linux")
-            (mkBuilder "vedenemo-builder" "x86_64-linux")
-          ];
+          buildMachines = map mkBuilder (lib.filter (b: lib.elem b.system cfg.offloadSystems) allBuilders);
         };
 
         programs.ssh = {

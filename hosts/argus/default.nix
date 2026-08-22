@@ -61,6 +61,13 @@
       };
     };
 
+    system = {
+      # This box out-builds the shared x86 builder, and offloading costs a
+      # round trip of the closure over ssh. aarch64 stays remote — building
+      # it here would mean qemu emulation.
+      remote-builders.offloadSystems = [ "aarch64-linux" ];
+    };
+
     # logind's idle timer only tracks input activity, not load, so long
     # unattended builds and ollama runs were being suspended out from under
     # themselves after ~35 min (GNOME's 5 min idle-delay + logind's 30 min
