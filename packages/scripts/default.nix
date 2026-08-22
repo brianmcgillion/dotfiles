@@ -59,6 +59,7 @@ let
     name = "sync-binaryninja";
     text = builtins.readFile ./sync-binaryninja.sh;
   };
+
   update-host = pkgs.writeShellApplication {
     name = "update-host";
     text = ''
@@ -71,6 +72,7 @@ let
       fi
     '';
   };
+
   rebuild-host = pkgs.writeShellApplication {
     name = "rebuild-host";
     text = ''
@@ -78,20 +80,29 @@ let
       sudo nixos-rebuild switch --flake ".#$HOSTNAME" "$@"
     '';
   };
-  rebuild-nubes = pkgs.writeShellApplication {
-    name = "rebuild-nubes";
-    text = ''
-      cd "$HOME/.dotfiles"
-      nixos-rebuild switch --flake .#nubes --target-host "root@nubes" "$@"
-    '';
-  };
-  rebuild-caelus = pkgs.writeShellApplication {
-    name = "rebuild-caelus";
-    text = ''
-      cd "$HOME/.dotfiles"
-      nixos-rebuild switch --flake .#caelus --target-host "root@caelus" "$@"
-    '';
-  };
+
+  # One rebuild-<node> per deploy-rs target, generated from self.deploy.nodes
+  # (nix/deployments.nix) so the host, ssh user and ssh options can never drift
+  # from what deploy-rs itself uses -- adding a node there is all it takes..
+  mkDeployRebuild =
+    name: node:
+    let
+      # Not named `system`: that reads as a platform string in Nix.
+      target = node.profiles.system;
+    in
+    pkgs.writeShellApplication {
+      name = "rebuild-${name}";
+      text = ''
+        cd "$HOME/.dotfiles"
+        # nixos-rebuild word-splits NIX_SSHOPTS, so the options are joined into
+        # one string rather than quoted individually.
+        export NIX_SSHOPTS=${lib.escapeShellArg (lib.concatStringsSep " " target.sshOpts)}
+        nixos-rebuild "''${REBUILD_ACTION:-switch}" --flake ".#${name}" \
+          --target-host "${target.sshUser}@${node.hostname}" "$@"
+      '';
+    };
+
+  deployRebuilds = lib.mapAttrsToList mkDeployRebuild self.deploy.nodes;
   # Ghaf board rebuilds: `nixos-rebuild boot` over SSH against a running
   # ghaf-host. Deliberately no `cd` — unlike rebuild-host/-nubes/-caelus these
   # act on the ghaf checkout you are standing in, not on ~/.dotfiles.
@@ -150,13 +161,13 @@ in
     # keep-sorted start
     deploy-hetzner-server
     dev
-    rebuild-caelus
     rebuild-host
-    rebuild-nubes
     sync-binaryninja
     update-host
     # keep-sorted end
   ]
   # rebuild-{agx,alien,darter,ghaf,x1} plus a -usb variant of each
-  ++ ghafRebuilds;
+  ++ ghafRebuilds
+  # rebuild-<node> for every deploy-rs target in nix/deployments.nix
+  ++ deployRebuilds;
 }

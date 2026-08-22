@@ -15,6 +15,39 @@
       pkgs,
       ...
     }:
+    let
+      # Reads only hostname/sshUser/sshOpts, never profiles.system.path: that
+      # evaluates the deploy-rs activation derivation, which would drag a full
+      # nixosConfiguration eval into every `nix develop`.
+      nodeSshCase = lib.concatStringsSep "\n" (
+        lib.mapAttrsToList (
+          name: node:
+          "    ${name}) ssh ${lib.escapeShellArgs node.profiles.system.sshOpts} ${node.profiles.system.sshUser}@${node.hostname} \"$@\" ;;"
+        ) self.deploy.nodes
+      );
+
+      reboot-nodes = pkgs.writeShellApplication {
+        name = "reboot-nodes";
+        runtimeInputs = [ pkgs.openssh ];
+        text = ''
+          REBOOT_NODES=${lib.escapeShellArg (lib.concatStringsSep " " (lib.attrNames self.deploy.nodes))}
+          readonly REBOOT_NODES
+
+          node_ssh() {
+            local node=$1
+            shift
+            case "$node" in
+          ${nodeSshCase}
+              *)
+                echo "reboot-nodes: unknown node '$node'" >&2
+                return 2
+                ;;
+            esac
+          }
+        ''
+        + builtins.readFile "${self}/packages/scripts/reboot-nodes.sh";
+      };
+    in
     {
       devshells.default = {
         devshell = {
@@ -91,29 +124,24 @@
           }
           {
             category = "deployment";
-            name = "deploy-argus";
-            help = "Deploy to argus (skips flake checks)";
+            name = "reboot-nodes";
+            help = "Reboot the deploy-rs nodes whose kernel/initrd changed";
             command = ''
-              ${pkgs.deploy-rs}/bin/deploy --skip-checks .#argus "$@"
+              exec ${reboot-nodes}/bin/reboot-nodes "$@"
             '';
           }
-          {
-            category = "deployment";
-            name = "deploy-caelus";
-            help = "Deploy to caelus server (skips flake checks)";
-            command = ''
-              ${pkgs.deploy-rs}/bin/deploy --skip-checks .#caelus "$@"
-            '';
-          }
-          {
-            category = "deployment";
-            name = "deploy-nubes";
-            help = "Deploy to nubes server (skips flake checks)";
-            command = ''
-              ${pkgs.deploy-rs}/bin/deploy --skip-checks .#nubes "$@"
-            '';
-          }
-        ];
+        ]
+        # One deploy-<node> per deploy-rs target, so the list here cannot drift
+        # from nix/deployments.nix -- which it had, deploy-argus having outlived
+        # the commented-out argus node.
+        ++ lib.mapAttrsToList (name: _: {
+          category = "deployment";
+          name = "deploy-${name}";
+          help = "Deploy to ${name} (skips flake checks)";
+          command = ''
+            ${pkgs.deploy-rs}/bin/deploy --skip-checks ".#${name}" "$@"
+          '';
+        }) self.deploy.nodes;
       };
     };
 }
