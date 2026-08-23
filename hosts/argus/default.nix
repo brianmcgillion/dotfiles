@@ -29,16 +29,7 @@
   sops.defaultSopsFile = ./secrets.yaml;
 
   features = {
-    # Enable AI features (CUDA auto-detected from hardware-nvidia)
-    # Note: Qwen3-Coder-480B-A35B is the best Qwen coding model but requires a cluster of GPUs
-    ai = {
-      enable = true;
-      ollama.models = [
-        "llama3.2:3b"
-        "qwen3-coder-next" # 80B MoE, 3B active — best local coding model (needs ~52GB RAM+VRAM)
-        "qwen3:30b-a3b" # 30B MoE, 3.3B active — fits fully in GPU VRAM
-      ];
-    };
+    ai.ollama.enable = true;
 
     networking = {
       # Enable Nebula network (secrets wired from ./secrets.yaml)
@@ -107,14 +98,8 @@
 
   networking.interfaces.enp173s0.useDHCP = true;
 
-  # RTX 5080 (Blackwell/GB203) requires open kernel modules
+  # RTX 5090 (Blackwell/GB202) requires open kernel modules
   hardware.nvidia.open = true;
-  # Track the latest kernel: nvidia-open (595.84) builds against 7.x again, so
-  # the old 6.12 pin is no longer needed. linuxPackages_latest is a moving
-  # target - if a future nixpkgs bump outruns nvidia-open, pin a series instead
-  # (e.g. linuxPackages_7_1).
-  # Plain assignment (no mkForce) so a future module pinning a kernel for a
-  # hardware reason surfaces as a conflict instead of being silently overridden.
   boot.kernelPackages = pkgs.linuxPackages_latest;
   hardware.cpu.amd.updateMicrocode = true;
 

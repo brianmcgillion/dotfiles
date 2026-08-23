@@ -40,19 +40,25 @@
   # Nix settings
   nix.settings.trusted-users = [ "brian" ];
 
-  # GitHub token for Nix flake operations (avoiding rate limits)
-  features.system.github-token = {
-    enable = true;
-    sopsFile = ./bmg-secrets.yaml;
-    owner = "brian";
-  };
+  # Personal secrets wired into features. Nested under one `features` rather
+  # than repeated `features.<x>` paths, which statix rejects as repeated keys.
+  features = {
+    system = {
+      # GitHub token for Nix flake operations (avoiding rate limits)
+      github-token = {
+        enable = true;
+        sopsFile = ./bmg-secrets.yaml;
+        owner = "brian";
+      };
 
-  # Remote builders (feature enabled in profile-client); the private key is
-  # provisioned from the builder-key sops secret so fresh installs build
-  # remotely without hand-copying it.
-  features.system.remote-builders = {
-    sshUser = "bmg";
-    sshKeySopsFile = ./bmg-secrets.yaml;
+      # Remote builders (feature enabled in profile-client); the private key is
+      # provisioned from the builder-key sops secret so fresh installs build
+      # remotely without hand-copying it.
+      remote-builders = {
+        sshUser = "bmg";
+        sshKeySopsFile = ./bmg-secrets.yaml;
+      };
+    };
   };
 
   # Personal SSH host aliases live in home-manager
@@ -85,7 +91,7 @@
       "disk"
     ]
     ++ (lib.optionals (config.features.development.docker.enable or false) [ "docker" ])
-    ++ (lib.optionals (config.features.ai.enable or false) [ "ollama" ]);
+    ++ (lib.optionals (config.features.ai.ollama.enable or false) [ "ollama" ]);
     shell = pkgs.bash;
     uid = 1000;
     hashedPasswordFile = config.sops.secrets.login-password.path;

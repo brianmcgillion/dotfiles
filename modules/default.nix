@@ -14,7 +14,7 @@ _: {
     profile-server = ./profiles/server.nix;
 
     # AI features
-    feature-ai = ./features/ai;
+    feature-ollama = ./features/ai/ollama.nix;
 
     # Desktop features
     feature-audio = ./features/desktop/audio.nix;

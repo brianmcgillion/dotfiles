@@ -44,7 +44,6 @@
     inputs.gp-gui.nixosModules.default
     inputs.seclab-pkgs.nixosModules.binaryninja
     inputs.srvos.nixosModules.desktop
-    self.nixosModules.feature-ai
     self.nixosModules.feature-audio
     self.nixosModules.feature-c2000-cgt
     self.nixosModules.feature-desktop-manager
@@ -55,6 +54,7 @@
     self.nixosModules.feature-greatfet
     self.nixosModules.feature-keyd
     self.nixosModules.feature-locale-fonts
+    self.nixosModules.feature-ollama
     self.nixosModules.feature-power-management
     self.nixosModules.feature-remarkable
     self.nixosModules.feature-saleae-logic
