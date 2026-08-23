@@ -2,49 +2,75 @@
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2025 Brian McGillion
 #
-# Pin the local Binary Ninja zip and stage it into the Nix store.
+# Re-pin the Binary Ninja hash in this checkout.
 #
-# Binary Ninja ships as an out-of-tree zip that cannot be a flake input (a
-# missing file would break `nix flake update` on every host). Instead
-# home/development/binary-ninja.nix pulls it in with pkgs.requireFile, pinned by
-# sha256. When you download a newer Binary Ninja build, run this script: it
-# computes the new hash, adds the zip to the Nix store (so requireFile resolves)
-# and rewrites the pinned sha256 in binary-ninja.nix.
+# Staging the zip into the nix store is no longer this script's job: the package
+# and its modules moved to seclab-pkgs, where `stage-required-files` handles the
+# requiredFiles/ drop-box. This only rewrites the
+# `features.development.binaryninja.sha256` assignment that a host config
+# carries, because that lives here and cannot be edited inside a flake input.
 #
 # Usage:
-#   sync-binaryninja
+#   sync-binaryninja <base32-sha256>
+#   sync-binaryninja --from <path/to/binaryninja_linux_dev_ultimate.zip>
 #
 # Environment:
-#   BINARYNINJA_ZIP  path to the zip (default below)
-#   PRJ_ROOT         dotfiles checkout (set by the devshell; else ~/.dotfiles)
+#   PRJ_ROOT  dotfiles checkout (set by the devshell; else ~/.dotfiles)
 #
-# Requires: nix (nix-hash, nix-store)
+# Requires: nix (nix-hash), git
 
-set -euo pipefail
+usage() {
+  sed -n '/^# Usage:/,/^#$/p' "$0" | sed 's/^# \?//'
+}
 
-zip="${BINARYNINJA_ZIP:-$HOME/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip}"
+if [ $# -eq 0 ]; then
+  usage >&2
+  exit 2
+fi
+
+case "$1" in
+--from)
+  [ $# -ge 2 ] || {
+    echo "sync-binaryninja: --from needs a path" >&2
+    exit 2
+  }
+  [ -f "$2" ] || {
+    echo "sync-binaryninja: no such file: $2" >&2
+    exit 1
+  }
+  new="$(nix-hash --type sha256 --flat --base32 "$2")"
+  ;;
+-h | --help)
+  usage
+  exit 0
+  ;;
+*) new="$1" ;;
+esac
+
 dotfiles="${PRJ_ROOT:-$HOME/.dotfiles}"
-nixfile="$dotfiles/home/development/binary-ninja.nix"
+[ -d "$dotfiles" ] || {
+  echo "sync-binaryninja: no such checkout: $dotfiles" >&2
+  exit 1
+}
 
-if [ ! -f "$zip" ]; then
-  echo "sync-binaryninja: Binary Ninja zip not found at:" >&2
-  echo "  $zip" >&2
-  echo "Download it (or set the BINARYNINJA_ZIP env var) and re-run." >&2
+# Find the single file carrying the pin. Failing loudly on 0 or >1 beats
+# rewriting the wrong host by accident.
+mapfile -t files < <(grep -rl 'binaryninja' --include='*.nix' "$dotfiles" |
+  xargs -r grep -l 'sha256 = "' 2>/dev/null || true)
+
+if [ "${#files[@]}" -eq 0 ]; then
+  echo "sync-binaryninja: no file under $dotfiles sets binaryninja sha256" >&2
+  exit 1
+fi
+if [ "${#files[@]}" -gt 1 ]; then
+  echo "sync-binaryninja: the pin appears in more than one file:" >&2
+  printf '  %s\n' "${files[@]}" >&2
+  echo "Edit the right one by hand." >&2
   exit 1
 fi
 
-if [ ! -f "$nixfile" ]; then
-  echo "sync-binaryninja: cannot find $nixfile (set \$PRJ_ROOT to the checkout)" >&2
-  exit 1
-fi
-
-new="$(nix-hash --type sha256 --flat --base32 "$zip")"
-
-# Stage the zip into the store so requireFile can resolve it. Idempotent:
-# re-adding an already-present fixed-output path is a no-op.
-nix-store --add-fixed sha256 "$zip" >/dev/null
-
-old="$(grep -oP 'sha256 = "\K[^"]+' "$nixfile" || true)"
+nixfile="${files[0]}"
+old="$(grep -oP 'sha256 = "\K[^"]+' "$nixfile")"
 
 if [ "$old" = "$new" ]; then
   echo "sync-binaryninja: pin already current ($new)"
@@ -52,5 +78,6 @@ if [ "$old" = "$new" ]; then
 fi
 
 sed -i -E 's|(sha256 = ")[^"]*(")|\1'"$new"'\2|' "$nixfile"
-echo "sync-binaryninja: updated pin $old -> $new"
-echo "sync-binaryninja: commit the change to $(basename "$nixfile")"
+echo "sync-binaryninja: updated pin in $(realpath --relative-to="$dotfiles" "$nixfile")"
+echo "  $old"
+echo "  -> $new"

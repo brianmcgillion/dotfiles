@@ -42,10 +42,10 @@
     # keep-sorted start
     ./common.nix
     inputs.gp-gui.nixosModules.default
+    inputs.seclab-pkgs.nixosModules.binaryninja
     inputs.srvos.nixosModules.desktop
     self.nixosModules.feature-ai
     self.nixosModules.feature-audio
-    self.nixosModules.feature-binaryninja
     self.nixosModules.feature-c2000-cgt
     self.nixosModules.feature-desktop-manager
     self.nixosModules.feature-docker

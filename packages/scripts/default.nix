@@ -55,8 +55,11 @@ let
     ];
   };
 
+  # Re-pins the Binary Ninja hash in this checkout. Staging the zip is
+  # seclab-pkgs' `stage-required-files`, not this.
   sync-binaryninja = pkgs.writeShellApplication {
     name = "sync-binaryninja";
+    runtimeInputs = [ pkgs.nix ];
     text = builtins.readFile ./sync-binaryninja.sh;
   };
 
@@ -65,11 +68,6 @@ let
     text = ''
       cd "$HOME/.dotfiles"
       nix flake update
-      # Re-pin the Binary Ninja zip only on hosts that actually have it; skipping
-      # keeps `update-host` working on hosts without the out-of-tree zip.
-      if [ -f "''${BINARYNINJA_ZIP:-$HOME/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip}" ]; then
-        ${sync-binaryninja}/bin/sync-binaryninja
-      fi
     '';
   };
 

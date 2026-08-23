@@ -33,8 +33,14 @@
     };
 
     development = {
-      # Binary Ninja - only enable on hosts with the zip source available
-      binaryninja.enable = true;
+      # Binary Ninja - only enable on hosts with the zip source available.
+      # The hash is per-user: it identifies the licensed dev-ultimate build you
+      # downloaded. Drop the zip into seclab-pkgs' requiredFiles/ and run
+      # `stage-required-files` to get it.
+      binaryninja = {
+        enable = true;
+        sha256 = "03ivd2iv9pa5xqw703aa46fzscb5shsxwj15vqwp6f6sj5kcpvaq";
+      };
       # STM32 development tools with udev rules
       stm32cubeprog.enable = true;
       # TI DSP development tools (UniFlash + XDS200 JTAG)

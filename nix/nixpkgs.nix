@@ -13,7 +13,10 @@
       _module.args.pkgs = import inputs.nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [ self.overlays.own-pkgs-overlay ];
+        overlays = [
+          self.overlays.own-pkgs-overlay
+          inputs.seclab-pkgs.overlays.default
+        ];
       };
     };
 }

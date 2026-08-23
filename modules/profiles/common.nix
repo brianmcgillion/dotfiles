@@ -76,7 +76,10 @@
 
     nixpkgs = {
       config.allowUnfree = true;
-      overlays = [ self.overlays.own-pkgs-overlay ];
+      overlays = [
+        self.overlays.own-pkgs-overlay
+        inputs.seclab-pkgs.overlays.default
+      ];
     };
 
     nix = {

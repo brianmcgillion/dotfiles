@@ -24,7 +24,6 @@ _: {
     feature-yubikey = ./features/desktop/yubikey.nix;
 
     # Development features
-    feature-binaryninja = ./features/development/binaryninja.nix;
     feature-c2000-cgt = ./features/development/c2000-cgt.nix;
     feature-docker = ./features/development/docker.nix;
     feature-emacs = ./features/development/emacs.nix;

@@ -19,5 +19,5 @@
   ]
   ++ lib.optionals osConfig.features.development.greatfet.enable [ pkgs.greatfet ]
   ++ lib.optionals osConfig.features.development.saleae-logic.enable [ pkgs.saleae-logic-2 ]
-  ++ lib.optionals osConfig.features.development.uniflash.enable [ pkgs.f28335-dump ];
+  ++ lib.optionals osConfig.features.development.uniflash.enable [ pkgs.f28335-tools ];
 }

@@ -4,10 +4,20 @@
   description = "First honest attempt to declare a system";
 
   nixConfig = {
-    extra-substituters = [ "https://nix-community.cachix.org" ];
+    substituters = [
+      "https://cache.nixos.org"
+      "https://nix-community.cachix.org"
+    ];
+    extra-substituters = [
+      "https://cache.nixos.org"
+      "https://nix-community.cachix.org"
+    ];
     extra-trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
+
+    allow-import-from-derivation = false;
   };
 
   inputs = {
@@ -126,18 +136,12 @@
       };
     };
 
-    nix-binary-ninja = {
-      url = "github:jchv/nix-binary-ninja";
+    seclab-pkgs = {
+      url = "github:Crypto-TII/seclab-pkgs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # AI coding agents (claude-code native binary, claude-agent-acp, ccusage,
-    # ccstatusline, coderabbit-cli, ...). Updated daily upstream and pinned
-    # independently of nixos-unstable so Claude Code can be bumped on its own.
-    # Intentionally NOT following nixpkgs: keeping their pinned nixpkgs makes
-    # store paths match numtide's CI so the cache.numtide.com substituter hits.
     llm-agents.url = "github:numtide/llm-agents.nix";
-
   };
 
   outputs =

@@ -4,7 +4,7 @@
 # Reverse engineering / binary analysis. Entered with `dev reverse-engineering`.
 #
 # Binary Ninja is deliberately absent: it is an out-of-tree requireFile vendor
-# zip owned by home/development/binary-ninja.nix and gated on
+# zip owned by seclab-pkgs' homeModules.binaryninja and gated on
 # features.development.binaryninja.enable, so pulling it in here would break
 # this shell on every host that does not have the zip staged.
 #
@@ -18,9 +18,14 @@
       # pwntools already propagates ROPGadget - so `pkgs.ropgadget` alongside
       # this env collides on bin/.ROPgadget-wrapped. One env, no collisions,
       # and `python` in the shell can import all of them.
-      pythonEnv = pkgs.python3.withPackages (
+      #
+      # TODO: FIX: Pinned to python313 rather than pkgs.python3 (3.14): angr and its suite
+      # are only packaged for 3.13, and two interpreters in one buildEnv
+      # collide on bin/idle3.
+      pythonEnv = pkgs.python313.withPackages (
         ps: with ps; [
           # keep-sorted start
+          angr
           capstone
           frida-python
           pwntools
@@ -37,7 +42,7 @@
       devshells.reverse-engineering = {
         devshell = {
           name = "reverse-engineering";
-          meta.description = "Binary analysis: ghidra, rizin, gdb+gef, lldb, frida, pwntools";
+          meta.description = "Binary analysis: ghidra+ReVa, angr, rizin, gdb+gef, lldb, frida, pwntools";
           packages = [
             # keep-sorted start
             pkgs.binutils
@@ -47,7 +52,7 @@
             pkgs.frida-tools
             pkgs.gdb
             pkgs.gef
-            pkgs.ghidra
+            pkgs.ghidra-re
             pkgs.hexyl
             pkgs.lldb
             pkgs.ltrace
