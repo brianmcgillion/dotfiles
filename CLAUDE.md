@@ -43,7 +43,7 @@ nixos-rebuild dry-run --flake .#<hostname>      # Fast validation
 nixos-rebuild dry-activate --flake .#<hostname> # Build + show activation
 ```
 
-Available hosts: `arcadia` (desktop), `argus` (ML desktop, RTX 5080), `minerva` (laptop), `nubes` (dedicated server), `caelus` (cloud server)
+Available hosts: `arcadia` (desktop), `argus` (ML desktop, RTX 5090, 32 GB VRAM), `minerva` (laptop), `nubes` (dedicated server), `caelus` (cloud server)
 
 ## Architecture
 

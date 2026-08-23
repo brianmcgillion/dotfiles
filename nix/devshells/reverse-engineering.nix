@@ -7,6 +7,7 @@
 # zip owned by home/development/binary-ninja.nix and gated on
 # features.development.binaryninja.enable, so pulling it in here would break
 # this shell on every host that does not have the zip staged.
+#
 {
   perSystem =
     { pkgs, ... }:
@@ -21,11 +22,13 @@
         ps: with ps; [
           # keep-sorted start
           capstone
+          frida-python
           pwntools
           pyelftools
           ropgadget
           ropper
           unicorn
+          z3-solver
           # keep-sorted end
         ]
       );
@@ -34,26 +37,32 @@
       devshells.reverse-engineering = {
         devshell = {
           name = "reverse-engineering";
-          meta.description = "Binary analysis: ghidra, rizin, gdb+gef, pwntools";
+          meta.description = "Binary analysis: ghidra, rizin, gdb+gef, lldb, frida, pwntools";
           packages = [
             # keep-sorted start
             pkgs.binutils
             pkgs.binwalk
             pkgs.cutter
             pkgs.file
+            pkgs.frida-tools
             pkgs.gdb
             pkgs.gef
             pkgs.ghidra
             pkgs.hexyl
+            pkgs.lldb
             pkgs.ltrace
             pkgs.patchelf
             pkgs.qemu
             pkgs.radare2
             pkgs.rizin
+            pkgs.scanmem
             pkgs.strace
+            pkgs.unixtools.xxd
             pkgs.upx
             pkgs.valgrind
+            pkgs.volatility3
             pkgs.yara
+            pkgs.z3
             # keep-sorted end
             pythonEnv
           ];
