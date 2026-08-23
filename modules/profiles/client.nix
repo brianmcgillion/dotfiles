@@ -55,6 +55,7 @@
     self.nixosModules.feature-keyd
     self.nixosModules.feature-locale-fonts
     self.nixosModules.feature-ollama
+    self.nixosModules.feature-opencode
     self.nixosModules.feature-power-management
     self.nixosModules.feature-remarkable
     self.nixosModules.feature-saleae-logic
@@ -89,6 +90,8 @@
 
     # Enable client features by default
     features = {
+      ai.opencode.enable = lib.mkDefault true;
+
       desktop = {
         audio.enable = lib.mkDefault true;
         desktop-manager.enable = lib.mkDefault true;

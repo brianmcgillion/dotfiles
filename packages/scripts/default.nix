@@ -4,6 +4,7 @@
 # build-time shellcheck; a failed cd aborts instead of running nix commands
 # against the wrong directory).
 {
+  config,
   lib,
   pkgs,
   self,
@@ -15,6 +16,13 @@ let
   # flake-parts perSystem evaluation (treefmt, git-hooks, devshell module) into
   # every nixos-rebuild just to list five strings.
   devShellNames = import ../../nix/devshells/names.nix;
+
+  # Whether to bake the Binary Ninja re-pin into update-host. Guarded on the
+  # feature rather than on the zip existing: the previous version probed the
+  # filesystem, so it ran on hosts that never enabled binaryninja. `or false`
+  # because the option comes from seclab-pkgs' module, imported by
+  # profile-client only.
+  binaryninjaEnabled = config.features.development.binaryninja.enable or false;
 
   dev-unwrapped = pkgs.writeShellApplication {
     name = "dev";
@@ -65,9 +73,25 @@ let
 
   update-host = pkgs.writeShellApplication {
     name = "update-host";
+    runtimeInputs = lib.optional binaryninjaEnabled sync-binaryninja;
     text = ''
       cd "$HOME/.dotfiles"
       nix flake update
+    ''
+    + lib.optionalString binaryninjaEnabled ''
+
+      # Re-pin the Binary Ninja hash against the current zip. Only reachable
+      # on hosts that enable the feature, so update-host is exactly
+      # `nix flake update` everywhere else.
+      zip="''${BINARYNINJA_ZIP:-$HOME/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip}"
+      if [ -f "$zip" ]; then
+        sync-binaryninja --from "$zip"
+      else
+        # Not fatal: update-host's job is the flake update, and the zip is
+        # out-of-tree so it may legitimately be absent right now.
+        echo "update-host: no Binary Ninja zip at $zip -- skipping re-pin" >&2
+        echo "  set BINARYNINJA_ZIP, or run: sync-binaryninja --from <zip>" >&2
+      fi
     '';
   };
 

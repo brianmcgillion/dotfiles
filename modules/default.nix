@@ -15,6 +15,7 @@ _: {
 
     # AI features
     feature-ollama = ./features/ai/ollama.nix;
+    feature-opencode = ./features/ai/opencode.nix;
 
     # Desktop features
     feature-audio = ./features/desktop/audio.nix;

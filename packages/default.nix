@@ -36,6 +36,8 @@
         inherit (llm) ccusage;
         inherit (llm) ccstatusline;
         inherit (llm) coderabbit-cli;
+        inherit (llm) opencode;
+        inherit (llm) oh-my-opencode;
 
         rebiber = final.callPackage ./rebiber/default.nix { };
         remarkable-sync = final.callPackage ./remarkable-sync/default.nix { };
