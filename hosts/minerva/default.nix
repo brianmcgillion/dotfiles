@@ -39,7 +39,7 @@
       # `stage-required-files` to get it.
       binaryninja = {
         enable = true;
-        sha256 = "03ivd2iv9pa5xqw703aa46fzscb5shsxwj15vqwp6f6sj5kcpvaq";
+        sha256 = "07v6qfrijamzdzqlh0n0j9bg41xcz1hgmsp3gmzkpn3p4xldvdmz";
       };
       # STM32 development tools with udev rules
       stm32cubeprog.enable = true;
