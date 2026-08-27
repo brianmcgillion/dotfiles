@@ -18,6 +18,7 @@
 # repo-maintenance shell, not a portable language environment.
 [
   # keep-sorted start
+  "ai"
   "c-cpp"
   "embedded"
   "go"

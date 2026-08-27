@@ -15,7 +15,7 @@ nix develop
 # Portable devshells - usable from ANY directory, not just this repo.
 # Defined in nix/devshells/, listed in nix/devshells/names.nix.
 dev list                          # Show shells and which are already built
-dev rust                          # Enter a shell (c-cpp, embedded, go, python, reverse-engineering, rust)
+dev rust                          # Enter a shell (ai, c-cpp, embedded, go, python, reverse-engineering, rust)
 dev rust -c cargo build           # Run one command inside it
 dev rust --fast                   # Re-enter from the built profile, skipping evaluation
 dev c-cpp,reverse-engineering     # Stack shells: layered, later entries win on PATH

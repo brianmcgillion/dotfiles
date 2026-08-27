@@ -43,6 +43,7 @@
     ./common.nix
     inputs.gp-gui.nixosModules.default
     inputs.seclab-pkgs.nixosModules.binaryninja
+    inputs.seclab-pkgs.nixosModules.freetoken
     inputs.srvos.nixosModules.desktop
     self.nixosModules.feature-audio
     self.nixosModules.feature-c2000-cgt
