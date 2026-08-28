@@ -44,3 +44,9 @@ path = ".claude/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
 SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "home/shell/cheatsheets/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022-2025 Brian McGillion"
+SPDX-License-Identifier = "MIT"

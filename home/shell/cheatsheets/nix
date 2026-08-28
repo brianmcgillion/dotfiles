@@ -1,0 +1,170 @@
+---
+tags: [ nix, nixos ]
+---
+
+# ---------------------------------------------------------------------------
+# nix-env : imperative package management (legacy, but useful for profiles)
+# ---------------------------------------------------------------------------
+
+# Install a package into the current profile
+nix-env -i hello
+
+# List generations; each newly installed change makes a new generation
+nix-env --list-generations
+
+# List all derivations available in a profile
+nix-env -q
+
+# Move back to the previous generation
+nix-env --rollback
+
+# Go to a specific generation
+nix-env -G <no>
+
+# ---------------------------------------------------------------------------
+# nix-store : dependency queries, garbage collection, repair
+# ---------------------------------------------------------------------------
+
+# Direct runtime dependencies of a binary
+nix-store -q --references `which hello`
+
+# Full closure: every dependency the package needs
+nix-store -qR `which man`
+
+# Same closure, as a tree
+nix-store -q --tree `which man`
+
+# List the result files holding GC roots (what is stopping garbage collection)
+nix-store --gc --print-roots | egrep -v "^(/nix/var|/run/\w+-system|\{memory|/proc)"
+
+# Collect garbage
+nix-store --gc
+nix-collect-garbage
+
+# EXTREME cleanup: GC, drop grub menu entries, remove old home-manager profiles
+rm /nix/var/nix/gcroots/auto/*
+nix-collect-garbage -d
+
+# Force removal of a store path. Useful for:
+#   error parsing derivation '/nix/store/...-cabal-install-3.drv': expected string 'D'
+sudo nix store delete --ignore-liveness <FILE>
+
+# Attempt to repair broken store paths
+sudo nix store verify --repair --all
+
+# ---------------------------------------------------------------------------
+# nix-channel
+# ---------------------------------------------------------------------------
+
+# Show currently installed channels
+nix-channel --list
+
+# Update channels (like apt-get update); creates a new channel generation
+nix-channel --update
+
+# ---------------------------------------------------------------------------
+# nix repl
+# ---------------------------------------------------------------------------
+
+# Enter the repl
+nix repl
+
+# Search the built-in repl commands
+nix-repl> :?
+
+# Deeper inspection: prefix a statement with :p
+nix-repl> :p inputs.jetpack-nixos.shortRev
+
+# Load a flake and inspect it
+nix-repl> :lf .#
+nix-repl> nixosConfigurations.vm-debug.config.ghaf.host.networking
+nix-repl> outputs.packages.aarch64-linux.<TAB>
+
+# Backtrace while in the debugger
+nix-repl> :bt
+
+# Find where an option is actually set, via definitionsWithLocations
+nix-repl> :p nixosConfigurations.<host>.config.microvm.vms.net-vm.config.options.hardware.enableAllHardware.definitionsWithLocations
+
+# ---------------------------------------------------------------------------
+# Updating a channel-based system
+# ---------------------------------------------------------------------------
+
+nix-channel --update
+nix-env -u --always
+rm /nix/var/nix/gcroots/auto/*
+nix-collect-garbage -d
+
+# ---------------------------------------------------------------------------
+# nix develop : drop into a dev shell for a package, targeting a given system
+# ---------------------------------------------------------------------------
+
+nix develop .#nixosConfigurations.nvidia-jetson-orin-agx-debug-from-x86_64.pkgs.hyprland
+
+# Then step through the build phases by hand
+unpackPhase
+cd source
+patchPhase
+configurePhase
+buildPhase
+
+# ---------------------------------------------------------------------------
+# Dependency graphs (sbomnix / nixgraph)
+# ---------------------------------------------------------------------------
+
+# Graph the dependencies of a toplevel config
+nix run github:tiiuae/sbomnix#nixgraph -- .#nixosConfigurations.nvidia-jetson-orin-agx-debug-from-x86_64.config.system.build.toplevel --depth 100 --buildtime --inverse="nixos-container" --colorize="nixos-container"
+
+# Graph how one package pulls in another
+nix run github:tiiuae/sbomnix#nixgraph -- .#nixosConfigurations.nvidia-jetson-orin-agx-debug-from-x86_64.pkgs.sdl3 --depth 100 --buildtime --inverse="qtsvg" --colorize="qtsvg"
+
+# ---------------------------------------------------------------------------
+# Eval debugging
+# ---------------------------------------------------------------------------
+
+# Trace where eval warnings come from; abort-on-warn stops the toplevel eval
+nix-eval-jobs --workers 2 --option abort-on-warn true --show-trace --force-recurse --flake .#nixosConfigurations.<host>.config.system.build.toplevel
+
+# Drop into the debugger on the first error or warning
+nix eval .#<host> --debugger --debugger-on-warn --impure --ignore-try
+
+# ---------------------------------------------------------------------------
+# nix-fast-build
+# ---------------------------------------------------------------------------
+
+# Build all targets for the local architecture (usually x86 and -from_x86)
+nix-fast-build -f .#packages --option accept-flake-config true --eval-workers 25 --option builders ''
+
+# Build all laptop targets (ignore nvidia and nxp)
+nix-fast-build -f .#packages.x86_64-linux --select 'ps: builtins.removeAttrs ps (builtins.filter (n: builtins.match ".*(nvidia|nxp).*" n != null) (builtins.attrNames ps))' --option accept-flake-config true --eval-workers 25 --option builders ''
+
+# Build all nxp targets
+nix-fast-build -f .#packages.x86_64-linux --select 'ps: { inherit (ps) nxp-imx8mp-evk-debug-from-x86_64 nxp-imx8mp-evk-release-from-x86_64; }' --option accept-flake-config true --eval-workers 25 --option builders ''
+
+# Build the bootable nvidia targets only (skip flash scripts and images)
+nix-fast-build -f .#packages.x86_64-linux --select 'ps: builtins.removeAttrs ps (builtins.filter (n: builtins.match ".*nvidia.*" n == null || builtins.match ".*-(flash-qspi|flash-script|ghafImage)" n != null) (builtins.attrNames ps))' --option accept-flake-config true --eval-workers 25 --option builders ''
+
+# Build all nvidia targets
+nix-fast-build -f .#packages.x86_64-linux --select 'ps: builtins.removeAttrs ps (builtins.filter (n: builtins.match ".*nvidia.*" n == null) (builtins.attrNames ps))' --option accept-flake-config true --eval-workers 25 --option builders ''
+
+# Build all native aarch64 targets
+nix-fast-build -f .#packages.aarch64-linux --option accept-flake-config true --eval-workers 25 --systems aarch64-linux
+
+# ---------------------------------------------------------------------------
+# Build outputs and closure sizes
+# ---------------------------------------------------------------------------
+
+# Build a specific VM and print where its output lands
+nix build --print-out-paths .#nixosConfigurations.<host>.config.microvm.vms.net-vm.config.config.system.build.toplevel
+
+# Component parts of a build output, sorted by size
+nix-store --query --requisites /nix/store/<path> | xargs du -sm | sort -n | tail -n 50
+
+# Closure size of something you still have to build
+nix path-info --closure-size $(nix build --print-out-paths --no-link .#nixosConfigurations.<host>.config.microvm.vms.chrome-vm.config.config.system.build.toplevel)
+
+# Closure size when you already have the output path
+nix path-info --closure-size /nix/store/<path>
+
+# Every dependency with its size, largest last
+nix path-info -rsSh <store-path> | tail -20

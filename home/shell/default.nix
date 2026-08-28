@@ -4,6 +4,7 @@
 _: {
   imports = [
     ./basic.nix
+    ./cheat.nix
     ./fzf.nix
     ./kitty.nix
     ./ghostty.nix

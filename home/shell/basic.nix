@@ -5,7 +5,6 @@
   home = {
     packages = [
       # keep-sorted start
-      pkgs.cheat
       pkgs.curlie
       pkgs.delta
       pkgs.doggo # dns related like dogdns
