@@ -34,6 +34,14 @@
     # Get to the bottom of it
     flake-root.url = "github:srid/flake-root";
 
+    # Declared only so transitive consumers can `follows` onto one copy.
+    systems.url = "github:nix-systems/default";
+
+    flake-utils = {
+      url = "github:numtide/flake-utils";
+      inputs.systems.follows = "systems";
+    };
+
     # Format all the things
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -80,7 +88,10 @@
 
     nix-ai = {
       url = "github:olafkfreund/nix-ai-help";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+      };
     };
 
     # index of the nixpkgs
@@ -109,8 +120,11 @@
     # Used for deploying remote systems
     deploy-rs = {
       url = "github:serokell/deploy-rs";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-compat.follows = "flake-compat";
+      inputs = {
+        flake-compat.follows = "flake-compat";
+        nixpkgs.follows = "nixpkgs";
+        utils.follows = "flake-utils";
+      };
     };
 
     srvos = {
@@ -138,10 +152,27 @@
 
     seclab-pkgs = {
       url = "github:Crypto-TII/seclab-pkgs";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        devshell.follows = "devshell";
+        flake-compat.follows = "flake-compat";
+        flake-parts.follows = "flake-parts";
+        flake-root.follows = "flake-root";
+        git-hooks-nix.follows = "git-hooks-nix";
+        nix-binary-ninja.inputs.flake-utils.follows = "flake-utils";
+        nixpkgs.follows = "nixpkgs";
+        treefmt-nix.follows = "treefmt-nix";
+      };
     };
 
-    llm-agents.url = "github:numtide/llm-agents.nix";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        nixpkgs.follows = "nixpkgs";
+        systems.follows = "systems";
+        treefmt-nix.follows = "treefmt-nix";
+      };
+    };
   };
 
   outputs =
