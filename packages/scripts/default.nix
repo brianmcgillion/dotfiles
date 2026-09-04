@@ -83,7 +83,7 @@ let
       # Re-pin the Binary Ninja hash against the current zip. Only reachable
       # on hosts that enable the feature, so update-host is exactly
       # `nix flake update` everywhere else.
-      zip="''${BINARYNINJA_ZIP:-$HOME/projects/tools/binaryninja/binaryninja_linux_dev_ultimate.zip}"
+      zip="''${BINARYNINJA_ZIP:-$HOME/Documents/binaries/binary-ninja/binaryninja_linux_dev_ultimate.zip}"
       if [ -f "$zip" ]; then
         sync-binaryninja --from "$zip"
       else

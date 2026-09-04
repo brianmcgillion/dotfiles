@@ -100,7 +100,11 @@
         yubikey.enable = lib.mkDefault true;
       };
       development = {
-        binaryninja.enable = lib.mkDefault false;
+        # One shared pin: every client syncs the same zip
+        binaryninja = {
+          enable = lib.mkDefault false;
+          sha256 = "1j1grvngh9izc6h8six1lg6ssb4fwkl3ps9075b8gzmf6yxx5gls";
+        };
         docker.enable = lib.mkDefault true;
         emacs.enable = lib.mkDefault true;
         emacs-ui.enable = lib.mkDefault true;

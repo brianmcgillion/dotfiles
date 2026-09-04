@@ -36,6 +36,10 @@
     # ever earns a permanent place (a service, or daily use).
     ai.ollama.enable = true;
 
+    # Binary Ninja - the zip syncs to ~/Documents/binaries/binary-ninja; stage
+    # it once per host with `nix-store --add-fixed sha256 <zip>`.
+    development.binaryninja.enable = true;
+
     networking = {
       # Enable Nebula network (secrets wired from ./secrets.yaml)
       nebula = {

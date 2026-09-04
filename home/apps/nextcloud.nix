@@ -11,6 +11,7 @@
 # - ~/Documents/EPUB                      <-> /Documents/EPUB (ebooks)
 # - ~/Documents/org/remarkable/downloads  <-> /Documents/remarkable/downloads (PDFs with annotations)
 # - ~/Documents/org/remarkable/notes      <-> /Documents/remarkable/notes (handwritten notes as PDF)
+# - ~/Documents/binaries                  <-> /binaries (binary artifacts)
 #
 # NOT synced (local only):
 # - ~/Documents/org/remarkable/outbox (temporary staging for upload)
@@ -46,6 +47,7 @@ let
     "Documents/EPUB" = "/Documents/EPUB";
     "Documents/org/remarkable/downloads" = "/Documents/remarkable/downloads";
     "Documents/org/remarkable/notes" = "/Documents/remarkable/notes";
+    "Documents/binaries" = "/binaries";
   };
 
   # Every pair is attempted; the unit fails (visible in systemctl status)
@@ -53,7 +55,8 @@ let
   syncScript = pkgs.writeShellScript "nextcloud-sync" ''
     set -u
     rc=0
-    mkdir -p "$HOME/Documents/org/remarkable"/{downloads,outbox,notes}
+    # outbox is local-only staging; every synced dir is created by the loop below
+    mkdir -p "$HOME/Documents/org/remarkable/outbox"
     ${lib.concatStringsSep "\n" (
       lib.mapAttrsToList (local: remote: ''
         mkdir -p "$HOME/${local}"
