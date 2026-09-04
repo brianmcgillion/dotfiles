@@ -40,6 +40,7 @@
     # it once per host with `nix-store --add-fixed sha256 <zip>`.
     development.binaryninja = {
       enable = true;
+      mcp.enable = true;
       sidekick.enable = true;
     };
 

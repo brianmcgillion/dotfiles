@@ -15,16 +15,18 @@
 #   };
 { homeDirectory }:
 {
-  binary-ninja-mcp = {
-    command = "npx";
-    args = [
-      "-y"
-      "binary-ninja-mcp"
-      "--host"
-      "localhost"
-      "--port"
-      "9009"
-    ];
+  # Binary Ninja 6.0 has two MCP servers of its own, which between them
+  # replaced the community `binary-ninja-mcp` npx bridge that used to be here:
+  binaryninja = {
+    transport = "http";
+    url = "http://127.0.0.1:24642/mcp";
+  };
+
+  # The headless one, which spawns its own analysis core per client rather
+  # than attaching to the UI so the two see entirely separate state.
+  binaryninja-headless = {
+    command = "binaryninja_mcp";
+    args = [ "-p" ];
   };
 
   mcp-nixos = {

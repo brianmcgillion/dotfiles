@@ -37,6 +37,7 @@
       # store; the shared hash pin lives in profiles/client.nix.
       binaryninja = {
         enable = true;
+        mcp.enable = true;
         sidekick.enable = true;
       };
       # STM32 development tools with udev rules
