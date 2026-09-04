@@ -4,6 +4,7 @@
 {
   imports = [
     ./base-system.nix
+    ./binaryninja.nix
     ./claude
     ./copilot.nix
     ./graphical.nix
