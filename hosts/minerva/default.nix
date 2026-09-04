@@ -35,7 +35,10 @@
     development = {
       # Binary Ninja - only enable on hosts with the zip staged into the nix
       # store; the shared hash pin lives in profiles/client.nix.
-      binaryninja.enable = true;
+      binaryninja = {
+        enable = true;
+        sidekick.enable = true;
+      };
       # STM32 development tools with udev rules
       stm32cubeprog.enable = true;
       # TI DSP development tools (UniFlash + XDS200 JTAG)

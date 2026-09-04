@@ -128,8 +128,9 @@
       };
     };
 
-    # Only available when dirty
-    system.configurationRevision = if (self ? rev) then self.rev else self.dirtyShortRev;
+    # `rev` on a clean tree, `dirtyShortRev` when dirty. With --override-input
+    # nix supplies neither, so fall back rather than failing to evaluate.
+    system.configurationRevision = self.rev or self.dirtyShortRev or "unknown";
 
     security.sudo.wheelNeedsPassword = false;
 

@@ -552,11 +552,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788531578,
-        "narHash": "sha256-2W+BuglbZqcGVksA08hidhor458O17aDQYkV1WIE3o4=",
+        "lastModified": 1788534171,
+        "narHash": "sha256-NVGWskSLMJqudONjZQHV374dsxncA+2T9MUgYtmaTug=",
         "owner": "Crypto-TII",
         "repo": "seclab-pkgs",
-        "rev": "a392d230c60971667b76e44f9f3123df528b9319",
+        "rev": "5f59a6ac6554a9e6647a1a682c426a38c401ab37",
         "type": "github"
       },
       "original": {
