@@ -192,6 +192,34 @@ let
     ) mcpServers
   );
 
+  # Servers registered by hand that nix should leave alone. Anything in user
+  # scope that is neither declared in ../mcp-servers.nix nor listed here is
+  # removed on rebuild.
+  mcpUnmanaged = [ ];
+
+  # `claude mcp add` is one-way: dropping a server from the catalog used to
+  # leave its registration in ~/.config/claude/.claude.json forever. That is
+  # worse than untidy — a stale stdio wrapper answers the MCP handshake and
+  # advertises its full tool list without ever reaching the thing it fronts,
+  # so it reports "connected" while every tool call fails at use time.
+  mcpPruneCommand =
+    let
+      keep = lib.concatStringsSep "\n" (lib.attrNames mcpServers ++ mcpUnmanaged);
+    in
+    ''
+      mcp_keep=${lib.escapeShellArg keep}
+      mcp_config="$CLAUDE_CONFIG_DIR/.claude.json"
+      if [ -f "$mcp_config" ] && jq empty "$mcp_config" 2>/dev/null; then
+        while IFS= read -r mcp_name; do
+          [ -n "$mcp_name" ] || continue
+          if ! printf '%s\n' "$mcp_keep" | grep -qxF "$mcp_name"; then
+            echo "claude-plugin-sync: removing undeclared MCP server $mcp_name"
+            claude mcp remove "$mcp_name" --scope user 2>/dev/null || true
+          fi
+        done < <(jq -r '.mcpServers // {} | keys[]' "$mcp_config")
+      fi
+    '';
+
   pluginSyncScript = pkgs.writeShellApplication {
     name = "claude-plugin-sync";
     runtimeInputs = [
@@ -242,6 +270,8 @@ let
         done
         # Ensure nix-managed MCP servers are registered.
         ${mcpAddCommands}
+        # Then drop any user-scope server nix no longer declares.
+        ${mcpPruneCommand}
       else
         echo "claude-plugin-sync: claude not found, seeding settings only"
       fi

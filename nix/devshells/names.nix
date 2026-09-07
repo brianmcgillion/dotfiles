@@ -19,6 +19,7 @@
 [
   # keep-sorted start
   "ai"
+  "binary-analysis"
   "c-cpp"
   "embedded"
   "go"
