@@ -20,6 +20,7 @@
             pkgs.patchelf
             pkgs.strace
             pkgs.unixtools.xxd
+            pkgs.upx
             # keep-sorted end
           ];
         };
