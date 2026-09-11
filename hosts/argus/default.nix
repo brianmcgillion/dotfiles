@@ -17,16 +17,6 @@
 
   time.timeZone = "Asia/Dubai";
 
-  # Unfree CUDA is not on cache.nixos.org; without this cache every nixpkgs bump
-  # triggers a long local rebuild of ollama-cuda, and of the CUDA 13 toolkit
-  # that the `dev ai` devshell's FreeToken sandbox carries.
-  nix.settings = {
-    extra-substituters = [ "https://cuda-maintainers.cachix.org" ];
-    extra-trusted-public-keys = [
-      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-    ];
-  };
-
   sops.defaultSopsFile = ./secrets.yaml;
 
   features = {

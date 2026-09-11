@@ -116,11 +116,40 @@ cmd_list() {
   done < <(shells)
 }
 
-# nix-direnv layers `use flake` rather than replacing, so one line per shell
-# gives an editor every toolchain in the stack at once.
+# nix-direnv's gcroot refresh globs flake-profile-*, which also matches the .rc
+# caches it compares against; touching those makes every later shell in a stack
+# look stale. Touch only the roots - symlinks, unlike the .rc files.
+envrc_gcroot_override() {
+  cat <<'EOF'
+# Overrides nix-direnv's. Lost to an upgrade, it costs a rebuild per reload.
+_nix_refresh_gcroots() {
+  local dir root
+  dir=$(direnv_layout_dir)
+  for root in "$dir"/flake-profile-* "$dir"/nix-profile-* "$dir"/flake-inputs/*; do
+    if [ -L "$root" ]; then touch -h "$root"; fi
+  done
+}
+EOF
+}
+
+# nix-direnv wipes the whole layout dir (_nix_clean_old_gcroots) whenever it
+# regenerates a profile, so stacked `use flake` lines sharing one dir evict each
+# other: every load rebuilds every shell, and the .rc direnv is still watching
+# vanishes, re-triggering the load on the next prompt. One dir per shell.
+#
+# $1 is their base, written out as-is: a literal $PWD from `dev init` for direnv
+# to expand at load, an already-resolved path from `dev tmp`.
 envrc_use_lines() {
-  local name
+  local base=$1 name
+  shift
+
+  # A lone shell shares with nobody; omitting both keeps its .envrc as it was.
+  if [ "$#" -gt 1 ]; then
+    envrc_gcroot_override
+  fi
+
   for name in "$@"; do
+    [ "$#" -gt 1 ] && printf 'direnv_layout_dir="%s/%s"\n' "$base" "$name"
     # shellcheck disable=SC2016  # literal on purpose: direnv expands it at load
     printf 'use flake "${DOTFILES_DIR:-$HOME/.dotfiles}#%s"\n' "$name"
   done
@@ -139,7 +168,8 @@ cmd_init() {
     printf '# Managed by "dev init %s" - see ~/.dotfiles/nix/devshells/\n' "$spec"
     [ "${#names[@]}" -gt 1 ] &&
       printf '# Shells layer in order; later entries take PATH precedence.\n'
-    envrc_use_lines "${names[@]}"
+    # shellcheck disable=SC2016  # literal on purpose: direnv expands it at load
+    envrc_use_lines '$PWD/.direnv' "${names[@]}"
   } >.envrc
   printf 'dev: wrote %s/.envrc for %s\n' "$PWD" "$spec"
 
@@ -217,7 +247,7 @@ cmd_tmp() {
     printf '# Ephemeral - created by "dev tmp %s", removed when that shell exits.\n' "$spec"
     printf '# Safe to delete at any time.\n'
     printf 'direnv_layout_dir=%s\n' "$layout"
-    envrc_use_lines "${names[@]}"
+    envrc_use_lines "$layout" "${names[@]}"
   } >"$envrc"
 
   # shellcheck disable=SC2064  # expand now: the trap must capture today's paths
