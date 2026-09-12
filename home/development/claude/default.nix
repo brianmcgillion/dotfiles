@@ -52,6 +52,8 @@ let
     (official "plugin-dev") # only when authoring plugins/skills
     (official "pr-review-toolkit") # redundant with code-review/coderabbit
     (official "github") # Copilot MCP needs auth; gh CLI used
+    # Superseded by the OAuth `context7` server in ../mcp-servers.nix.
+    (official "context7")
     "building-secure-contracts@trailofbits" # blockchain — irrelevant here
     "co-researcher@co-researcher-marketplace" # heavy; enable on-demand for research
   ];

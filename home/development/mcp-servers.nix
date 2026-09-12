@@ -84,7 +84,7 @@
     copilot = false; # OAuth flow is only wired up through Claude Code
   };
 
-  # Claude Code gets serena and context7 via plugins instead.
+  # Claude Code gets serena via a plugin instead.
   serena = {
     command = "uvx";
     args = [
@@ -98,7 +98,15 @@
     claude = false;
   };
 
+  # OAuth 2.1 against the /mcp/oauth endpoint
   context7 = {
+    transport = "http";
+    url = "https://mcp.context7.com/mcp/oauth";
+    copilot = false; # as with atlassian, the OAuth flow is Claude Code's alone
+  };
+
+  # Copilot cannot run that flow, so it keeps the stdio server.
+  context7-stdio = {
     command = "npx";
     args = [
       "-y"
