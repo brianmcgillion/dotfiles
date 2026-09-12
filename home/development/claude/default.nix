@@ -3,8 +3,8 @@
 #
 # Claude Code CLI configuration
 #
-# Deployed as a mix of read-only nix-store symlinks (statusline script) and a
-# nix-seeded *writable* settings.json.
+# Deployed as a mix of read-only nix-store symlinks (statusline script,
+# user-level CLAUDE.md) and a nix-seeded *writable* settings.json.
 # To update: edit these files, run `nix fmt && sudo nixos-rebuild switch`.
 #
 # Plugin/skill management (nix is the source of truth for what is *available*):
@@ -317,6 +317,11 @@ in
       source = ./statusline-command.sh;
       executable = true;
     };
+
+    # User-level memory: loaded in every session of every project (a project's
+    # own CLAUDE.md wins on conflict). Read-only, so `/memory` and `#` cannot
+    # edit it — change ./user-memory.md and rebuild.
+    ".config/claude/CLAUDE.md".source = ./user-memory.md;
   };
 
   # Sync on activation: seed settings.json, register marketplaces, install
