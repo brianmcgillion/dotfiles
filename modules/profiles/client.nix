@@ -82,10 +82,14 @@
         # AI agent tooling from numtide/llm-agents.nix (npm/bun builds land here).
         "https://cache.numtide.com"
         "https://nix-community.cachix.org"
+        # pwndbg builds gdb, lldb and ~40 sdists from source without it.
+        "https://pwndbg.cachix.org"
       ];
       extra-trusted-public-keys = [
         "ghaf-dev.cachix.org-1:S3M8x3no8LFQPBfHw1jl6nmP8A7cVWKntoMKN3IsEQY="
         "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "pwndbg.cachix.org-1:HhtIpP7j73SnuzLgobqqa8LVTng5Qi36sQtNt79cD3k="
       ];
     };
 
