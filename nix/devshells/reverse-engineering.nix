@@ -8,6 +8,11 @@
 # features.development.binaryninja.enable, so pulling it in here would break
 # this shell on every host that does not have the zip staged.
 #
+# unblob is absent for a different reason: nixpkgs cannot build it right now.
+# Its python fs dependency (via pyfatfs) is marked broken since setuptools 83
+# dropped pkg_resources, and partclone no longer compiles against nilfs-utils
+# 2.3.1. binwalk covers the same ground until both land upstream.
+#
 {
   perSystem =
     { pkgs, ... }:
@@ -56,12 +61,14 @@
             pkgs.hexyl
             pkgs.lldb
             pkgs.ltrace
+            pkgs.mcp-reva
             pkgs.patchelf
             pkgs.qemu
             pkgs.radare2
             pkgs.rizin
             pkgs.scanmem
             pkgs.strace
+            #pkgs.unblob
             pkgs.unixtools.xxd
             pkgs.upx
             pkgs.valgrind
