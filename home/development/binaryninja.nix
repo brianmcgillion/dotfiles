@@ -3,12 +3,12 @@
 # Personal Binary Ninja bits that are not part of the package.
 #
 # The package, its plugin Python dependencies and the Sidekick venv all live in
-# seclab-pkgs (nixosModules/homeModules.binaryninja). This is only the colour
-# scheme, which is a preference rather than something to ship to other hosts.
+# seclab-pkgs (nixosModules/homeModules.binaryninja). This adds the two things
+# that module leaves out: the colour scheme and the TMS320C28x plugin.
 #
-# Binary Ninja reads themes from the `themes` subdirectory of its user folder
-# and never writes them, so a read-only store symlink is safe inside
-# ~/.binaryninja even though the GUI owns the rest of that directory.
+# Binary Ninja reads themes and plugins from its user folder and never writes
+# to them, so read-only store symlinks are safe inside ~/.binaryninja even
+# though the GUI owns the rest of that directory.
 #
 # Selecting the theme is still a one-time GUI step:
 #   Edit > Preferences > Settings > search "Theme" > Dracula
@@ -30,7 +30,10 @@ let
   };
 in
 {
-  home.file.".binaryninja/themes/Dracula.bntheme" = lib.mkIf cfg.enable {
-    source = dracula;
+  home.file = lib.mkIf cfg.enable {
+    ".binaryninja/themes/Dracula.bntheme".source = dracula;
+    # From seclab-pkgs' overlay, applied in profiles/common.nix. Its $out is
+    # the plugin directory itself, so the whole derivation links into place.
+    ".binaryninja/plugins/tms320c28x".source = pkgs.tms320c28x-binja;
   };
 }
