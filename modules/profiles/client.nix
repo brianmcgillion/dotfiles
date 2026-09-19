@@ -244,10 +244,6 @@
       pkgs.usbutils
       pkgs.wally-cli
       # keep-sorted end
-    ]
-    ++ [
-      inputs.nix-ai.packages."${pkgs.stdenv.hostPlatform.system}".default
-      #inputs.globalprotect-openconnect.packages."${pkgs.stdenv.hostPlatform.system}".default
     ];
 
     # Developer documentation

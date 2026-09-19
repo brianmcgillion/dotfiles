@@ -95,13 +95,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-ai = {
-      url = "github:olafkfreund/nix-ai-help";
-      inputs = {
-        flake-utils.follows = "flake-utils";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
+    # nix-ai = {
+    #   url = "github:olafkfreund/nix-ai-help";
+    #   inputs = {
+    #     flake-utils.follows = "flake-utils";
+    #     nixpkgs.follows = "nixpkgs";
+    #   };
+    # };
 
     # index of the nixpkgs
     nix-index-database = {
