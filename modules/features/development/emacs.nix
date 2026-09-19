@@ -43,8 +43,16 @@ let
   emacsPkgs = pkgs.emacsPackagesFor pkgs.emacs-git-pgtk;
   emacs = emacsPkgs.emacsWithPackages (epkgs: [
     # keep-sorted start
+    # cuda: nixpkgs' pinned hash is stale against the upstream v0.21.2 tarball.
+    # Fixed in nixpkgs master; drop once nixos-unstable carries it.
     (epkgs.treesit-grammars.with-grammars (
-      grammars: builtins.attrValues (removeAttrs grammars [ "tree-sitter-quint" ])
+      grammars:
+      builtins.attrValues (
+        removeAttrs grammars [
+          "tree-sitter-cuda"
+          "tree-sitter-quint"
+        ]
+      )
     ))
     epkgs.djvu
     # Spell checking; links libenchant, which reads the aspell dicts below.
