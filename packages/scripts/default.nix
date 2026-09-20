@@ -24,6 +24,10 @@ let
   # profile-client only.
   binaryninjaEnabled = config.features.development.binaryninja.enable or false;
 
+  # Where the Nextcloud sync (home/apps/nextcloud.nix) drops the zip.
+  binaryninjaZip = "$HOME/Documents/binaries/binary-ninja/binaryninja_linux_dev_ultimate.zip";
+  binaryninjaSha256 = config.features.development.binaryninja.sha256 or "";
+
   dev-unwrapped = pkgs.writeShellApplication {
     name = "dev";
     text = ''
@@ -83,7 +87,7 @@ let
       # Re-pin the Binary Ninja hash against the current zip. Only reachable
       # on hosts that enable the feature, so update-host is exactly
       # `nix flake update` everywhere else.
-      zip="''${BINARYNINJA_ZIP:-$HOME/Documents/binaries/binary-ninja/binaryninja_linux_dev_ultimate.zip}"
+      zip="''${BINARYNINJA_ZIP:-${binaryninjaZip}}"
       if [ -f "$zip" ]; then
         sync-binaryninja --from "$zip"
       else
@@ -97,10 +101,22 @@ let
 
   rebuild-host = pkgs.writeShellApplication {
     name = "rebuild-host";
-    text = ''
-      cd "$HOME/.dotfiles"
-      sudo nixos-rebuild switch --flake ".#$HOSTNAME" "$@"
-    '';
+    runtimeInputs = lib.optional binaryninjaEnabled pkgs.nix;
+    text =
+      lib.optionalString binaryninjaEnabled ''
+        # seclab-pkgs' requireFile only looks in the store, so a zip that merely
+        # exists in ~/Documents fails the build until it is staged.
+        zip="''${BINARYNINJA_ZIP:-${binaryninjaZip}}"
+        staged="$(nix-store --print-fixed-path sha256 \
+          "${binaryninjaSha256}" binaryninja_linux_dev_ultimate.zip)"
+        if [ ! -e "$staged" ] && [ -f "$zip" ]; then
+          nix-store --add-fixed sha256 "$zip" >/dev/null
+        fi
+      ''
+      + ''
+        cd "$HOME/.dotfiles"
+        sudo nixos-rebuild switch --flake ".#$HOSTNAME" "$@"
+      '';
   };
 
   # One rebuild-<node> per deploy-rs target, generated from self.deploy.nodes
