@@ -36,7 +36,10 @@
       };
     };
 
-    starship.enable = true;
+    starship = {
+      enable = true;
+      settings.scan_timeout = 100;
+    };
 
     direnv = {
       enable = true;
