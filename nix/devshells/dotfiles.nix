@@ -100,10 +100,10 @@
           }
           {
             category = "development";
-            name = "sync-binaryninja";
-            help = "Re-pin the local Binary Ninja zip and stage it into the Nix store";
+            name = "sync-vendor-binaries";
+            help = "Record and stage the vendor installers in ~/Documents/binaries";
             command = ''
-              exec ${pkgs.writeScriptBin "sync-binaryninja" (builtins.readFile "${self}/packages/scripts/sync-binaryninja.sh")}/bin/sync-binaryninja "$@"
+              exec ${pkgs.writeScriptBin "sync-vendor-binaries" (builtins.readFile "${self}/packages/scripts/sync-vendor-binaries.sh")}/bin/sync-vendor-binaries "$@"
             '';
           }
           {

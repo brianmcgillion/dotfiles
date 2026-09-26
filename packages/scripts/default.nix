@@ -4,7 +4,6 @@
 # build-time shellcheck; a failed cd aborts instead of running nix commands
 # against the wrong directory).
 {
-  config,
   lib,
   pkgs,
   self,
@@ -17,16 +16,9 @@ let
   # every nixos-rebuild just to list five strings.
   devShellNames = import ../../nix/devshells/names.nix;
 
-  # Whether to bake the Binary Ninja re-pin into update-host. Guarded on the
-  # feature rather than on the zip existing: the previous version probed the
-  # filesystem, so it ran on hosts that never enabled binaryninja. `or false`
-  # because the option comes from seclab-pkgs' module, imported by
-  # profile-client only.
-  binaryninjaEnabled = config.features.development.binaryninja.enable or false;
-
-  # Where the Nextcloud sync (home/apps/nextcloud.nix) drops the zip.
-  binaryninjaZip = "$HOME/Documents/binaries/binary-ninja/binaryninja_linux_dev_ultimate.zip";
-  binaryninjaSha256 = config.features.development.binaryninja.sha256 or "";
+  # Where the Nextcloud sync (home/apps/nextcloud.nix) drops vendor installers.
+  vendorBinariesDir = "$HOME/Documents/binaries";
+  vendorBinaries = lib.importJSON ../../modules/profiles/vendor-binaries.json;
 
   dev-unwrapped = pkgs.writeShellApplication {
     name = "dev";
@@ -67,52 +59,44 @@ let
     ];
   };
 
-  # Re-pins the Binary Ninja hash in this checkout. Staging the zip is
-  # seclab-pkgs' `stage-required-files`, not this.
-  sync-binaryninja = pkgs.writeShellApplication {
-    name = "sync-binaryninja";
+  # Records the synced vendor installers in vendor-binaries.json and stages them.
+  sync-vendor-binaries = pkgs.writeShellApplication {
+    name = "sync-vendor-binaries";
     runtimeInputs = [ pkgs.nix ];
-    text = builtins.readFile ./sync-binaryninja.sh;
+    text = builtins.readFile ./sync-vendor-binaries.sh;
   };
 
   update-host = pkgs.writeShellApplication {
     name = "update-host";
-    runtimeInputs = lib.optional binaryninjaEnabled sync-binaryninja;
+    runtimeInputs = [ sync-vendor-binaries ];
     text = ''
       cd "$HOME/.dotfiles"
       nix flake update
-    ''
-    + lib.optionalString binaryninjaEnabled ''
 
-      # Re-pin the Binary Ninja hash against the current zip. Only reachable
-      # on hosts that enable the feature, so update-host is exactly
-      # `nix flake update` everywhere else.
-      zip="''${BINARYNINJA_ZIP:-${binaryninjaZip}}"
-      if [ -f "$zip" ]; then
-        sync-binaryninja --from "$zip"
+      if [ -d "''${VENDOR_BINARIES:-${vendorBinariesDir}}" ]; then
+        sync-vendor-binaries
       else
-        # Not fatal: update-host's job is the flake update, and the zip is
-        # out-of-tree so it may legitimately be absent right now.
-        echo "update-host: no Binary Ninja zip at $zip -- skipping re-pin" >&2
-        echo "  set BINARYNINJA_ZIP, or run: sync-binaryninja --from <zip>" >&2
+        # Not fatal: update-host's job is the flake update, and the installers
+        # are out-of-tree so they may legitimately be absent right now.
+        echo "update-host: no ${vendorBinariesDir} -- skipping sync-vendor-binaries" >&2
       fi
     '';
   };
 
   rebuild-host = pkgs.writeShellApplication {
     name = "rebuild-host";
-    runtimeInputs = lib.optional binaryninjaEnabled pkgs.nix;
+    runtimeInputs = [ pkgs.nix ];
     text =
-      lib.optionalString binaryninjaEnabled ''
-        # seclab-pkgs' requireFile only looks in the store, so a zip that merely
-        # exists in ~/Documents fails the build until it is staged.
-        zip="''${BINARYNINJA_ZIP:-${binaryninjaZip}}"
+      # seclab-pkgs' requireFile only looks in the store, so an installer that
+      # merely exists in ~/Documents fails the build until it is staged.
+      lib.concatMapStrings (artifact: ''
+        file="''${VENDOR_BINARIES:-${vendorBinariesDir}}/${artifact.path}"
         staged="$(nix-store --print-fixed-path sha256 \
-          "${binaryninjaSha256}" binaryninja_linux_dev_ultimate.zip)"
-        if [ ! -e "$staged" ] && [ -f "$zip" ]; then
-          nix-store --add-fixed sha256 "$zip" >/dev/null
+          "${artifact.sha256}" "${baseNameOf artifact.path}")"
+        if [ ! -e "$staged" ] && [ -f "$file" ]; then
+          nix-store --add-fixed sha256 "$file" >/dev/null
         fi
-      ''
+      '') (lib.attrValues vendorBinaries)
       + ''
         cd "$HOME/.dotfiles"
         sudo nixos-rebuild switch --flake ".#$HOSTNAME" "$@"
@@ -200,7 +184,7 @@ in
     deploy-hetzner-server
     dev
     rebuild-host
-    sync-binaryninja
+    sync-vendor-binaries
     update-host
     # keep-sorted end
   ]

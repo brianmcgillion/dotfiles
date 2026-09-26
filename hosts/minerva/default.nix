@@ -32,21 +32,11 @@
       };
     };
 
-    development = {
-      # Binary Ninja - only enable on hosts with the zip staged into the nix
-      # store; the shared hash pin lives in profiles/client.nix.
-      binaryninja = {
-        enable = true;
-        mcp.enable = true;
-        sidekick.enable = true;
-      };
-      # STM32 development tools with udev rules
-      stm32cubeprog.enable = true;
-      # TI DSP development tools (UniFlash + XDS200 JTAG)
-      uniflash.enable = true;
-      # TI C2000 code generation toolchain (cl2000/lnk2000/ar2000) for
-      # TMS320F28xxx firmware audit / reverse-engineering work.
-      c2000-cgt.enable = true;
+    # Binary Ninja, STM32 and TI tools are enabled by profiles/client.nix from
+    # vendor-binaries.json.
+    development.binaryninja = {
+      mcp.enable = true;
+      sidekick.enable = true;
     };
 
     # Per-device keyboard remapping — swap caps/ctrl only on the internal

@@ -1,0 +1,58 @@
+---
+tags: [ stm32, embedded, swd ]
+---
+
+# Addresses below are the STM32F4 (F405/F407) map.
+# mode=UR connects under reset; mode=HOTPLUG attaches without resetting the core.
+# freq is the SWD clock in kHz.
+
+# List attached probes (ST-LINK serials, firmware)
+STM32_Programmer_CLI -l st-link
+
+# Connect only: prints device ID, name, type, CPU, flash size, bootloader version
+STM32_Programmer_CLI -c port=SWD mode=UR freq=480
+
+# Display option bytes: RDP level (0xAA = L0, 0xCC = L2, else L1), BOR, WRP, nRST_*
+STM32_Programmer_CLI -c port=SWD mode=HOTPLUG -ob displ
+
+# DBGMCU_IDCODE: DEV_ID in bits 11:0 (0x413 = F405/407), REV_ID in bits 31:16
+STM32_Programmer_CLI -c port=SWD mode=HOTPLUG -r32 0xE0042000 4
+
+# 96-bit unique device ID
+STM32_Programmer_CLI -c port=SWD mode=HOTPLUG -r32 0x1FFF7A10 12
+
+# Flash size in KiB is the upper 16 bits of this word (0x1FFF7A22)
+STM32_Programmer_CLI -c port=SWD mode=HOTPLUG -r32 0x1FFF7A20 4
+
+# Dumps. Under RDP L1 flash reads fail while the debugger is attached; SRAM/CCM still read.
+# Use mode=HOTPLUG instead of UR to snapshot RAM from a running target.
+
+# Dump main SRAM (128 KiB)
+STM32_Programmer_CLI -c port=SWD mode=UR freq=480 -r 0x20000000 0x20000 /tmp/sram.bin
+
+# Dump CCM RAM (64 KiB)
+STM32_Programmer_CLI -c port=SWD mode=UR freq=480 -r 0x10000000 0x10000 /tmp/ccm.bin
+
+# Dump internal flash (1 MiB)
+STM32_Programmer_CLI -c port=SWD mode=UR freq=480 -r 0x08000000 0x100000 /tmp/flash.bin
+
+# Dump the system-memory bootloader (30 KiB)
+STM32_Programmer_CLI -c port=SWD mode=UR freq=480 -r 0x1FFF0000 0x7800 /tmp/bootL.bin
+
+# Dump OTP area (512 bytes) plus its 16 lock bytes
+STM32_Programmer_CLI -c port=SWD mode=UR freq=480 -r 0x1FFF7800 0x210 /tmp/otp.bin
+
+# Dump backup SRAM (4 KiB). Its clock is off after reset and reads return zeros, so first set
+# RCC_AHB1ENR.BKPSRAMEN; 0x00140000 is the reset value (CCM on) plus that bit.
+STM32_Programmer_CLI -c port=SWD mode=UR freq=480 -w32 0x40023830 0x00140000 -r 0x40024000 0x1000 /tmp/bkpsram.bin
+
+# Same on a running target: the firmware owns RCC_AHB1ENR, so keep its bits.
+# 1. Read the current RCC_AHB1ENR; if bit 18 (0x00040000) is already set, skip to step 3
+STM32_Programmer_CLI -c port=SWD mode=HOTPLUG -r32 0x40023830 4
+# 2. OR in BKPSRAMEN and write it back
+STM32_Programmer_CLI -c port=SWD mode=HOTPLUG -w32 0x40023830 $(printf '0x%08X' $(( <ahb1enr> | 0x00040000 )))
+# 3. Dump
+STM32_Programmer_CLI -c port=SWD mode=HOTPLUG -r 0x40024000 0x1000 /tmp/bkpsram.bin
+
+# Dump the 20 RTC backup registers RTC_BKP0R..BKP19R (80 bytes); -r32 instead prints them
+STM32_Programmer_CLI -c port=SWD mode=UR freq=480 -r 0x40002850 0x50 /tmp/bkpreg.bin

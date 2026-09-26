@@ -25,7 +25,8 @@
 # Enabled features by default (see the features block below — it is the
 # authoritative list): audio, desktop-manager, power-management, yubikey,
 # sshd (hardened), docker, emacs, emacs-ui, greatfet, remarkable,
-# saleae-logic, locale-fonts, remote-builders
+# saleae-logic, locale-fonts, remote-builders; binaryninja, stm32cubeprog,
+# uniflash and c2000-cgt when vendor-binaries.json lists their installers
 #
 # Note: SSH is enabled by default via the hardened features.security.sshd
 # module (key-only auth, fail2ban). Disable per-host with:
@@ -37,6 +38,10 @@
   pkgs,
   ...
 }:
+let
+  # Written by sync-vendor-binaries from ~/Documents/binaries.
+  vendorBinaries = lib.importJSON ./vendor-binaries.json;
+in
 {
   imports = [
     # keep-sorted start
@@ -106,15 +111,20 @@
       development = {
         # One shared pin: every client syncs the same zip
         binaryninja = {
-          enable = lib.mkDefault false;
-          sha256 = "1j1grvngh9izc6h8six1lg6ssb4fwkl3ps9075b8gzmf6yxx5gls";
+          enable = lib.mkDefault (vendorBinaries ? binaryninja);
+          sha256 = vendorBinaries.binaryninja.sha256 or null;
         };
+        # f28335-tools comes with uniflash (home/development/embedded.nix) and
+        # wraps c2000-cgt, whose own download is public.
+        c2000-cgt.enable = lib.mkDefault (vendorBinaries ? uniflash);
         docker.enable = lib.mkDefault true;
         emacs.enable = lib.mkDefault true;
         emacs-ui.enable = lib.mkDefault true;
         greatfet.enable = lib.mkDefault true;
         remarkable.enable = lib.mkDefault true;
         saleae-logic.enable = lib.mkDefault true;
+        stm32cubeprog.enable = lib.mkDefault (vendorBinaries ? stm32cubeprogrammer);
+        uniflash.enable = lib.mkDefault (vendorBinaries ? uniflash);
       };
       security = {
         # Hardened SSH (key-only auth + fail2ban) — same feature module the

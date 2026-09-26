@@ -26,10 +26,9 @@
     # ever earns a permanent place (a service, or daily use).
     ai.ollama.enable = true;
 
-    # Binary Ninja - the zip syncs to ~/Documents/binaries/binary-ninja; stage
-    # it once per host with `nix-store --add-fixed sha256 <zip>`.
+    # Binary Ninja itself is enabled by profiles/client.nix from
+    # vendor-binaries.json.
     development.binaryninja = {
-      enable = true;
       mcp.enable = true;
       sidekick.enable = true;
     };

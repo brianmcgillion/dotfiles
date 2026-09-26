@@ -1,0 +1,5 @@
+{
+  "binaryninja": { "path": "binary-ninja/binaryninja_linux_dev_ultimate.zip", "sha256": "1j1grvngh9izc6h8six1lg6ssb4fwkl3ps9075b8gzmf6yxx5gls" },
+  "stm32cubeprogrammer": { "path": "STM32CubeProgrammer/SetupSTM32CubeProgrammer_linux_64.zip", "sha256": "0aj4cxhzqnf0imb44bpv340vsv1fvimvd6qz4jrmxi28l2jn17ka" },
+  "uniflash": { "path": "uniflash/uniflash_sl.9.6.0.5764.run", "sha256": "170d9d0bc3r105vsxgk59pjhpfdl2ryajvjaaaf9k4il13x8prv6" }
+}
