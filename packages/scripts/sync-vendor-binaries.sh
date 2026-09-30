@@ -42,7 +42,11 @@ artifacts=(
 entries=()
 for ((i = 0; i < ${#artifacts[@]}; i += 2)); do
   key="${artifacts[i]}"
-  mapfile -t found < <(compgen -G "$src/${artifacts[i + 1]}" || true)
+  found=()
+  # Unquoted so the glob expands; the -f test drops a literal path that is absent.
+  for file in "$src"/${artifacts[i + 1]}; do
+    [ -f "$file" ] && found+=("$file")
+  done
   case "${#found[@]}" in
   0) continue ;;
   1) ;;
