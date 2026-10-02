@@ -36,6 +36,10 @@
         inherit (llm) ccusage;
         inherit (llm) ccstatusline;
         inherit (llm) coderabbit-cli;
+        inherit (llm) codex;
+        # The Codex desktop app ships as `chatgpt`: one Electron app, both
+        # products. See modules/features/ai/codex.nix.
+        inherit (llm) chatgpt;
         inherit (llm) opencode;
         inherit (llm) oh-my-opencode;
 

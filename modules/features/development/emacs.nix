@@ -97,8 +97,6 @@ in
       (pkgs.aspellWithDicts (ds: [
         # keep-sorted start
         ds.en
-        ds.en-computers
-        ds.en-science
         # keep-sorted end
       ]))
       epdfinfo

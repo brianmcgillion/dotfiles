@@ -96,9 +96,6 @@
         lib.mapAttrs (_: value: { flake = value; }) (
           lib.filterAttrs (name: _: !builtins.elem name nonFlakeInputs) inputs
         );
-      # This will additionally add your inputs to the system's legacy channels
-      # Making legacy nix commands consistent as well
-      nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
       settings = {
         system-features = [
@@ -116,6 +113,10 @@
         # Run builds in their own cgroups (better isolation/accounting;
         # also a prerequisite if auto-allocate-uids is ever enabled)
         use-cgroups = true;
+
+        # This will additionally add your inputs to the system's legacy channels
+        # Making legacy nix commands consistent as well
+        nix-path = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
       };
 
       # Store optimisation via the periodic timer (auto-optimise-store is

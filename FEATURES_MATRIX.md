@@ -15,7 +15,9 @@ Overview of which features are enabled on each host.
 
 | Feature | arcadia | minerva | argus | nubes | caelus |
 |---------|---------|---------|-------|-------|--------|
+| Codex (CLI + desktop app) | ✓ | ✓ | ✓ | ― | ― |
 | Ollama (LLM inference) | ○ | ○ | ✗ | ― | ― |
+| OpenCode (oh-my-openagent) | ✓ | ✓ | ✓ | ― | ― |
 
 ## Desktop Features
 

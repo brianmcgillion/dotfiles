@@ -14,6 +14,7 @@ _: {
     profile-server = ./profiles/server.nix;
 
     # AI features
+    feature-codex = ./features/ai/codex.nix;
     feature-ollama = ./features/ai/ollama.nix;
     feature-opencode = ./features/ai/opencode.nix;
 

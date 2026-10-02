@@ -64,10 +64,35 @@
   # Personal SSH host aliases live in home-manager
   # (home/security/ssh-config.nix), not in /etc/ssh/ssh_config.
 
-  sops.secrets.login-password = {
-    neededForUsers = true;
-    sopsFile = ./bmg-secrets.yaml;
+  sops = {
+    secrets = {
+      login-password = {
+        neededForUsers = true;
+        sopsFile = ./bmg-secrets.yaml;
+      };
+
+      # OpenAI API key consumed by Codex CLI. The rendered environment file is
+      # owned by Brian and is created outside the Nix store by sops-nix.
+      openai-api-key = {
+        sopsFile = ./bmg-secrets.yaml;
+        owner = "brian";
+        mode = "0400";
+      };
+    };
+    templates."openai-api-key-env" = {
+      owner = "brian";
+      mode = "0400";
+      content = ''
+        export OPENAI_API_KEY="${config.sops.placeholder.openai-api-key}"
+      '';
+    };
   };
+
+  programs.bash.interactiveShellInit = ''
+    if [[ -r ${config.sops.templates."openai-api-key-env".path} ]]; then
+      source ${config.sops.templates."openai-api-key-env".path}
+    fi
+  '';
 
   users.users.brian = {
     isNormalUser = true;

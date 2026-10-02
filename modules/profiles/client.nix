@@ -52,6 +52,7 @@ in
     inputs.srvos.nixosModules.desktop
     self.nixosModules.feature-audio
     self.nixosModules.feature-c2000-cgt
+    self.nixosModules.feature-codex
     self.nixosModules.feature-desktop-manager
     self.nixosModules.feature-docker
     self.nixosModules.feature-emacs
@@ -100,6 +101,7 @@ in
 
     # Enable client features by default
     features = {
+      ai.codex.enable = lib.mkDefault true;
       ai.opencode.enable = lib.mkDefault true;
 
       desktop = {
