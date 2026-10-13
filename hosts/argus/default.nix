@@ -28,9 +28,13 @@
 
     # Binary Ninja itself is enabled by profiles/client.nix from
     # vendor-binaries.json.
-    development.binaryninja = {
-      mcp.enable = true;
-      sidekick.enable = true;
+    development = {
+      binaryninja = {
+        mcp.enable = true;
+        sidekick.enable = true;
+      };
+      forensics.enable = true;
+      virtualbox.enable = true;
     };
 
     networking = {

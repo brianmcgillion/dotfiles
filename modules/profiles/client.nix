@@ -58,6 +58,7 @@ in
     self.nixosModules.feature-emacs
     self.nixosModules.feature-emacs-ui
     self.nixosModules.feature-fail2ban
+    self.nixosModules.feature-forensics
     self.nixosModules.feature-greatfet
     self.nixosModules.feature-keyd
     self.nixosModules.feature-locale-fonts
@@ -69,6 +70,7 @@ in
     self.nixosModules.feature-sshd
     self.nixosModules.feature-stm32cubeprog
     self.nixosModules.feature-uniflash
+    self.nixosModules.feature-virtualbox
     self.nixosModules.feature-wireguard
     self.nixosModules.feature-yubikey
     self.nixosModules.scripts

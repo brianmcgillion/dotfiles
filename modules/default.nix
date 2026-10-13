@@ -30,11 +30,13 @@ _: {
     feature-docker = ./features/development/docker.nix;
     feature-emacs = ./features/development/emacs.nix;
     feature-emacs-ui = ./features/development/emacs-ui.nix;
+    feature-forensics = ./features/development/forensics.nix;
     feature-greatfet = ./features/development/greatfet.nix;
     feature-remarkable = ./features/development/remarkable.nix;
     feature-saleae-logic = ./features/development/saleae-logic.nix;
     feature-stm32cubeprog = ./features/development/stm32cubeprog.nix;
     feature-uniflash = ./features/development/uniflash.nix;
+    feature-virtualbox = ./features/development/virtualbox.nix;
 
     # Networking features
     feature-nebula = ./features/networking/nebula.nix;

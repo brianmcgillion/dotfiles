@@ -22,7 +22,7 @@
     };
 
     overlays.own-pkgs-overlay =
-      final: _prev:
+      final: prev:
       let
         # AI coding agents sourced from numtide/llm-agents.nix (see flake.nix).
         # Aliasing claude-code / claude-agent-acp here routes every existing
@@ -42,6 +42,12 @@
         inherit (llm) chatgpt;
         inherit (llm) opencode;
         inherit (llm) oh-my-opencode;
+
+        # nixpkgs builds ewfmount without fuse (configure wants pkg-config
+        # `fuse`; fuse3 is not detected), so mounting an E01 fails at runtime.
+        libewf = prev.libewf.overrideAttrs (o: {
+          buildInputs = o.buildInputs ++ [ final.fuse ];
+        });
 
         rebiber = final.callPackage ./rebiber/default.nix { };
         remarkable-sync = final.callPackage ./remarkable-sync/default.nix { };

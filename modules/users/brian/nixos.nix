@@ -116,6 +116,7 @@
       "disk"
     ]
     ++ (lib.optionals (config.features.development.docker.enable or false) [ "docker" ])
+    ++ (lib.optionals (config.features.development.virtualbox.enable or false) [ "vboxusers" ])
     ++ (lib.optionals (config.features.ai.ollama.enable or false) [ "ollama" ]);
     shell = pkgs.bash;
     uid = 1000;

@@ -34,9 +34,13 @@
 
     # Binary Ninja, STM32 and TI tools are enabled by profiles/client.nix from
     # vendor-binaries.json.
-    development.binaryninja = {
-      mcp.enable = true;
-      sidekick.enable = true;
+    development = {
+      binaryninja = {
+        mcp.enable = true;
+        sidekick.enable = true;
+      };
+      forensics.enable = true;
+      virtualbox.enable = true;
     };
 
     # Per-device keyboard remapping — swap caps/ctrl only on the internal

@@ -38,6 +38,13 @@ in
       desktopManager.gnome.enable = true;
     };
 
+    # Qt6 apps load qtbase's libqgtk3 platform theme on GNOME, and GTK3's
+    # file chooser aborts the process if its GSettings schemas are absent —
+    # GNOME 50 adds no gtk3 schema dir to XDG_DATA_DIRS.
+    environment.sessionVariables.XDG_DATA_DIRS = [
+      "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+    ];
+
     # Fix GDM permission errors for session data directories (the greeter
     # runs as the gdm user on NixOS) — ICC profiles, ibus, gnome-shell and
     # keyring want these to exist.

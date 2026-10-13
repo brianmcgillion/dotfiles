@@ -1,3 +1,5 @@
+| VirtualBox (with Extension Pack) | ○ | ✗ | ✗ | ― | ― |
+| Forensic images (libewf) | ○ | ✗ | ✗ | ― | ― |
 # Features Matrix
 
 Overview of which features are enabled on each host.
@@ -43,6 +45,8 @@ Overview of which features are enabled on each host.
 | STM32CubeProgrammer | ○ | ✗ | ○ | ― | ― |
 | UniFlash (TI) | ○ | ✗ | ○ | ― | ― |
 | C2000 codegen tools (TI) | ○ | ✗ | ○ | ― | ― |
+| VirtualBox (with Extension Pack) | ○ | ✗ | ✗ | ― | ― |
+| Forensic images (libewf) | ○ | ✗ | ✗ | ― | ― |
 
 ## Networking Features
 
