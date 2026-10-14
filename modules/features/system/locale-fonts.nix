@@ -22,6 +22,9 @@
 # - Source Serif: Adobe's serif font family
 # - FiraGO: Modern sans-serif with extended character support
 # - Symbola: Unicode symbol font
+# - Corefonts, Vista fonts: the real Microsoft faces (Arial, Times New Roman,
+#   Courier New, Calibri, Cambria, Consolas, Verdana, Tahoma, Webdings). Unfree
+#   but redistributable; OnlyOffice needs them for template and bullet fidelity.
 #
 # Default fonts:
 # - Sans-serif: FiraGO
@@ -66,7 +69,8 @@ in
       packages = [
         # keep-sorted start
         pkgs.carlito
-        #pkgs.fira-go
+        pkgs.corefonts
+        pkgs.fira-go
         pkgs.fira-sans
         pkgs.font-awesome
         pkgs.liberation_ttf
@@ -76,6 +80,7 @@ in
         pkgs.source-serif
         pkgs.symbola
         pkgs.vegur
+        pkgs.vista-fonts
         # keep-sorted end
       ];
 

@@ -58,7 +58,6 @@ in
     self.nixosModules.feature-emacs
     self.nixosModules.feature-emacs-ui
     self.nixosModules.feature-fail2ban
-    self.nixosModules.feature-forensics
     self.nixosModules.feature-greatfet
     self.nixosModules.feature-keyd
     self.nixosModules.feature-locale-fonts
@@ -252,6 +251,7 @@ in
       pkgs.keymapp
       pkgs.man-pages
       pkgs.man-pages-posix
+      pkgs.onlyoffice-desktopeditors
       pkgs.pciutils
       pkgs.rebiber
       pkgs.solaar

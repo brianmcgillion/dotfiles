@@ -39,7 +39,6 @@
         mcp.enable = true;
         sidekick.enable = true;
       };
-      forensics.enable = true;
       virtualbox.enable = true;
     };
 

@@ -43,18 +43,44 @@
         inherit (llm) opencode;
         inherit (llm) oh-my-opencode;
 
-        # nixpkgs builds ewfmount without fuse (configure wants pkg-config
-        # `fuse`; fuse3 is not detected), so mounting an E01 fails at runtime.
-        libewf = prev.libewf.overrideAttrs (o: {
-          buildInputs = o.buildInputs ++ [ final.fuse ];
-        });
-
         rebiber = final.callPackage ./rebiber/default.nix { };
         remarkable-sync = final.callPackage ./remarkable-sync/default.nix { };
 
         # Convenience top-level alias so greatfet (which nixpkgs only exposes under
         # python3Packages) is referenced as `pkgs.greatfet` like our other tools.
         greatfet = final.python3Packages.greatfet;
+
+        # The bundled Qt5 has no Wayland backend, so the package pins
+        # QT_QPA_PLATFORM=xcb and runs on XWayland, where every MIT-SHM
+        # ShmPutImage round-trip fails with BadMatch. Skip that doomed path.
+        # The .desktop Exec lines hardcode the unwrapped store path, so they
+        # need rewriting or the launcher bypasses the wrapper.
+        onlyoffice-desktopeditors =
+          let
+            oo = prev.onlyoffice-desktopeditors;
+            desktop = "share/applications/onlyoffice-desktopeditors.desktop";
+          in
+          final.symlinkJoin {
+            inherit (oo) name meta;
+            paths = [ oo ];
+            nativeBuildInputs = [ final.makeWrapper ];
+            postBuild = ''
+              wrapProgram $out/bin/onlyoffice-desktopeditors \
+                --set QT_X11_NO_MITSHM 1
+              rm $out/${desktop}
+              substitute ${oo}/${desktop} $out/${desktop} \
+                --replace-fail "${oo}/bin" "$out/bin"
+            '';
+          };
+
+        # nixos-unstable is parked on 7fd4004 (2026-10-11 15:54Z), which carries
+        # the 6.0.2 bump but not the pnpm hash fix that landed in ac7b1aae four
+        # hours later. Drop this once the channel moves past that commit.
+        typescript-language-server = prev.typescript-language-server.overrideAttrs (o: {
+          pnpmDeps = o.pnpmDeps.overrideAttrs {
+            outputHash = "sha256-xR/EF60lVBsITKgH7wCM2wHM46PFQevD51KfCENSUH4=";
+          };
+        });
       };
   };
 }
