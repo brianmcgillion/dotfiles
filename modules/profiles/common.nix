@@ -228,11 +228,6 @@
     # Hardware
     hardware.enableRedistributableFirmware = lib.mkDefault true;
 
-    # Boot configuration
-    # Use systemd-based initrd (scripted initrd is deprecated in 26.05,
-    # removed in 26.11)
-    boot.initrd.systemd.enable = true;
-
     # Tie the sops module to the system's ssh keys
     sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };

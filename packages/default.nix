@@ -36,7 +36,16 @@
         inherit (llm) ccusage;
         inherit (llm) ccstatusline;
         inherit (llm) coderabbit-cli;
-        inherit (llm) codex;
+        # codex points openssl-sys at aws-lc's compat openssl.pc, which nixpkgs
+        # made opt-in in 8e5d4ae19 (withOpenSSLShim, off by default). The
+        # symbol prefixing e527e5e4d turned on the same day then breaks
+        # openssl-sys' bindgen, which cannot strip the prefix.
+        codex = llm.codex.override {
+          aws-lc = final.aws-lc.override {
+            withOpenSSLShim = true;
+            symbolPrefix = null;
+          };
+        };
         # The Codex desktop app ships as `chatgpt`: one Electron app, both
         # products. See modules/features/ai/codex.nix.
         inherit (llm) chatgpt;
@@ -73,13 +82,12 @@
             '';
           };
 
-        # nixos-unstable is parked on 7fd4004 (2026-10-11 15:54Z), which carries
-        # the 6.0.2 bump but not the pnpm hash fix that landed in ac7b1aae four
-        # hours later. Drop this once the channel moves past that commit.
-        typescript-language-server = prev.typescript-language-server.overrideAttrs (o: {
-          pnpmDeps = o.pnpmDeps.overrideAttrs {
-            outputHash = "sha256-xR/EF60lVBsITKgH7wCM2wHM46PFQevD51KfCENSUH4=";
-          };
+        # onig_sys wants pkg-config and a system oniguruma, which nixpkgs'
+        # neocmakelsp never declared. Fixed upstream in 5246ebb2d, which
+        # nixos-unstable has not picked up yet -- drop this when it does.
+        neocmakelsp = prev.neocmakelsp.overrideAttrs (o: {
+          nativeBuildInputs = o.nativeBuildInputs ++ [ final.pkg-config ];
+          buildInputs = (o.buildInputs or [ ]) ++ [ final.oniguruma ];
         });
       };
   };

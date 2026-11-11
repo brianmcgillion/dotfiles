@@ -156,6 +156,9 @@ in
         "qtwebengine-5.15.19" # needed for globalprotect-vpn
         "jitsi-meet-1.0.8792"
       ];
+      # onlyoffice-desktopeditors still links libgtk-x11-2.0, and nixpkgs
+      # flagged gtk2 broken ahead of its removal before NixOS 27.05.
+      config.problems.handlers."gtk+".broken = "warn";
     };
 
     nix.settings = {
